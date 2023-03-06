@@ -125,7 +125,7 @@ struct LocalData {
                 .map { email in
                     exportData.users.first(where: { $0.email == email }) ?? User(unknownUserEmail: email)
                 }
-                .sorted(by: { $0.name > $1.name })
+                .sorted(by: { $0.name < $1.name })
             
             // Manage transactions with users and sorting
             let groupTransactions: [ManagedTransaction] = group.transactions
@@ -147,5 +147,17 @@ struct LocalData {
             
             return ManagedGroup(id: group.id, title: group.title, users: groupUsers, transactions: groupTransactions)
         }
+    }
+}
+
+class CurrencyManager {
+    static private let currencyFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        return formatter
+      }()
+    
+    static func getText(for money: Double) -> String {
+        currencyFormatter.string(from: NSNumber(value: money)) ?? "NaN"
     }
 }
