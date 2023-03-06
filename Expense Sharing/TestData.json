@@ -1,0 +1,129 @@
+{
+    "users": [
+        {
+            "email": "john@example.com",
+            "name": "John"
+        },
+        {
+            "email": "sarah@example.com",
+            "name": "Sarah"
+        },
+        {
+            "email": "alex@example.com",
+            "name": "Alex"
+        },
+        {
+            "email": "bob@example.com",
+            "name": "Bob"
+        },
+        {
+            "email": "ann@example.com",
+            "name": "Ann"
+        }
+    ],
+    "groups": [
+        {
+            "id": "1",
+            "title": "Trip to Paris",
+            "users": [
+                "john@example.com",
+                "sarah@example.com",
+                "alex@example.com"
+            ],
+            "transactions": [
+                {
+                    "id": "11",
+                    "expenses": {
+                        "john@example.com": 8000,
+                        "sarah@example.com": -3000,
+                        "alex@example.com": -5000
+                    }
+                },
+                {
+                    "id": "12",
+                    "expenses": {
+                        "john@example.com": -2000,
+                        "sarah@example.com": 3000,
+                        "alex@example.com": -1000
+                    }
+                },
+                {
+                    "id": "13",
+                    "expenses": {
+                        "john@example.com": -2500,
+                        "sarah@example.com": -2500,
+                        "alex@example.com": 5000
+                    }
+                }
+            ]
+        },
+        {
+            "id": "2",
+            "title": "Trip to London",
+            "users": [
+                "alex@example.com",
+                "bob@example.com",
+                "ann@example.com"
+            ],
+            "transactions": [
+                {
+                    "id": "21",
+                    "expenses": {
+                        "alex@example.com": -85,
+                        "bob@example.com": 135,
+                        "ann@example.com": -50
+                    }
+                },
+                {
+                    "id": "22",
+                    "expenses": {
+                        "alex@example.com": -40,
+                        "bob@example.com": -5,
+                        "ann@example.com": 45
+                    }
+                },
+                {
+                    "id": "23",
+                    "expenses": {
+                        "alex@example.com": -206,
+                        "bob@example.com": 237,
+                        "ann@example.com": -31
+                    }
+                }
+            ]
+        },
+        {
+            "id": "3",
+            "title": "Trip to Barcelona",
+            "users": [
+                "john@example.com",
+                "sarah@example.com",
+                "alex@example.com",
+                "bob@example.com",
+                "ann@example.com"
+            ],
+            "transactions": [
+                {
+                    "id": "31",
+                    "expenses": {
+                        "john@example.com": 1000,
+                        "sarah@example.com": -300,
+                        "alex@example.com": -500,
+                        "bob@example.com": -100,
+                        "ann@example.com": -100
+                    }
+                },
+                {
+                    "id": "32",
+                    "expenses": {
+                        "john@example.com": -400,
+                        "sarah@example.com": -400,
+                        "alex@example.com": -50,
+                        "bob@example.com": -150,
+                        "ann@example.com": 1000
+                    }
+                }
+            ]
+        }
+    ]
+}
