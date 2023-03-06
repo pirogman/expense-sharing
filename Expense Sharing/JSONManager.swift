@@ -70,6 +70,16 @@ struct User: Codable, Identifiable {
     
     let name: String
     let email: String
+    
+    init(name: String, email: String) {
+        self.name = name
+        self.email = email
+    }
+    
+    init(unknownUserEmail: String) {
+        self.name = "[unknown]"
+        self.email = unknownUserEmail
+    }
 }
 
 struct Transaction: Codable, Identifiable {
@@ -89,24 +99,53 @@ struct ExportData: Codable {
     let groups: [Group]
 }
 
-struct GroupWithUsers: Identifiable {
+typealias Expense = (user: User, money: Double)
+
+struct ManagedTransaction: Identifiable {
+    let id: String
+    let expenses: [Expense]
+}
+
+struct ManagedGroup: Identifiable {
     let id: String
     let title: String
     let users: [User]
-    let transactions: [Transaction]
+    let transactions: [ManagedTransaction]
 }
 
 struct LocalData {
     let users: [User]
-    let groups: [GroupWithUsers]
+    let groups: [ManagedGroup]
     
     init(_ exportData: ExportData) {
         self.users = exportData.users
         self.groups = exportData.groups.map { group in
-            let groupUsers = group.users.map { email in
-                exportData.users.first(where: { $0.email == email }) ?? User(name: "[unknown]", email: email)
-            }
-            return GroupWithUsers(id: group.id, title: group.title, users: groupUsers, transactions: group.transactions)
+            // Get users in this group by email
+            let groupUsers = group.users
+                .map { email in
+                    exportData.users.first(where: { $0.email == email }) ?? User(unknownUserEmail: email)
+                }
+                .sorted(by: { $0.name > $1.name })
+            
+            // Manage transactions with users and sorting
+            let groupTransactions: [ManagedTransaction] = group.transactions
+                .map { transaction in
+                    let expenses: [Expense] = transaction.expenses.keys
+                        .map { key in
+                            let user = groupUsers.first(where: { $0.email == key }) ?? User(unknownUserEmail: key)
+                            let money = transaction.expenses[key]!
+                            return Expense(user, money)
+                        }
+                        .sorted(by: { abs($0.money) > abs($1.money) })
+                    return ManagedTransaction(id: transaction.id, expenses: expenses)
+                }
+                .sorted { a, b in
+                    guard let aMoney = a.expenses.first?.money else { return false }
+                    guard let bMoney = a.expenses.first?.money else { return true }
+                    return aMoney > bMoney
+                }
+            
+            return ManagedGroup(id: group.id, title: group.title, users: groupUsers, transactions: groupTransactions)
         }
     }
 }

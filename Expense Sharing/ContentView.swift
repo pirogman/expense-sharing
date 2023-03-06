@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct GroupListItemView: View {
-    let group: GroupWithUsers
+    let group: ManagedGroup
     
     var body: some View {
         HStack {
@@ -45,10 +45,7 @@ struct ContentView: View {
         NavigationView {
             List(data?.groups ?? []) { group in
                 NavigationLink {
-                    List(group.users) { user in
-                        UserListItemView(user: user)
-                    }
-                    .navigationTitle(group.title)
+                    GroupDetailView(group)
                 } label: {
                     GroupListItemView(group: group)
                 }
@@ -64,5 +61,40 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+    }
+}
+
+// MARK: -
+
+struct CenteredTwoPartTextView: View {
+    let left: String
+    let right: String
+    
+    var body: some View {
+        HStack {
+            HStack {
+                Spacer()
+                Text(left)
+            }
+            Text(":")
+            HStack {
+                Text(right)
+                Spacer()
+            }
+        }
+    }
+}
+
+struct SquareFrameModifier: ViewModifier {
+    let side: CGFloat
+    
+    func body(content: Content) -> some View {
+        content.frame(width: side, height: side)
+    }
+}
+
+extension View {
+    func squareFrame(side: CGFloat) -> some View {
+        ModifiedContent(content: self, modifier: SquareFrameModifier(side: side))
     }
 }
