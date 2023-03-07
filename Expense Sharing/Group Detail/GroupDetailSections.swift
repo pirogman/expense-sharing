@@ -34,7 +34,7 @@ struct GroupDetailChartView: View {
 
 struct GroupDetailUserView: View {
     let color: Color
-    let user: User
+    let user: ManagedUser
     let money: Double
     
     var body: some View {

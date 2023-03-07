@@ -9,16 +9,15 @@ import SwiftUI
 
 /*
  Create group
- Add users
- Remove users
- ? Edit group title
+ Edit group title
+ Add/remove users
+ Add/remove transactions
  Share group to other devices
- 
  */
 
 class GroupDetailViewModel: ObservableObject {
     @Published private(set) var title: String
-    @Published private(set) var users: [User]
+    @Published private(set) var users: [ManagedUser]
     @Published private(set) var transactions: [ManagedTransaction]
     @Published private(set) var totalExpenses: Double
     
@@ -82,10 +81,11 @@ class GroupDetailViewModel: ObservableObject {
             let exportExpenses = transaction.expenses.reduce(into: [String: Double]()) { dict, expense in
                 dict[expense.user.email] = expense.money
             }
-            return Transaction(id: transaction.id, expenses: exportExpenses)
+            return Transaction(id: transaction.id, expenses: exportExpenses, description: transaction.description)
         }
-        let exportGroup = Group(id: self.group.id, title: self.title, users: self.users.map({ $0.email}), transactions: exportTransactions)
-        let exportData = ExportData(users: self.users, groups: [exportGroup])
+        let exportGroup = Group(id: self.group.id, title: self.title, users: self.users.map({ $0.email }), transactions: exportTransactions)
+        let exportUsers = self.users.map { User(name: $0.name, email: $0.email) }
+        let exportData = ExportData(users: exportUsers, groups: [exportGroup])
         
         // Share as a single JSON file
         var activities = [AnyObject]()

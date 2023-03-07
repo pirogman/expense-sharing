@@ -11,10 +11,24 @@ class JSONManager {
     static let shared = JSONManager()
     private init() { }
     
-    static func loadTestData() -> LocalData {
-        let data = loadJSON(fileName: "TestData")!
-        let exportedData: ExportData = decodeJSON(from: data)!
-        return LocalData(exportedData)
+    static func loadTestData() -> ExportData {
+        guard let jsonData = JSONManager.loadJSON(fileName: "TestData"),
+              let exportData: ExportData = JSONManager.decodeJSON(from: jsonData)
+        else {
+            print("Failed to decode text data - return empty")
+            return ExportData(users: [], groups: [])
+        }
+        return exportData
+    }
+    
+    static func loadFromUrl(_ url: URL) -> ExportData {
+        guard let jsonData = JSONManager.loadJSON(fileURL: url),
+              let exportData: ExportData = JSONManager.decodeJSON(from: jsonData)
+        else {
+            print("Failed to decode export data - return empty")
+            return ExportData(users: [], groups: [])
+        }
+        return exportData
     }
     
     static func saveToFile(_ exportData: ExportData) -> URL? {
@@ -83,21 +97,12 @@ struct User: Codable, Identifiable {
     
     let name: String
     let email: String
-    
-    init(name: String, email: String) {
-        self.name = name
-        self.email = email
-    }
-    
-    init(unknownUserEmail: String) {
-        self.name = "[unknown]"
-        self.email = unknownUserEmail
-    }
 }
 
 struct Transaction: Codable, Identifiable {
     let id: String
     let expenses: [String: Double] // [email:money] with positive for who paid
+    let description: String?
 }
 
 struct Group: Codable, Identifiable {
@@ -112,31 +117,54 @@ struct ExportData: Codable {
     let groups: [Group]
 }
 
-typealias Expense = (user: User, money: Double)
+// MARK: - Managed Data
+
+import Combine
+
+struct ManagedUser: Identifiable {
+    var id: String { email }
+    
+    let name: String
+    let email: String
+    
+    init(name: String, email: String) {
+        self.name = name
+        self.email = email
+    }
+    
+    init(unknownUserEmail: String) {
+        self.name = "[unknown]"
+        self.email = unknownUserEmail
+    }
+}
+
+typealias Expense = (user: ManagedUser, money: Double)
 
 struct ManagedTransaction: Identifiable {
     let id: String
     let expenses: [Expense]
+    let description: String?
 }
 
 struct ManagedGroup: Identifiable {
     let id: String
     let title: String
-    let users: [User]
+    let users: [ManagedUser]
     let transactions: [ManagedTransaction]
 }
 
 struct LocalData {
-    let users: [User]
+    let users: [ManagedUser]
     let groups: [ManagedGroup]
     
     init(_ exportData: ExportData) {
-        self.users = exportData.users
+        let managedUsers = exportData.users.map { ManagedUser(name: $0.name, email: $0.email) }
+        self.users = managedUsers
         self.groups = exportData.groups.map { group in
             // Get users in this group by email
             let groupUsers = group.users
                 .map { email in
-                    exportData.users.first(where: { $0.email == email }) ?? User(unknownUserEmail: email)
+                    managedUsers.first(where: { $0.email == email }) ?? ManagedUser(unknownUserEmail: email)
                 }
                 .sorted(by: { $0.name < $1.name })
             
@@ -145,12 +173,12 @@ struct LocalData {
                 .map { transaction in
                     let expenses: [Expense] = transaction.expenses.keys
                         .map { key in
-                            let user = groupUsers.first(where: { $0.email == key }) ?? User(unknownUserEmail: key)
+                            let user = groupUsers.first(where: { $0.email == key }) ?? ManagedUser(unknownUserEmail: key)
                             let money = transaction.expenses[key]!
                             return Expense(user, money)
                         }
                         .sorted(by: { abs($0.money) > abs($1.money) })
-                    return ManagedTransaction(id: transaction.id, expenses: expenses)
+                    return ManagedTransaction(id: transaction.id, expenses: expenses, description: transaction.description)
                 }
                 .sorted { a, b in
                     guard let aMoney = a.expenses.first?.money else { return false }

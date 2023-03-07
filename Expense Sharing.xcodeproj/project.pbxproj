@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		5D61313629B5D96700B0366D /* Expense_SharingApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D61313529B5D96700B0366D /* Expense_SharingApp.swift */; };
-		5D61313829B5D96700B0366D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D61313729B5D96700B0366D /* ContentView.swift */; };
 		5D61313A29B5D96900B0366D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5D61313929B5D96900B0366D /* Assets.xcassets */; };
 		5D61313D29B5D96900B0366D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5D61313C29B5D96900B0366D /* Preview Assets.xcassets */; };
 		5D61314429B5DA9200B0366D /* JSONManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D61314329B5DA9200B0366D /* JSONManager.swift */; };
@@ -16,12 +15,15 @@
 		5D61314829B6135500B0366D /* GroupDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D61314729B6135500B0366D /* GroupDetailView.swift */; };
 		5D61314A29B638AD00B0366D /* GroupDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D61314929B638AD00B0366D /* GroupDetailViewModel.swift */; };
 		5D61314C29B63A4300B0366D /* GroupDetailSections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D61314B29B63A4300B0366D /* GroupDetailSections.swift */; };
+		5DB764BF29B72FAA00C533F5 /* GroupAddTransactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB764BE29B72FAA00C533F5 /* GroupAddTransactionView.swift */; };
+		5DB764C129B730F100C533F5 /* GroupAddUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB764C029B730F100C533F5 /* GroupAddUserView.swift */; };
+		5DB764C329B737C100C533F5 /* DBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB764C229B737C100C533F5 /* DBManager.swift */; };
+		5DB764C729B7797E00C533F5 /* Validator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB764C629B7797E00C533F5 /* Validator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		5D61313229B5D96700B0366D /* Expense Sharing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Expense Sharing.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5D61313529B5D96700B0366D /* Expense_SharingApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Expense_SharingApp.swift; sourceTree = "<group>"; };
-		5D61313729B5D96700B0366D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		5D61313929B5D96900B0366D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5D61313C29B5D96900B0366D /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		5D61314329B5DA9200B0366D /* JSONManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONManager.swift; sourceTree = "<group>"; };
@@ -29,6 +31,10 @@
 		5D61314729B6135500B0366D /* GroupDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupDetailView.swift; sourceTree = "<group>"; };
 		5D61314929B638AD00B0366D /* GroupDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupDetailViewModel.swift; sourceTree = "<group>"; };
 		5D61314B29B63A4300B0366D /* GroupDetailSections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupDetailSections.swift; sourceTree = "<group>"; };
+		5DB764BE29B72FAA00C533F5 /* GroupAddTransactionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupAddTransactionView.swift; sourceTree = "<group>"; };
+		5DB764C029B730F100C533F5 /* GroupAddUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupAddUserView.swift; sourceTree = "<group>"; };
+		5DB764C229B737C100C533F5 /* DBManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBManager.swift; sourceTree = "<group>"; };
+		5DB764C629B7797E00C533F5 /* Validator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Validator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,11 +68,10 @@
 			isa = PBXGroup;
 			children = (
 				5D61313529B5D96700B0366D /* Expense_SharingApp.swift */,
-				5D61313729B5D96700B0366D /* ContentView.swift */,
-				5D61314729B6135500B0366D /* GroupDetailView.swift */,
-				5D61314B29B63A4300B0366D /* GroupDetailSections.swift */,
-				5D61314929B638AD00B0366D /* GroupDetailViewModel.swift */,
+				5DB764C829B77F5300C533F5 /* Group Detail */,
+				5DB764C229B737C100C533F5 /* DBManager.swift */,
 				5D61314329B5DA9200B0366D /* JSONManager.swift */,
+				5DB764C629B7797E00C533F5 /* Validator.swift */,
 				5D61314529B5DD4200B0366D /* TestData.json */,
 				5D61313929B5D96900B0366D /* Assets.xcassets */,
 				5D61313B29B5D96900B0366D /* Preview Content */,
@@ -80,6 +85,18 @@
 				5D61313C29B5D96900B0366D /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		5DB764C829B77F5300C533F5 /* Group Detail */ = {
+			isa = PBXGroup;
+			children = (
+				5D61314929B638AD00B0366D /* GroupDetailViewModel.swift */,
+				5D61314729B6135500B0366D /* GroupDetailView.swift */,
+				5D61314B29B63A4300B0366D /* GroupDetailSections.swift */,
+				5DB764C029B730F100C533F5 /* GroupAddUserView.swift */,
+				5DB764BE29B72FAA00C533F5 /* GroupAddTransactionView.swift */,
+			);
+			path = "Group Detail";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -153,8 +170,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5D61313829B5D96700B0366D /* ContentView.swift in Sources */,
+				5DB764BF29B72FAA00C533F5 /* GroupAddTransactionView.swift in Sources */,
+				5DB764C129B730F100C533F5 /* GroupAddUserView.swift in Sources */,
+				5DB764C729B7797E00C533F5 /* Validator.swift in Sources */,
 				5D61314429B5DA9200B0366D /* JSONManager.swift in Sources */,
+				5DB764C329B737C100C533F5 /* DBManager.swift in Sources */,
 				5D61314C29B63A4300B0366D /* GroupDetailSections.swift in Sources */,
 				5D61313629B5D96700B0366D /* Expense_SharingApp.swift in Sources */,
 				5D61314829B6135500B0366D /* GroupDetailView.swift in Sources */,
