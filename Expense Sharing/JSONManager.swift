@@ -17,6 +17,19 @@ class JSONManager {
         return LocalData(exportedData)
     }
     
+    static func saveToFile(_ exportData: ExportData) -> URL? {
+        do {
+            let encoder = JSONEncoder()
+            let data = try encoder.encode(exportData)
+            let url = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("export_data.json")
+            try data.write(to: url, options: .atomic)
+            return url
+        } catch let error {
+            print("Encoding error: \(error)")
+            return nil
+        }
+    }
+    
     // MARK: - Helpers
     
     static private func decodeJSON<T: Decodable>(from data: Data) -> T? {
