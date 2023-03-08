@@ -19,6 +19,11 @@
 		5DB764C129B730F100C533F5 /* GroupAddUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB764C029B730F100C533F5 /* GroupAddUserView.swift */; };
 		5DB764C329B737C100C533F5 /* DBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB764C229B737C100C533F5 /* DBManager.swift */; };
 		5DB764C729B7797E00C533F5 /* Validator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB764C629B7797E00C533F5 /* Validator.swift */; };
+		5DBC225F29B874B000DC67D4 /* InitialSyncView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DBC225E29B874B000DC67D4 /* InitialSyncView.swift */; };
+		5DBC226129B874FE00DC67D4 /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DBC226029B874FE00DC67D4 /* AuthView.swift */; };
+		5DBC226329B8753D00DC67D4 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DBC226229B8753D00DC67D4 /* AuthViewModel.swift */; };
+		5DBC226529B87D0B00DC67D4 /* UserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DBC226429B87D0B00DC67D4 /* UserProfileView.swift */; };
+		5DBC226729B87D3100DC67D4 /* UserProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DBC226629B87D3100DC67D4 /* UserProfileViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +40,11 @@
 		5DB764C029B730F100C533F5 /* GroupAddUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupAddUserView.swift; sourceTree = "<group>"; };
 		5DB764C229B737C100C533F5 /* DBManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBManager.swift; sourceTree = "<group>"; };
 		5DB764C629B7797E00C533F5 /* Validator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Validator.swift; sourceTree = "<group>"; };
+		5DBC225E29B874B000DC67D4 /* InitialSyncView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialSyncView.swift; sourceTree = "<group>"; };
+		5DBC226029B874FE00DC67D4 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
+		5DBC226229B8753D00DC67D4 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
+		5DBC226429B87D0B00DC67D4 /* UserProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileView.swift; sourceTree = "<group>"; };
+		5DBC226629B87D3100DC67D4 /* UserProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +78,11 @@
 			isa = PBXGroup;
 			children = (
 				5D61313529B5D96700B0366D /* Expense_SharingApp.swift */,
+				5DBC225E29B874B000DC67D4 /* InitialSyncView.swift */,
+				5DBC226029B874FE00DC67D4 /* AuthView.swift */,
+				5DBC226229B8753D00DC67D4 /* AuthViewModel.swift */,
+				5DBC226429B87D0B00DC67D4 /* UserProfileView.swift */,
+				5DBC226629B87D3100DC67D4 /* UserProfileViewModel.swift */,
 				5DB764C829B77F5300C533F5 /* Group Detail */,
 				5DB764C229B737C100C533F5 /* DBManager.swift */,
 				5D61314329B5DA9200B0366D /* JSONManager.swift */,
@@ -172,12 +187,17 @@
 			files = (
 				5DB764BF29B72FAA00C533F5 /* GroupAddTransactionView.swift in Sources */,
 				5DB764C129B730F100C533F5 /* GroupAddUserView.swift in Sources */,
+				5DBC225F29B874B000DC67D4 /* InitialSyncView.swift in Sources */,
+				5DBC226729B87D3100DC67D4 /* UserProfileViewModel.swift in Sources */,
 				5DB764C729B7797E00C533F5 /* Validator.swift in Sources */,
 				5D61314429B5DA9200B0366D /* JSONManager.swift in Sources */,
+				5DBC226529B87D0B00DC67D4 /* UserProfileView.swift in Sources */,
 				5DB764C329B737C100C533F5 /* DBManager.swift in Sources */,
 				5D61314C29B63A4300B0366D /* GroupDetailSections.swift in Sources */,
 				5D61313629B5D96700B0366D /* Expense_SharingApp.swift in Sources */,
+				5DBC226329B8753D00DC67D4 /* AuthViewModel.swift in Sources */,
 				5D61314829B6135500B0366D /* GroupDetailView.swift in Sources */,
+				5DBC226129B874FE00DC67D4 /* AuthView.swift in Sources */,
 				5D61314A29B638AD00B0366D /* GroupDetailViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
