@@ -24,6 +24,7 @@
 		5DBC226329B8753D00DC67D4 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DBC226229B8753D00DC67D4 /* AuthViewModel.swift */; };
 		5DBC226529B87D0B00DC67D4 /* UserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DBC226429B87D0B00DC67D4 /* UserProfileView.swift */; };
 		5DBC226729B87D3100DC67D4 /* UserProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DBC226629B87D3100DC67D4 /* UserProfileViewModel.swift */; };
+		5DEE7FFF29B9BE0700106F15 /* UserGroupItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DEE7FFE29B9BE0700106F15 /* UserGroupItemView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,6 +46,8 @@
 		5DBC226229B8753D00DC67D4 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
 		5DBC226429B87D0B00DC67D4 /* UserProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileView.swift; sourceTree = "<group>"; };
 		5DBC226629B87D3100DC67D4 /* UserProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileViewModel.swift; sourceTree = "<group>"; };
+		5DEE7FFD29B9BDAF00106F15 /* Expense-Sharing-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Expense-Sharing-Info.plist"; sourceTree = SOURCE_ROOT; };
+		5DEE7FFE29B9BE0700106F15 /* UserGroupItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserGroupItemView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,11 +80,13 @@
 		5D61313429B5D96700B0366D /* Expense Sharing */ = {
 			isa = PBXGroup;
 			children = (
+				5DEE7FFD29B9BDAF00106F15 /* Expense-Sharing-Info.plist */,
 				5D61313529B5D96700B0366D /* Expense_SharingApp.swift */,
 				5DBC225E29B874B000DC67D4 /* InitialSyncView.swift */,
 				5DBC226029B874FE00DC67D4 /* AuthView.swift */,
 				5DBC226229B8753D00DC67D4 /* AuthViewModel.swift */,
 				5DBC226429B87D0B00DC67D4 /* UserProfileView.swift */,
+				5DEE7FFE29B9BE0700106F15 /* UserGroupItemView.swift */,
 				5DBC226629B87D3100DC67D4 /* UserProfileViewModel.swift */,
 				5DB764C829B77F5300C533F5 /* Group Detail */,
 				5DB764C229B737C100C533F5 /* DBManager.swift */,
@@ -187,6 +192,7 @@
 			files = (
 				5DB764BF29B72FAA00C533F5 /* GroupAddTransactionView.swift in Sources */,
 				5DB764C129B730F100C533F5 /* GroupAddUserView.swift in Sources */,
+				5DEE7FFF29B9BE0700106F15 /* UserGroupItemView.swift in Sources */,
 				5DBC225F29B874B000DC67D4 /* InitialSyncView.swift in Sources */,
 				5DBC226729B87D3100DC67D4 /* UserProfileViewModel.swift in Sources */,
 				5DB764C729B7797E00C533F5 /* Validator.swift in Sources */,
@@ -332,9 +338,10 @@
 				DEVELOPMENT_TEAM = 3G24782ZXQ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_FILE = "Expense-Sharing-Info.plist";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -361,9 +368,10 @@
 				DEVELOPMENT_TEAM = 3G24782ZXQ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_FILE = "Expense-Sharing-Info.plist";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (

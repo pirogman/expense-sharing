@@ -49,7 +49,9 @@ struct GroupDetailView: View {
             Text("Group title should have at least one character.")
         }
         .sheet(isPresented: $showingGroupShare) {
-            ActivityViewController(activityItems: vm.getGroupShareActivities())
+            ActivityViewController(activityItems: vm.getGroupShareActivities()) { _ in
+                //
+            }
         }
         .toolbar { toolbarMenu }
     }
@@ -128,9 +130,13 @@ struct GroupDetailView: View {
 struct ActivityViewController: UIViewControllerRepresentable {
     var activityItems: [Any]
     var applicationActivities: [UIActivity]? = nil
+    var completionHandler: ((Bool) -> Void)? = nil
 
     func makeUIViewController(context: UIViewControllerRepresentableContext<ActivityViewController>) -> UIActivityViewController {
         let controller = UIActivityViewController(activityItems: activityItems, applicationActivities: applicationActivities)
+        controller.completionWithItemsHandler = { (activityType: UIActivity.ActivityType?, completed: Bool, returnedItems: [Any]?, error: Error?) in
+            completionHandler?(completed)
+        }
         return controller
     }
 

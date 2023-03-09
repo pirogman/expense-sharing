@@ -7,6 +7,17 @@
 
 import Foundation
 
+enum ValidationError: Error, LocalizedError {
+    case invalidEmail, invalidName
+    
+    public var errorDescription: String? {
+        switch self {
+        case .invalidEmail: return "Invalid email. Please, provide a valid email address."
+        case .invalidName: return "Invalid name. Please, provide a name with at least 3 characters."
+        }
+    }
+}
+
 class Validator {
     static private let linkDetector = try! NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
     

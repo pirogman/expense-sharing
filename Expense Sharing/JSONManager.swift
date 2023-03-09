@@ -31,16 +31,25 @@ class JSONManager {
         return exportData
     }
     
-    static func saveToFile(_ exportData: ExportData) -> URL? {
+    static func saveToFile(_ exportData: ExportData, named: String) -> URL? {
         do {
             let encoder = JSONEncoder()
             let data = try encoder.encode(exportData)
-            let url = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("export_data.json")
+            let url = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("\(named).json")
             try data.write(to: url, options: .atomic)
             return url
         } catch let error {
             print("Encoding error: \(error)")
             return nil
+        }
+    }
+    
+    static func clearTempFile(named: String) {
+        do {
+            let url = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("\(named).json")
+            try FileManager.default.removeItem(at: url)
+        } catch let error {
+            print("Removing file error: \(error)")
         }
     }
     

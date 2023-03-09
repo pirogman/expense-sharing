@@ -89,7 +89,7 @@ class GroupDetailViewModel: ObservableObject {
         
         // Share as a single JSON file
         var activities = [AnyObject]()
-        if let url = JSONManager.saveToFile(exportData) {
+        if let url = JSONManager.saveToFile(exportData, named: "export_data") {
             activities.append(url as AnyObject)
         }
         return activities

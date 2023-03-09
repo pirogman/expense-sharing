@@ -9,15 +9,12 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 enum AuthError: Error, LocalizedError {
-    case invalidEmail, invalidName
     case alreadyRegistered, notRegistered
     
     public var errorDescription: String? {
         switch self {
-        case .invalidEmail: return "Failed to authenticate. Invalid email."
-        case .invalidName: return "Failed to authenticate. Invalid name."
-        case .alreadyRegistered: return "Failed to authenticate. Already registered."
-        case .notRegistered: return "Failed to authenticate. Not registered yet."
+        case .alreadyRegistered: return "This user is already registered. Please, login instead."
+        case .notRegistered: return "This user is not registered yet. Please, register instead."
         }
     }
 }
@@ -29,10 +26,10 @@ class AuthViewModel: ObservableObject {
     
     func registerUser(name: String, email: String) -> Result<User, Error> {
         guard let validName = Validator.validateUserName(name) else {
-            return .failure(AuthError.invalidName)
+            return .failure(ValidationError.invalidName)
         }
         guard let validEmail = Validator.validateEmail(email) else {
-            return .failure(AuthError.invalidEmail)
+            return .failure(ValidationError.invalidEmail)
         }
         if let user = DBManager.shared.addUser(name: validName, email: validEmail) {
             return .success(user)
@@ -42,7 +39,7 @@ class AuthViewModel: ObservableObject {
     
     func loginUser(email: String) -> Result<User, Error> {
         guard let validEmail = Validator.validateEmail(email) else {
-            return .failure(AuthError.invalidEmail)
+            return .failure(ValidationError.invalidEmail)
         }
         guard let user = DBManager.shared.getUser(by: validEmail) else {
             return .failure(AuthError.notRegistered)

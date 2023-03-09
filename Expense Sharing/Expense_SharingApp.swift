@@ -25,8 +25,8 @@ struct Expense_SharingApp: App {
     @ObservedObject var appManager = AppManager.shared
     
     init() {
-        UITableView.appearance().backgroundColor = UIColor.clear
-        UITableViewCell.appearance().backgroundColor = UIColor.clear
+//        UITableView.appearance().backgroundColor = UIColor.clear
+//        UITableViewCell.appearance().backgroundColor = UIColor.clear
     }
     
     var body: some Scene {
@@ -68,5 +68,25 @@ extension View {
             LinearGradient(gradient: Gradient(colors: [.cyan, .blue]),
                            startPoint: .topLeading, endPoint: .bottomTrailing)
         )
+    }
+}
+
+extension View {
+    func textFieldAlert(isPresented: Binding<Bool>, title: String, message: String, placeholder: String, input: Binding<String>, onConfirm: @escaping () -> Void) -> some View {
+        self.alert(title, isPresented: isPresented) {
+                TextField(placeholder, text: input)
+                Button {
+                    onConfirm()
+                } label: {
+                    Text("Confirm")
+                }
+                Button {
+                    // Do not update
+                } label: {
+                    Text("Cancel")
+                }
+            } message: {
+                Text(message)
+            }
     }
 }

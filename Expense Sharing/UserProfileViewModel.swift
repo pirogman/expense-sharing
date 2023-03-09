@@ -15,7 +15,32 @@ class UserProfileViewModel: ObservableObject {
     init(user: User) {
         self.user = user
         
-        groups = DBManager.shared.getGroups(for: user)
+        var multipliedGroups = DBManager.shared.getGroups(for: user)
+//        for i in 0..<3 {
+//            multipliedGroups += multipliedGroups.map { Group(id: $0.id + "_\(i)", title: $0.title, users: $0.users, transactions: $0.transactions) }
+//        }
+        groups = multipliedGroups
+    }
+    
+    func editName(_ name: String) -> Result<Void, Error> {
+        guard let validName = Validator.validateUserName(name) else {
+            return .failure(ValidationError.invalidName)
+        }
+        return .success(())
+    }
+    
+    private var tempFileName: String?
+    
+    func getUserShareActivities() -> [AnyObject] {
+        let shareFileName = user.name.replacingOccurrences(of: " ", with: "_")
+        tempFileName = shareFileName
+        return ShareManager.exportUser(user, fileName: shareFileName)
+    }
+    
+    func clearSharedUserFile() {
+        guard let name = tempFileName else { return }
+        tempFileName = nil
+        JSONManager.clearTempFile(named: name)
     }
     
     func getManagedGroup(from group: Group) -> ManagedGroup {
@@ -36,5 +61,29 @@ class UserProfileViewModel: ObservableObject {
             return ManagedTransaction(id: transaction.id, expenses: expenses, description: transaction.description)
         }
         return ManagedGroup(id: group.id, title: group.title, users: users, transactions: transactions)
+    }
+}
+
+class ShareManager {
+    static func exportUser(_ user: User, fileName: String) -> [AnyObject] {
+        let userGroups = DBManager.shared.getGroups(for: user)
+        let exportData = ExportData(users: [user], groups: userGroups)
+        return getShareActivities(exportData, fileName: fileName)
+    }
+    
+    static func exportGroup(_ group: Group, fileName: String) -> [AnyObject] {
+        let groupUsers = group.users.compactMap { email in
+            DBManager.shared.getUser(by: email)
+        }
+        let exportData = ExportData(users: groupUsers, groups: [group])
+        return getShareActivities(exportData, fileName: fileName)
+    }
+    
+    static func getShareActivities(_ exportData: ExportData, fileName: String) -> [AnyObject] {
+        var activities = [AnyObject]()
+        if let url = JSONManager.saveToFile(exportData, named: fileName) {
+            activities.append(url as AnyObject)
+        }
+        return activities
     }
 }
