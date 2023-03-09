@@ -14,12 +14,15 @@ class UserProfileViewModel: ObservableObject {
     
     init(user: User) {
         self.user = user
-        
-        var multipliedGroups = DBManager.shared.getGroups(for: user)
-//        for i in 0..<3 {
-//            multipliedGroups += multipliedGroups.map { Group(id: $0.id + "_\(i)", title: $0.title, users: $0.users, transactions: $0.transactions) }
-//        }
-        groups = multipliedGroups
+    }
+    
+    func updateGroups(search: String? = nil) {
+        if search.hasText {
+            groups = DBManager.shared.getGroups(for: user)
+                .filter({ $0.title.lowercased().contains(search!.lowercased()) })
+        } else {
+            groups = DBManager.shared.getGroups(for: user)
+        }
     }
     
     func editName(_ name: String) -> Result<Void, Error> {
@@ -29,18 +32,8 @@ class UserProfileViewModel: ObservableObject {
         return .success(())
     }
     
-    private var tempFileName: String?
-    
-    func getUserShareActivities() -> [AnyObject] {
-        let shareFileName = user.name.replacingOccurrences(of: " ", with: "_")
-        tempFileName = shareFileName
-        return ShareManager.exportUser(user, fileName: shareFileName)
-    }
-    
-    func clearSharedUserFile() {
-        guard let name = tempFileName else { return }
-        tempFileName = nil
-        JSONManager.clearTempFile(named: name)
+    func deleteGroup(_ group: Group) {
+        
     }
     
     func getManagedGroup(from group: Group) -> ManagedGroup {
@@ -61,6 +54,22 @@ class UserProfileViewModel: ObservableObject {
             return ManagedTransaction(id: transaction.id, expenses: expenses, description: transaction.description)
         }
         return ManagedGroup(id: group.id, title: group.title, users: users, transactions: transactions)
+    }
+    
+    // MARK: - Share
+    
+    private var tempFileName: String?
+    
+    func getUserShareActivities() -> [AnyObject] {
+        let shareFileName = user.name.replacingOccurrences(of: " ", with: "_")
+        tempFileName = shareFileName
+        return ShareManager.exportUser(user, fileName: shareFileName)
+    }
+    
+    func clearSharedUserFile() {
+        guard let name = tempFileName else { return }
+        tempFileName = nil
+        JSONManager.clearTempFile(named: name)
     }
 }
 

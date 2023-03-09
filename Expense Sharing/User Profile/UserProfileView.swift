@@ -10,7 +10,8 @@ import SwiftUI
 struct UserProfileView: View {
     @StateObject var vm: UserProfileViewModel
     
-    @State var navigateToGroup = false
+    @State var navigateToAddGroup = false
+    @State var navigateToSelectedGroup = false
     @State var selectedGroup: Group?
     
     @State var showingEditNameAlert = false
@@ -32,15 +33,17 @@ struct UserProfileView: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
-                NavigationLink(isActive: $navigateToGroup) {
+                // Navigation
+                NavigationLink(isActive: $navigateToAddGroup) {
+                    Text("Add Group")
+                } label: { EmptyView() }
+                NavigationLink(isActive: $navigateToSelectedGroup) {
                     if let group = selectedGroup {
                         GroupDetailView(vm.getManagedGroup(from: group))
                     } else {
                         Text("No Such Group")
                     }
-                } label: {
-                    EmptyView()
-                }
+                } label: { EmptyView() }
                 
                 profileHeader
                     .padding(.horizontal, 32)
@@ -58,9 +61,16 @@ struct UserProfileView: View {
                     .padding(.bottom, 4)
                 groupsScroll
             }
-            .backgroundGradient()
-            .foregroundColor(.white)
+            .appBackgroundGradient()
             .navigationBarHidden(true)
+            .onAppear {
+                vm.updateGroups()
+            }
+            .onChange(of: searchText) { text in
+                withAnimation {
+                    vm.updateGroups(search: text)
+                }
+            }
             .textFieldAlert(isPresented: $showingEditNameAlert, title: "Edit Name", message: "User name should consist of at least 3 characters.", placeholder: "Name", input: $editedName) {
                 withAnimation {
                     switch vm.editName(editedName) {
@@ -93,7 +103,7 @@ struct UserProfileView: View {
                     Label("Edit Name", systemImage: "square.and.pencil")
                 }
                 Button {
-                    //
+                    navigateToAddGroup = true
                 } label: {
                     Label("Add Group", systemImage: "plus.square")
                 }
@@ -140,21 +150,23 @@ struct UserProfileView: View {
                 Button {
                     withAnimation {
                         showingSearch.toggle()
+                        searchText = ""
                     }
                 } label: {
                     Image(systemName: showingSearch ? "xmark" : "magnifyingglass")
                         .resizable().scaledToFit()
-                        .squareFrame(side: 18)
-                        .padding(3)
+                        .squareFrame(side: showingSearch ? 12 : 18)
+                        .padding(showingSearch ? 6 : 3)
                 }
             }
             if showingSearch {
                 TextField("Search...", text: $searchText)
                     .textContentType(.name)
                     .textFieldStyle(.roundedBorder)
-                    .foregroundColor(nil)
+                    .foregroundColor(.gradientDark)
+                    .accentColor(.gradientLight)
                     .onSubmit {
-                        //
+                        hideKeyboard()
                     }
             }
         }
@@ -175,9 +187,9 @@ struct UserProfileView: View {
                                 }
                                 UserGroupItemView(group) {
                                     selectedGroup = group
-                                    navigateToGroup = true
+                                    navigateToSelectedGroup = true
                                 } onDelete: {
-                                    print("delete")
+                                    vm.deleteGroup(group)
                                 }
                             }
                     }
@@ -186,13 +198,13 @@ struct UserProfileView: View {
             .clipShape(RoundedRectangle(cornerRadius: 8))
             .overlay {
                 RoundedRectangle(cornerRadius: 8)
-                    .strokeBorder(.white)
+                    .strokeBorder(vm.groups.isEmpty ? .clear : .white)
             }
             .padding(.horizontal, 16)
             .padding(.top, 8)
             .padding(.bottom, 16)
         }
-        .onTapGesture { /* Fix Tap Gesture Inside Scroll View */ }
+//        .onTapGesture { /* Fix Tap Gesture Inside Scroll View */ }
         .mask(
             // Apply a mask to top and bottom in order to fade content away
             LinearGradient(gradient: Gradient(stops: [

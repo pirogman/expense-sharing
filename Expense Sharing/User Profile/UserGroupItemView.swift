@@ -64,9 +64,11 @@ struct UserGroupItemView: View {
                 .onChanged { gesture in
                     // Drop first change as this gesture may be intercepted by ScrollView
                     guard firstChangeDropped else {
+                        print("first change")
                         firstChangeDropped = true
                         return
                     }
+                    print("other change")
                     
                     offset = gesture.translation
                     
@@ -82,6 +84,7 @@ struct UserGroupItemView: View {
                     }
                 }
                 .onEnded { _ in
+                    print("ended")
                     firstChangeDropped = false
                     
                     if deleteOnRelease {
@@ -91,6 +94,7 @@ struct UserGroupItemView: View {
                     } else if keepDelete {
                         // Keep delete button if swiped enough
                         offset = CGSize(width: -keepDeleteDistance, height: 0)
+                        deleteScale = maxDeleteScale
                     } else {
                         // Hide delete button on incomplete swipe
                         reset()

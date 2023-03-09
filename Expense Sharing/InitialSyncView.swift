@@ -23,7 +23,7 @@ struct InitialSyncView: View {
                 .padding()
             Spacer()
         }
-        .backgroundGradient()
+        .appBackgroundGradient()
         .foregroundColor(.white)
         .onAppear {
             DispatchQueue.global(qos: .userInitiated).async {

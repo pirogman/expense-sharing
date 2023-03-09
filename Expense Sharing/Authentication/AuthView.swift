@@ -30,7 +30,7 @@ struct AuthView: View {
         VStack {
             authOption
                 .padding(.horizontal, 36)
-                .padding(.top, 60)
+                .padding(.top, focusedField == nil ? 80 : 36)
             Spacer()
             Button {
                 showingFilePicker = true
@@ -39,17 +39,12 @@ struct AuthView: View {
             }
             .padding(.bottom)
         }
-        .backgroundGradient()
-        .foregroundColor(.white)
-        .alert(alertTitle, isPresented: $showingAlert) {
-            Button {
-                // Do nothing
-            } label: {
-                Text("OK")
-            }
-        } message: {
-            Text(alertMessage)
+        .ignoresSafeArea(.keyboard, edges: .bottom)
+        .appBackgroundGradient()
+        .onTapGesture {
+            hideKeyboard()
         }
+        .simpleAlert(isPresented: $showingAlert, title: alertTitle, message: alertMessage)
         .fileImporter(
             isPresented: $showingFilePicker,
             allowedContentTypes: vm.allowedContentTypes,
@@ -82,7 +77,8 @@ struct AuthView: View {
                             .focused($focusedField, equals: .nameField)
                             .textContentType(.name)
                             .textFieldStyle(.roundedBorder)
-                            .foregroundColor(nil)
+                            .foregroundColor(.gradientDark)
+                            .accentColor(.gradientLight)
                             .onSubmit {
                                 focusedField = .emailField
                             }
@@ -97,8 +93,10 @@ struct AuthView: View {
                         .textInputAutocapitalization(.never)
                         .textContentType(.emailAddress)
                         .textFieldStyle(.roundedBorder)
-                        .foregroundColor(nil)
+                        .foregroundColor(.gradientDark)
+                        .accentColor(.gradientLight)
                         .onSubmit {
+                            focusedField = nil
                             onAuthAction()
                         }
                     Text(showRegister
