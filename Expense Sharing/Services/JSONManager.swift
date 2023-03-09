@@ -11,17 +11,17 @@ class JSONManager {
     static let shared = JSONManager()
     private init() { }
     
-    static func loadTestData() -> ExportData {
-        guard let jsonData = JSONManager.loadJSON(fileName: "TestData"),
+    static func loadFrom(fileName name: String) -> ExportData {
+        guard let jsonData = JSONManager.loadJSON(fileName: name),
               let exportData: ExportData = JSONManager.decodeJSON(from: jsonData)
         else {
-            print("Failed to decode text data - return empty")
+            print("Failed to decode export data - return empty")
             return ExportData(users: [], groups: [])
         }
         return exportData
     }
     
-    static func loadFromUrl(_ url: URL) -> ExportData {
+    static func loadFrom(fileURL url: URL) -> ExportData {
         guard let jsonData = JSONManager.loadJSON(fileURL: url),
               let exportData: ExportData = JSONManager.decodeJSON(from: jsonData)
         else {

@@ -91,6 +91,21 @@ extension View {
 }
 
 extension View {
+    func stylishTextField() -> some View {
+        self.textFieldStyle(.plain)
+            .foregroundColor(.gradientDark)
+            .accentColor(.gradientLight)
+            .frame(height: 32)
+            .padding(.vertical, 4)
+            .padding(.horizontal, 8)
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(.white)
+            )
+    }
+}
+
+extension View {
     func appBackgroundGradient() -> some View {
         self.preferredColorScheme(.light)
             .foregroundColor(.accentColor)

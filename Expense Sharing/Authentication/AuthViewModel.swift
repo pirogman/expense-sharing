@@ -56,7 +56,7 @@ class AuthViewModel: ObservableObject {
             if let url = urls.first {
                 if url.startAccessingSecurityScopedResource() {
                     defer { url.stopAccessingSecurityScopedResource() }
-                    let data = JSONManager.loadFromUrl(url)
+                    let data = JSONManager.loadFrom(fileURL: url)
                     DBManager.shared.importData(data)
                     return .success((data.users.count, data.groups.count))
                 }

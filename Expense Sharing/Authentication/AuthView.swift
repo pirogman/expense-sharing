@@ -18,7 +18,7 @@ struct AuthView: View {
     @FocusState private var focusedField: Field?
     @State var showRegister = false
     @State var userName = ""
-    @State var userEmail = "alex@example.com"
+    @State var userEmail = ""
     
     @State var showingAlert = false
     @State var alertTitle = ""
@@ -28,9 +28,13 @@ struct AuthView: View {
     
     var body: some View {
         VStack {
+            AnimatedLogoView(sizeLimit: 80)
+                .padding(.top, focusedField == nil ? 24 : 6)
+                .padding(.bottom, focusedField == nil ? 12 : 6)
+            
             authOption
                 .padding(.horizontal, 36)
-                .padding(.top, focusedField == nil ? 80 : 36)
+            
             Spacer()
             Button {
                 showingFilePicker = true
@@ -43,6 +47,12 @@ struct AuthView: View {
         .appBackgroundGradient()
         .onTapGesture {
             hideKeyboard()
+        }
+        .onAppear {
+#if DEBUG
+            userEmail = "alex@example.com"
+            DBManager.shared.loadTestData()
+#endif
         }
         .simpleAlert(isPresented: $showingAlert, title: alertTitle, message: alertMessage)
         .fileImporter(
@@ -73,18 +83,17 @@ struct AuthView: View {
             VStack {
                 if showRegister {
                     VStack(alignment: .leading) {
-                        TextField("name", text: $userName)
+                        TextField("Name", text: $userName)
                             .focused($focusedField, equals: .nameField)
                             .textContentType(.name)
-                            .textFieldStyle(.roundedBorder)
-                            .foregroundColor(.gradientDark)
-                            .accentColor(.gradientLight)
+                            .stylishTextField()
                             .onSubmit {
                                 focusedField = .emailField
                             }
                         Text(" Should contain at least 3 characters.")
                             .font(.caption)
-                            .padding(.bottom)
+                            .padding(.horizontal, 8)
+                            .padding(.bottom, 4)
                     }
                 }
                 VStack(alignment: .leading) {
@@ -92,9 +101,7 @@ struct AuthView: View {
                         .focused($focusedField, equals: .emailField)
                         .textInputAutocapitalization(.never)
                         .textContentType(.emailAddress)
-                        .textFieldStyle(.roundedBorder)
-                        .foregroundColor(.gradientDark)
-                        .accentColor(.gradientLight)
+                        .stylishTextField()
                         .onSubmit {
                             focusedField = nil
                             onAuthAction()
@@ -103,10 +110,11 @@ struct AuthView: View {
                          ? " Should be a proper email address."
                          : " Should be already in the database.")
                         .font(.caption)
-                        .padding(.bottom)
+                        .padding(.horizontal, 8)
+                        .padding(.bottom, 4)
                 }
             }
-            .frame(height: 210)
+            .frame(height: focusedField == nil ? 200 : 160)
             
             HStack {
                 Button {
@@ -118,14 +126,14 @@ struct AuthView: View {
                         }
                     }
                 } label: {
-                    Capsule()
+                    RoundedRectangle(cornerRadius: 8)
                         .strokeBorder(.white, lineWidth: showRegister ? 1.5 : 1)
                         .overlay(
                             Text("REGISTER")
                                 .font(showRegister ? .headline : .footnote)
                         )
                 }
-                .frame(width: showRegister ? 160 : 90, height: showRegister ? 48 : 32)
+                .frame(width: showRegister ? 160 : 90, height: showRegister ? 40 : 32)
                 Button {
                     if !showRegister {
                         onAuthAction()
@@ -135,15 +143,14 @@ struct AuthView: View {
                         }
                     }
                 } label: {
-                    Capsule()
+                    RoundedRectangle(cornerRadius: 8)
                         .strokeBorder(.white, lineWidth: !showRegister ? 1.5 : 1)
                         .overlay(
                             Text("LOGIN")
                                 .font(!showRegister ? .headline : .footnote)
                         )
-                        .foregroundColor(.white)
                 }
-                .frame(width: !showRegister ? 160 : 90, height: !showRegister ? 48 : 32)
+                .frame(width: !showRegister ? 160 : 90, height: !showRegister ? 40 : 32)
             }
         }
     }

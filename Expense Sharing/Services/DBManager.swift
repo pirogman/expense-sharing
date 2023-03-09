@@ -64,5 +64,12 @@ class DBManager {
             }
         }
     }
+    
+    // MARK: - Testing
+    
+    func loadTestData() {
+        let testData = JSONManager.loadFrom(fileName: "TestData")
+        importData(testData)
+    }
 }
 

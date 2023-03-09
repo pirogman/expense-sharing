@@ -162,12 +162,10 @@ struct UserProfileView: View {
             if showingSearch {
                 TextField("Search...", text: $searchText)
                     .textContentType(.name)
-                    .textFieldStyle(.roundedBorder)
-                    .foregroundColor(.gradientDark)
-                    .accentColor(.gradientLight)
                     .onSubmit {
                         hideKeyboard()
                     }
+                    .stylishTextField()
             }
         }
     }
