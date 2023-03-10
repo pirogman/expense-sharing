@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct UserProfileView: View {
+    @EnvironmentObject var appManager: AppManager
+    
     @StateObject var vm: UserProfileViewModel
     
     @State var navigateToSelectedGroup = false
@@ -26,13 +28,13 @@ struct UserProfileView: View {
     @State var showingSearch = false
     @State var searchText = ""
     
-    init(user: User) {
+    init(_ user: User) {
         self._vm = StateObject(wrappedValue: UserProfileViewModel(user: user))
     }
     
     var body: some View {
         NavigationView {
-            VStack(spacing: 0) {
+            VStack {
                 // Navigation
                 NavigationLink(isActive: $navigateToSelectedGroup) {
                     if let group = selectedGroup {
@@ -45,22 +47,9 @@ struct UserProfileView: View {
                     }
                 } label: { EmptyView() }
                 
-                CustomNavigationBar(title: "Profile", addBackButton: false) {
-                    profileMenu
-                }
-                userInfo
-                    .padding(.horizontal, 32)
-                
-                Capsule()
-                    .fill(Color.white)
-                    .frame(height: 2)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical)
-                
-                groupsHeader
-                    .padding(.horizontal, 32)
-                    .padding(.bottom, 4)
-                groupsScroll
+                profileSection
+                CapsuleDivider()
+                groupsSection
             }
             .appBackgroundGradient()
             .navigationBarHidden(true)
@@ -90,44 +79,38 @@ struct UserProfileView: View {
             }
             .fullScreenCover(
                 isPresented: $showingAddGroup,
-                onDismiss: {
-                    vm.updateUserGroups(search: searchText)
-                },
-                content: {
-                    UserAddGroupView(vm: UserAddGroupViewModel(vm.user))
-                }
+                onDismiss: { vm.updateUserGroups(search: searchText) },
+                content: { UserAddGroupView(vm: UserAddGroupViewModel(vm.user)) }
             )
         }
     }
     
-    private var profileMenu: some View {
-        VStack {
-            Button {
-                editedName = vm.user.name
-                showingEditNameAlert = true
-            } label: {
-                Label("Edit Name", systemImage: "square.and.pencil")
+    private var profileSection: some View {
+        VStack(spacing: 0) {
+            CustomNavigationBar(title: "Profile", addBackButton: false) {
+                Button {
+                    editedName = vm.user.name
+                    showingEditNameAlert = true
+                } label: {
+                    Label("Edit Name", systemImage: "square.and.pencil")
+                }
+                Button {
+                    showingAddGroup = true
+                } label: {
+                    Label("Add Group", systemImage: "plus.square")
+                }
+                Button {
+                    showingUserShare = true
+                } label: {
+                    Label("Share User", systemImage: "square.and.arrow.up")
+                }
+                Button {
+                    appManager.appState = .unauthorised
+                } label: {
+                    Label("Leave", systemImage: "arrow.left.square")
+                }
             }
-            Button {
-                showingAddGroup = true
-            } label: {
-                Label("Add Group", systemImage: "plus.square")
-            }
-            Button {
-                showingUserShare = true
-            } label: {
-                Label("Share User", systemImage: "square.and.arrow.up")
-            }
-            Button {
-                AppManager.shared.appState = .unauthorised
-            } label: {
-                Label("Leave", systemImage: "arrow.left.square")
-            }
-        }
-    }
-    
-    private var userInfo: some View {
-        VStack {
+            
             HStack {
                 VStack(alignment: .leading) {
                     Text(vm.user.name)
@@ -139,131 +122,49 @@ struct UserProfileView: View {
                 Spacer()
             }
             .padding(.vertical)
+            .padding(.horizontal, 32)
         }
     }
     
-    private var groupsHeader: some View {
-        SearchOptionHeaderView(title: "Groups", showingSearch: $showingSearch, searchText: $searchText)
-    }
-    
-    private var groupsScroll: some View {
-        ScrollView(.vertical, showsIndicators: true) {
-            LazyVStack(spacing: 0) {
-                if vm.userGroups.isEmpty {
-                    Text("No groups yet.")
-                } else {
-                    ForEach(vm.userGroups) { group in
-                        VStack(spacing: 0) {
-                            if vm.userGroups.first?.id != group.id {
-                                Capsule()
-                                    .fill(.white)
-                                    .frame(height: 1)
-                            }
-                            UserGroupItemView(group) {
-                                selectedGroup = group
-                                navigateToSelectedGroup = true
-                            } onDelete: {
-                                vm.deleteGroup(group)
+    private var groupsSection: some View {
+        VStack(spacing: 0) {
+            SearchOptionHeaderView(title: "Groups", showingSearch: $showingSearch, searchText: $searchText)
+                .padding(.horizontal, 32)
+            
+            ScrollView(.vertical, showsIndicators: true) {
+                LazyVStack(spacing: 0) {
+                    if vm.userGroups.isEmpty {
+                        Text(searchText.hasText
+                             ? "No groups matching search."
+                             : "No groups.")
+                    } else {
+                        ForEach(vm.userGroups) { group in
+                            VStack(spacing: 0) {
+                                if vm.userGroups.first?.id != group.id {
+                                    Capsule()
+                                        .fill(.white)
+                                        .frame(height: 1)
+                                }
+                                UserGroupItemView(group) {
+                                    selectedGroup = group
+                                    navigateToSelectedGroup = true
+                                } onDelete: {
+                                    vm.deleteGroup(group)
+                                }
                             }
                         }
                     }
                 }
-            }
-            .clipShape(RoundedRectangle(cornerRadius: 8))
-            .overlay {
-                RoundedRectangle(cornerRadius: 8)
-                    .strokeBorder(vm.userGroups.isEmpty ? .clear : .white)
-            }
-            .padding(.horizontal, 16)
-            .padding(.top, 8)
-            .padding(.bottom, 16)
-        }
-        .maskScrollEdges(startPoint: .top, endPoint: .bottom)
-    }
-}
-
-struct Delete: ViewModifier {
-    
-    let action: () -> Void
-    
-    @State var offset: CGSize = .zero
-    @State var initialOffset: CGSize = .zero
-    @State var contentWidth: CGFloat = 0.0
-    @State var willDeleteIfReleased = false
-   
-    func body(content: Content) -> some View {
-        content
-            .background(
-                GeometryReader { geometry in
-                    ZStack {
-                        Rectangle()
-                            .foregroundColor(.red)
-                        Image(systemName: "trash")
-                            .foregroundColor(.white)
-                            .font(.title2.bold())
-                            .layoutPriority(-1)
-                    }.frame(width: -offset.width)
-                    .offset(x: geometry.size.width)
-                    .onAppear {
-                        contentWidth = geometry.size.width
-                    }
-                    .gesture(
-                        TapGesture()
-                            .onEnded {
-                                delete()
-                            }
-                    )
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 8)
+                        .strokeBorder(vm.userGroups.isEmpty ? .clear : .white)
                 }
-            )
-            .offset(x: offset.width, y: 0)
-            .gesture (
-                DragGesture()
-                    .onChanged { gesture in
-                        if gesture.translation.width + initialOffset.width <= 0 {
-                            self.offset.width = gesture.translation.width + initialOffset.width
-                        }
-                        if self.offset.width < -deletionDistance && !willDeleteIfReleased {
-                            hapticFeedback()
-                            willDeleteIfReleased.toggle()
-                        } else if offset.width > -deletionDistance && willDeleteIfReleased {
-                            hapticFeedback()
-                            willDeleteIfReleased.toggle()
-                        }
-                    }
-                    .onEnded { _ in
-                        if offset.width < -deletionDistance {
-                            delete()
-                        } else if offset.width < -halfDeletionDistance {
-                            offset.width = -tappableDeletionWidth
-                            initialOffset.width = -tappableDeletionWidth
-                        } else {
-                            offset = .zero
-                            initialOffset = .zero
-                        }
-                    }
-            )
-            .animation(.interactiveSpring(), value: offset)
-    }
-    
-    private func delete() {
-        offset.width = -contentWidth
-        action()
-    }
-    
-    private func hapticFeedback() {
-        let generator = UIImpactFeedbackGenerator(style: .medium)
-        generator.impactOccurred()
-    }
-    
-    // MARK: Constants
-    
-    let deletionDistance = CGFloat(200)
-    let halfDeletionDistance = CGFloat(50)
-    let tappableDeletionWidth = CGFloat(100)
-}
-
-extension View {
-    func onMyDelete(perform action: @escaping () -> Void) -> some View {
-        self.modifier(Delete(action: action))
+                .padding(.horizontal, 16)
+                .padding(.top, 8)
+                .padding(.bottom, 16)
+            }
+            .maskScrollEdges(startPoint: .top, endPoint: .bottom)
+        }
     }
 }

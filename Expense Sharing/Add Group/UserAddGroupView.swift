@@ -7,65 +7,6 @@
 
 import SwiftUI
 
-struct NewGroupMemberItemView: View {
-    let user: User
-    
-    var body: some View {
-        HStack {
-            Image(systemName: "xmark")
-                .resizable().scaledToFit()
-                .squareFrame(side: 16)
-                .padding(4)
-            VStack(alignment: .leading, spacing: 6) {
-                Text(user.name)
-                    .font(.headline)
-                Text(user.email)
-                    .font(.subheadline)
-            }
-        }
-        .lineLimit(1)
-        .padding(.vertical, 8)
-        .padding(.horizontal, 12)
-        .overlay {
-            RoundedRectangle(cornerRadius: 8)
-                .strokeBorder(.white)
-        }
-    }
-}
-
-struct SearchUserItemView: View {
-    let user: User
-    let isSelected: Bool
-    
-    var body: some View {
-        HStack {
-            Image(systemName: isSelected ? "circle.fill" : "circle")
-                .resizable().scaledToFit()
-                .squareFrame(side: 20)
-                .padding(2)
-            VStack(alignment: .leading, spacing: 6) {
-                Text(user.name)
-                    .font(.headline)
-                Text(user.email)
-                    .font(.subheadline)
-            }
-            Spacer()
-        }
-        .lineLimit(1)
-        .padding(.vertical, 8)
-        .padding(.horizontal, 12)
-    }
-}
-
-struct CapsuleDivider: View {
-    var body: some View {
-        Capsule()
-            .fill()
-            .frame(height: 2)
-            .padding(.horizontal, 16)
-    }
-}
-
 struct UserAddGroupView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
@@ -119,7 +60,6 @@ struct UserAddGroupView: View {
                 }
             }
         )
-            .padding(.bottom)
     }
     
     private var groupSection: some View {
@@ -143,7 +83,7 @@ struct UserAddGroupView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack {
                     if groupMembers.isEmpty {
-                        Text("No selected users.")
+                        Text("No selected users except you.")
                             .padding(.horizontal, 16)
                     } else {
                         ForEach(groupMembers) { user in
@@ -172,7 +112,9 @@ struct UserAddGroupView: View {
             ScrollView(.vertical, showsIndicators: true) {
                 LazyVStack(spacing: 0) {
                     if vm.knownUsers.isEmpty {
-                        Text("No users found.")
+                        Text(searchText.hasText
+                             ? "No users matching search."
+                             : "No users.")
                     } else {
                         ForEach(vm.knownUsers) { user in
                             VStack(spacing: 0) {
@@ -212,6 +154,15 @@ struct UserAddGroupView: View {
         } else {
             groupMembers.append(user)
         }
+    }
+}
+
+struct CapsuleDivider: View {
+    var body: some View {
+        Capsule()
+            .fill()
+            .frame(height: 2)
+            .padding(.horizontal, 16)
     }
 }
 
@@ -260,7 +211,7 @@ struct AddOptionNavigationBar: View {
         .overlay {
             Text(title).bold()
         }
-        .padding(.horizontal, 8)
+        .padding([.bottom, .horizontal], 8)
     }
 }
 
@@ -366,6 +317,7 @@ struct SearchOptionHeaderView: View {
                     .onSubmit {
                         hideKeyboard()
                     }
+                    .padding(.bottom, searchHint == nil ? 4 : 0)
                 
                 if let hint = searchHint {
                     Text(hint)

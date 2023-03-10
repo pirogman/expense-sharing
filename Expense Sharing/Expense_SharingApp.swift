@@ -7,34 +7,9 @@
 
 import SwiftUI
 
-enum AppState {
-    case unauthorised
-    case authorised(User)
-}
-
-extension AppState: Equatable {
-    static func == (lhs: AppState, rhs: AppState) -> Bool {
-        switch (lhs, rhs) {
-        case (.unauthorised, .unauthorised):
-            return true
-        case (let .authorised(user1), let .authorised(user2)):
-            return user1.id == user2.id
-        default:
-            return false
-        }
-    }
-}
-
-class AppManager: ObservableObject {
-    static let shared = AppManager()
-    private init() { }
-    
-    @Published var appState = AppState.unauthorised
-}
-
 @main
 struct Expense_SharingApp: App {
-    @ObservedObject var appManager = AppManager.shared
+    @StateObject var appManager = AppManager()
         
     init() {
         // Provide global setup if needed
@@ -48,19 +23,20 @@ struct Expense_SharingApp: App {
                     AuthView()
                         .transition(.move(edge: .leading))
                 case .authorised(let user):
-                    UserProfileView(user: user)
+                    UserProfileView(user)
                         .transition(.move(edge: .trailing))
                 }
             }
             .animation(.easeInOut, value: appManager.appState)
+            .environmentObject(appManager)
         }
     }
 }
 
 // MARK: -
 
-extension Optional where Wrapped == String {
-    var hasText: Bool { self?.isEmpty == false }
+extension String {
+    var hasText: Bool { !self.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
 }
 
 extension Color {
@@ -125,7 +101,9 @@ extension View {
             .foregroundColor(.accentColor)
             .tint(.accentColor)
             .background(
-                LinearGradient(gradient: Gradient(colors: [.gradientLight, .gradientDark]), startPoint: .topLeading, endPoint: .bottomTrailing)
+                LinearGradient(gradient: Gradient(colors: [.gradientLight, .gradientDark]),
+                               startPoint: .topLeading, endPoint: .bottomTrailing)
+                    .ignoresSafeArea()
             )
     }
 }

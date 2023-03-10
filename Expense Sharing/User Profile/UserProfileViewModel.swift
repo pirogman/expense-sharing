@@ -7,17 +7,6 @@
 
 import SwiftUI
 
-enum ProfileError: Error, LocalizedError {
-    case alreadyRegistered, notRegistered
-    
-    public var errorDescription: String? {
-        switch self {
-        case .alreadyRegistered: return "This user is already registered. Please, login instead."
-        case .notRegistered: return "This user is not registered yet. Please, register instead."
-        }
-    }
-}
-
 class UserProfileViewModel: ObservableObject {
     @Published private(set) var name: String
     @Published private(set) var userGroups = [Group]()

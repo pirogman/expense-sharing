@@ -47,6 +47,8 @@ class AuthViewModel: ObservableObject {
         return .success(user)
     }
     
+    // MARK: - Import
+    
     let allowedContentTypes = [UTType.json]
     let allowsMultipleSelection = false
     

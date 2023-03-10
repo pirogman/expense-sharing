@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct AuthView: View {
+    @EnvironmentObject var appManager: AppManager
+    
     @StateObject var vm = AuthViewModel()
     
     enum Field: Hashable {
@@ -29,8 +31,8 @@ struct AuthView: View {
     var body: some View {
         VStack {
             AnimatedLogoView(sizeLimit: 80)
-                .padding(.top, focusedField == nil ? 24 : 6)
-                .padding(.bottom, focusedField == nil ? 12 : 6)
+                .padding(.top, appManager.isKeyboardUp ? 6 : 24)
+                .padding(.bottom,  appManager.isKeyboardUp ? 6 : 12)
             
             authOption
                 .padding(.horizontal, 36)
@@ -114,7 +116,7 @@ struct AuthView: View {
                         .padding(.bottom, 4)
                 }
             }
-            .frame(height: focusedField == nil ? 200 : 160)
+            .frame(height:  appManager.isKeyboardUp ? 160 : 200)
             
             HStack {
                 Button {
@@ -134,6 +136,7 @@ struct AuthView: View {
                         )
                 }
                 .frame(width: showRegister ? 160 : 90, height: showRegister ? 40 : 32)
+                
                 Button {
                     if !showRegister {
                         onAuthAction()
@@ -164,7 +167,7 @@ struct AuthView: View {
         
         switch result {
         case .success(let user):
-            AppManager.shared.appState = .authorised(user)
+            appManager.appState = .authorised(user)
             
         case .failure(let error):
             alertTitle = "Error"
