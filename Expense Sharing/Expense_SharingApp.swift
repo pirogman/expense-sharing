@@ -106,6 +106,20 @@ extension View {
 }
 
 extension View {
+    /// Apply a mask to top and bottom in order to fade content away
+    func maskScrollEdges(startPoint: UnitPoint, endPoint: UnitPoint) -> some View {
+        self.mask(
+            LinearGradient(gradient: Gradient(stops: [
+                .init(color: .black.opacity(0), location: 0.0),
+                .init(color: .black, location: 0.02),
+                .init(color: .black, location: 0.98),
+                .init(color: .black.opacity(0), location: 1.0),
+            ]), startPoint: startPoint, endPoint: endPoint)
+        )
+    }
+}
+
+extension View {
     func appBackgroundGradient() -> some View {
         self.preferredColorScheme(.light)
             .foregroundColor(.accentColor)

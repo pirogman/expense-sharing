@@ -8,12 +8,13 @@
 import Foundation
 
 enum ValidationError: Error, LocalizedError {
-    case invalidEmail, invalidName
+    case invalidUserEmail, invalidUserName, invalidGroupTitle
     
     public var errorDescription: String? {
         switch self {
-        case .invalidEmail: return "Invalid email. Please, provide a valid email address."
-        case .invalidName: return "Invalid name. Please, provide a name with at least 3 characters."
+        case .invalidUserEmail: return "Invalid email. Please, provide a valid email address."
+        case .invalidUserName: return "Invalid name. Please, provide a name with at least 3 characters."
+        case .invalidGroupTitle: return "Invalid title. Please, provide a title with at least 1 character."
         }
     }
 }
@@ -21,7 +22,7 @@ enum ValidationError: Error, LocalizedError {
 class Validator {
     static private let linkDetector = try! NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
     
-    static func validateEmail(_ text: String?) -> String? {
+    static func validateUserEmail(_ text: String?) -> String? {
         guard let trimmed = text?.trimmingCharacters(in: .whitespacesAndNewlines) else {
             return nil
         }
@@ -41,6 +42,17 @@ class Validator {
         }
 
         if trimmed.count > 2 {
+            return trimmed
+        }
+        return nil
+    }
+    
+    static func validateGroupTitle(_ text: String?) -> String? {
+        guard let trimmed = text?.trimmingCharacters(in: .whitespacesAndNewlines) else {
+            return nil
+        }
+
+        if trimmed.count > 0 {
             return trimmed
         }
         return nil

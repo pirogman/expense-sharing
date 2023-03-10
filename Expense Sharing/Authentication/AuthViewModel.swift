@@ -26,10 +26,10 @@ class AuthViewModel: ObservableObject {
     
     func registerUser(name: String, email: String) -> Result<User, Error> {
         guard let validName = Validator.validateUserName(name) else {
-            return .failure(ValidationError.invalidName)
+            return .failure(ValidationError.invalidUserName)
         }
-        guard let validEmail = Validator.validateEmail(email) else {
-            return .failure(ValidationError.invalidEmail)
+        guard let validEmail = Validator.validateUserEmail(email) else {
+            return .failure(ValidationError.invalidUserEmail)
         }
         if let user = DBManager.shared.addUser(name: validName, email: validEmail) {
             return .success(user)
@@ -38,8 +38,8 @@ class AuthViewModel: ObservableObject {
     }
     
     func loginUser(email: String) -> Result<User, Error> {
-        guard let validEmail = Validator.validateEmail(email) else {
-            return .failure(ValidationError.invalidEmail)
+        guard let validEmail = Validator.validateUserEmail(email) else {
+            return .failure(ValidationError.invalidUserEmail)
         }
         guard let user = DBManager.shared.getUser(by: validEmail) else {
             return .failure(AuthError.notRegistered)

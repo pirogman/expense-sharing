@@ -7,33 +7,47 @@
 
 import SwiftUI
 
-class UserProfileViewModel: ObservableObject {
-    let user: User
+enum ProfileError: Error, LocalizedError {
+    case alreadyRegistered, notRegistered
     
-    @Published var groups = [Group]()
+    public var errorDescription: String? {
+        switch self {
+        case .alreadyRegistered: return "This user is already registered. Please, login instead."
+        case .notRegistered: return "This user is not registered yet. Please, register instead."
+        }
+    }
+}
+
+class UserProfileViewModel: ObservableObject {
+    @Published private(set) var name: String
+    @Published private(set) var userGroups = [Group]()
+    
+    var user: User { User(name: name, email: email) }
+    
+    let email: String
     
     init(user: User) {
-        self.user = user
+        self.email = user.email
+        self.name = user.name
     }
     
-    func updateGroups(search: String? = nil) {
-        if search.hasText {
-            groups = DBManager.shared.getGroups(for: user)
-                .filter({ $0.title.lowercased().contains(search!.lowercased()) })
-        } else {
-            groups = DBManager.shared.getGroups(for: user)
-        }
+    func updateUserGroups(search: String? = nil) {
+        userGroups = DBManager.shared.getGroups(for: email, search: search)
     }
     
     func editName(_ name: String) -> Result<Void, Error> {
         guard let validName = Validator.validateUserName(name) else {
-            return .failure(ValidationError.invalidName)
+            return .failure(ValidationError.invalidUserName)
         }
+        
+        DBManager.shared.editUser(by: email, name: validName)
+        self.name = validName
         return .success(())
     }
     
     func deleteGroup(_ group: Group) {
-        
+        DBManager.shared.removeGroup(byId: group.id)
+        userGroups.removeAll(where: { $0.id == group.id })
     }
     
     func getManagedGroup(from group: Group) -> ManagedGroup {
@@ -61,38 +75,13 @@ class UserProfileViewModel: ObservableObject {
     private var tempFileName: String?
     
     func getUserShareActivities() -> [AnyObject] {
-        let shareFileName = user.name.replacingOccurrences(of: " ", with: "_")
-        tempFileName = shareFileName
-        return ShareManager.exportUser(user, fileName: shareFileName)
+        tempFileName = name.replacingOccurrences(of: " ", with: "_")
+        return ShareManager.exportUser(user, includeGroups: true, fileName: tempFileName!)
     }
     
     func clearSharedUserFile() {
         guard let name = tempFileName else { return }
         tempFileName = nil
         JSONManager.clearTempFile(named: name)
-    }
-}
-
-class ShareManager {
-    static func exportUser(_ user: User, fileName: String) -> [AnyObject] {
-        let userGroups = DBManager.shared.getGroups(for: user)
-        let exportData = ExportData(users: [user], groups: userGroups)
-        return getShareActivities(exportData, fileName: fileName)
-    }
-    
-    static func exportGroup(_ group: Group, fileName: String) -> [AnyObject] {
-        let groupUsers = group.users.compactMap { email in
-            DBManager.shared.getUser(by: email)
-        }
-        let exportData = ExportData(users: groupUsers, groups: [group])
-        return getShareActivities(exportData, fileName: fileName)
-    }
-    
-    static func getShareActivities(_ exportData: ExportData, fileName: String) -> [AnyObject] {
-        var activities = [AnyObject]()
-        if let url = JSONManager.saveToFile(exportData, named: fileName) {
-            activities.append(url as AnyObject)
-        }
-        return activities
     }
 }

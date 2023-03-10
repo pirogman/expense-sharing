@@ -10,13 +10,13 @@ import SwiftUI
 struct UserProfileView: View {
     @StateObject var vm: UserProfileViewModel
     
-    @State var navigateToAddGroup = false
     @State var navigateToSelectedGroup = false
     @State var selectedGroup: Group?
     
     @State var showingEditNameAlert = false
     @State var editedName = ""
     
+    @State var showingAddGroup = false
     @State var showingUserShare = false
     
     @State var showingAlert = false
@@ -34,19 +34,20 @@ struct UserProfileView: View {
         NavigationView {
             VStack(spacing: 0) {
                 // Navigation
-                NavigationLink(isActive: $navigateToAddGroup) {
-                    Text("Add Group")
-                } label: { EmptyView() }
                 NavigationLink(isActive: $navigateToSelectedGroup) {
                     if let group = selectedGroup {
                         GroupDetailView(vm.getManagedGroup(from: group))
                     } else {
                         Text("No Such Group")
+                            .onAppear {
+                                navigateToSelectedGroup = false
+                            }
                     }
                 } label: { EmptyView() }
                 
-                profileHeader
-                    .padding(.horizontal, 32)
+                CustomNavigationBar(title: "Profile", addBackButton: false) {
+                    profileMenu
+                }
                 userInfo
                     .padding(.horizontal, 32)
                 
@@ -64,11 +65,11 @@ struct UserProfileView: View {
             .appBackgroundGradient()
             .navigationBarHidden(true)
             .onAppear {
-                vm.updateGroups()
+                vm.updateUserGroups()
             }
             .onChange(of: searchText) { text in
                 withAnimation {
-                    vm.updateGroups(search: text)
+                    vm.updateUserGroups(search: text)
                 }
             }
             .textFieldAlert(isPresented: $showingEditNameAlert, title: "Edit Name", message: "User name should consist of at least 3 characters.", placeholder: "Name", input: $editedName) {
@@ -87,40 +88,40 @@ struct UserProfileView: View {
                     vm.clearSharedUserFile()
                 }
             }
+            .fullScreenCover(
+                isPresented: $showingAddGroup,
+                onDismiss: {
+                    vm.updateUserGroups(search: searchText)
+                },
+                content: {
+                    UserAddGroupView(vm: UserAddGroupViewModel(vm.user))
+                }
+            )
         }
     }
     
-    private var profileHeader: some View {
-        HStack {
-            Text("Profile")
-                .font(.largeTitle)
-            Spacer()
-            Menu {
-                Button {
-                    editedName = vm.user.name
-                    showingEditNameAlert = true
-                } label: {
-                    Label("Edit Name", systemImage: "square.and.pencil")
-                }
-                Button {
-                    navigateToAddGroup = true
-                } label: {
-                    Label("Add Group", systemImage: "plus.square")
-                }
-                Button {
-                    showingUserShare = true
-                } label: {
-                    Label("Share User", systemImage: "square.and.arrow.up")
-                }
-                Button {
-                    AppManager.shared.appState = .unauthorised
-                } label: {
-                    Label("Leave", systemImage: "arrow.left.square")
-                }
+    private var profileMenu: some View {
+        VStack {
+            Button {
+                editedName = vm.user.name
+                showingEditNameAlert = true
             } label: {
-                Image(systemName: "slider.horizontal.3")
-                    .resizable().scaledToFit()
-                    .squareFrame(side: 24)
+                Label("Edit Name", systemImage: "square.and.pencil")
+            }
+            Button {
+                showingAddGroup = true
+            } label: {
+                Label("Add Group", systemImage: "plus.square")
+            }
+            Button {
+                showingUserShare = true
+            } label: {
+                Label("Share User", systemImage: "square.and.arrow.up")
+            }
+            Button {
+                AppManager.shared.appState = .unauthorised
+            } label: {
+                Label("Leave", systemImage: "arrow.left.square")
             }
         }
     }
@@ -142,76 +143,42 @@ struct UserProfileView: View {
     }
     
     private var groupsHeader: some View {
-        VStack(spacing: 8) {
-            HStack {
-                Text("Groups")
-                    .font(.title)
-                Spacer()
-                Button {
-                    withAnimation {
-                        showingSearch.toggle()
-                        searchText = ""
-                    }
-                } label: {
-                    Image(systemName: showingSearch ? "xmark" : "magnifyingglass")
-                        .resizable().scaledToFit()
-                        .squareFrame(side: showingSearch ? 12 : 18)
-                        .padding(showingSearch ? 6 : 3)
-                }
-            }
-            if showingSearch {
-                TextField("Search...", text: $searchText)
-                    .textContentType(.name)
-                    .onSubmit {
-                        hideKeyboard()
-                    }
-                    .stylishTextField()
-            }
-        }
+        SearchOptionHeaderView(title: "Groups", showingSearch: $showingSearch, searchText: $searchText)
     }
     
     private var groupsScroll: some View {
         ScrollView(.vertical, showsIndicators: true) {
             LazyVStack(spacing: 0) {
-                if vm.groups.isEmpty {
+                if vm.userGroups.isEmpty {
                     Text("No groups yet.")
                 } else {
-                    ForEach(vm.groups) { group in
-                            VStack(spacing: 0) {
-                                if vm.groups.first?.id != group.id {
-                                    Capsule()
-                                        .fill(.white)
-                                        .frame(height: 1)
-                                }
-                                UserGroupItemView(group) {
-                                    selectedGroup = group
-                                    navigateToSelectedGroup = true
-                                } onDelete: {
-                                    vm.deleteGroup(group)
-                                }
+                    ForEach(vm.userGroups) { group in
+                        VStack(spacing: 0) {
+                            if vm.userGroups.first?.id != group.id {
+                                Capsule()
+                                    .fill(.white)
+                                    .frame(height: 1)
                             }
+                            UserGroupItemView(group) {
+                                selectedGroup = group
+                                navigateToSelectedGroup = true
+                            } onDelete: {
+                                vm.deleteGroup(group)
+                            }
+                        }
                     }
                 }
             }
             .clipShape(RoundedRectangle(cornerRadius: 8))
             .overlay {
                 RoundedRectangle(cornerRadius: 8)
-                    .strokeBorder(vm.groups.isEmpty ? .clear : .white)
+                    .strokeBorder(vm.userGroups.isEmpty ? .clear : .white)
             }
             .padding(.horizontal, 16)
             .padding(.top, 8)
             .padding(.bottom, 16)
         }
-//        .onTapGesture { /* Fix Tap Gesture Inside Scroll View */ }
-        .mask(
-            // Apply a mask to top and bottom in order to fade content away
-            LinearGradient(gradient: Gradient(stops: [
-                .init(color: .black.opacity(0), location: 0.0),
-                .init(color: .black, location: 0.02),
-                .init(color: .black, location: 0.96),
-                .init(color: .black.opacity(0), location: 1.0),
-            ]), startPoint: .top, endPoint: .bottom)
-        )
+        .maskScrollEdges(startPoint: .top, endPoint: .bottom)
     }
 }
 
