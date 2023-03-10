@@ -24,7 +24,7 @@ struct GroupDetailView: View {
     var body: some View {
         VStack {
             // Navigation
-            NavigationLink(destination: GroupAddUserView(vm: vm), isActive: $showingAddUser) { EmptyView() }
+//            NavigationLink(destination: GroupAddUserView(vm: GroupAddUserViewModel(vm.group)), isActive: $showingAddUser) { EmptyView() }
             NavigationLink(destination: GroupAddTransactionView(vm: vm), isActive: $showingAddTransaction) { EmptyView() }
             
             // Group Detail

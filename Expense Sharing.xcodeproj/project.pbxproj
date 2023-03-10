@@ -20,6 +20,7 @@
 		5DA7D05329BB6D2F004B197F /* AppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA7D05229BB6D2F004B197F /* AppManager.swift */; };
 		5DA7D05529BB6EB6004B197F /* NewGroupMemberItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA7D05429BB6EB6004B197F /* NewGroupMemberItemView.swift */; };
 		5DA7D05729BB6EEB004B197F /* SearchUserItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA7D05629BB6EEB004B197F /* SearchUserItemView.swift */; };
+		5DA7D05A29BB79AA004B197F /* GroupAddUserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA7D05929BB79AA004B197F /* GroupAddUserViewModel.swift */; };
 		5DB764BF29B72FAA00C533F5 /* GroupAddTransactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB764BE29B72FAA00C533F5 /* GroupAddTransactionView.swift */; };
 		5DB764C129B730F100C533F5 /* GroupAddUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB764C029B730F100C533F5 /* GroupAddUserView.swift */; };
 		5DB764C329B737C100C533F5 /* DBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB764C229B737C100C533F5 /* DBManager.swift */; };
@@ -48,6 +49,7 @@
 		5DA7D05229BB6D2F004B197F /* AppManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppManager.swift; sourceTree = "<group>"; };
 		5DA7D05429BB6EB6004B197F /* NewGroupMemberItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewGroupMemberItemView.swift; sourceTree = "<group>"; };
 		5DA7D05629BB6EEB004B197F /* SearchUserItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchUserItemView.swift; sourceTree = "<group>"; };
+		5DA7D05929BB79AA004B197F /* GroupAddUserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupAddUserViewModel.swift; sourceTree = "<group>"; };
 		5DB764BE29B72FAA00C533F5 /* GroupAddTransactionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupAddTransactionView.swift; sourceTree = "<group>"; };
 		5DB764C029B730F100C533F5 /* GroupAddUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupAddUserView.swift; sourceTree = "<group>"; };
 		5DB764C229B737C100C533F5 /* DBManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBManager.swift; sourceTree = "<group>"; };
@@ -96,7 +98,8 @@
 				5D61313529B5D96700B0366D /* Expense_SharingApp.swift */,
 				5DEE800129B9E7CF00106F15 /* Authentication */,
 				5DEE800029B9E61F00106F15 /* User Profile */,
-				5DA7D05829BB6F42004B197F /* Add Group */,
+				5DA7D05829BB6F42004B197F /* User Add Group */,
+				5DA7D05B29BB79AF004B197F /* Group Add User */,
 				5DB764C829B77F5300C533F5 /* Group Detail */,
 				5DEE800229B9E7EC00106F15 /* Services */,
 				5D61314529B5DD4200B0366D /* TestData.json */,
@@ -114,7 +117,7 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		5DA7D05829BB6F42004B197F /* Add Group */ = {
+		5DA7D05829BB6F42004B197F /* User Add Group */ = {
 			isa = PBXGroup;
 			children = (
 				5DA7D05429BB6EB6004B197F /* NewGroupMemberItemView.swift */,
@@ -122,7 +125,16 @@
 				5DEE800529BA61EB00106F15 /* UserAddGroupView.swift */,
 				5DA7D05029BB45A3004B197F /* UserAddGroupViewModel.swift */,
 			);
-			path = "Add Group";
+			path = "User Add Group";
+			sourceTree = "<group>";
+		};
+		5DA7D05B29BB79AF004B197F /* Group Add User */ = {
+			isa = PBXGroup;
+			children = (
+				5DB764C029B730F100C533F5 /* GroupAddUserView.swift */,
+				5DA7D05929BB79AA004B197F /* GroupAddUserViewModel.swift */,
+			);
+			path = "Group Add User";
 			sourceTree = "<group>";
 		};
 		5DB764C829B77F5300C533F5 /* Group Detail */ = {
@@ -131,7 +143,6 @@
 				5D61314B29B63A4300B0366D /* GroupDetailSections.swift */,
 				5D61314729B6135500B0366D /* GroupDetailView.swift */,
 				5D61314929B638AD00B0366D /* GroupDetailViewModel.swift */,
-				5DB764C029B730F100C533F5 /* GroupAddUserView.swift */,
 				5DB764BE29B72FAA00C533F5 /* GroupAddTransactionView.swift */,
 			);
 			path = "Group Detail";
@@ -241,6 +252,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5DA7D05529BB6EB6004B197F /* NewGroupMemberItemView.swift in Sources */,
+				5DA7D05A29BB79AA004B197F /* GroupAddUserViewModel.swift in Sources */,
 				5DEE800429BA2CC400106F15 /* AnimatedLogoView.swift in Sources */,
 				5DEE800629BA61EB00106F15 /* UserAddGroupView.swift in Sources */,
 				5DB764BF29B72FAA00C533F5 /* GroupAddTransactionView.swift in Sources */,
