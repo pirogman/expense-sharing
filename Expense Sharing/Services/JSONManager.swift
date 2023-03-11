@@ -119,6 +119,7 @@ struct Group: Codable, Identifiable {
     let title: String
     let users: [String] // emails of users
     let transactions: [Transaction]
+    let currencyCode: String?
 }
 
 struct ExportData: Codable {
@@ -197,17 +198,5 @@ struct LocalData {
             
             return ManagedGroup(id: group.id, title: group.title, users: groupUsers, transactions: groupTransactions)
         }
-    }
-}
-
-class CurrencyManager {
-    static private let currencyFormatter: NumberFormatter = {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        return formatter
-      }()
-    
-    static func getText(for money: Double) -> String {
-        currencyFormatter.string(from: NSNumber(value: money)) ?? "NaN"
     }
 }

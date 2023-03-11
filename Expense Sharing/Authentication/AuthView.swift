@@ -32,7 +32,7 @@ struct AuthView: View {
         VStack {
             AnimatedLogoView(sizeLimit: 80)
                 .padding(.top, appManager.isKeyboardUp ? 6 : 24)
-                .padding(.bottom,  appManager.isKeyboardUp ? 6 : 12)
+                .padding(.bottom, appManager.isKeyboardUp ? 6 : 12)
             
             authOption
                 .padding(.horizontal, 36)
@@ -92,7 +92,7 @@ struct AuthView: View {
                             .onSubmit {
                                 focusedField = .emailField
                             }
-                        Text(" Should contain at least 3 characters.")
+                        Text("Should contain at least 3 characters.")
                             .font(.caption)
                             .padding(.horizontal, 8)
                             .padding(.bottom, 4)
@@ -101,7 +101,7 @@ struct AuthView: View {
                 VStack(alignment: .leading) {
                     TextField("email@example.com", text: $userEmail)
                         .focused($focusedField, equals: .emailField)
-                        .textInputAutocapitalization(.never)
+                        .keyboardType(.emailAddress)
                         .textContentType(.emailAddress)
                         .stylishTextField()
                         .onSubmit {

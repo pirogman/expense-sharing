@@ -69,7 +69,7 @@ struct GroupAddUserView: View {
                     .onSubmit {
                         hideKeyboard()
                     }
-                Text(" Find registered users by name or email.")
+                Text("Find registered users by name or email.")
                     .font(.caption)
                     .padding(.horizontal, 8)
                     .padding(.bottom, 4)

@@ -23,7 +23,7 @@ struct Expense_SharingApp: App {
                     AuthView()
                         .transition(.move(edge: .leading))
                 case .authorised(let user):
-                    UserProfileView(user)
+                    UserProfileView(vm: UserProfileViewModel(user))
                         .transition(.move(edge: .trailing))
                 }
             }

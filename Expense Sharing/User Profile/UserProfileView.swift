@@ -28,10 +28,6 @@ struct UserProfileView: View {
     @State var showingSearch = false
     @State var searchText = ""
     
-    init(_ user: User) {
-        self._vm = StateObject(wrappedValue: UserProfileViewModel(user: user))
-    }
-    
     var body: some View {
         NavigationView {
             VStack {
@@ -86,8 +82,8 @@ struct UserProfileView: View {
                 item: $selectedGroup,
                 onDismiss: { vm.updateUserGroups(search: searchText) },
                 content: { group in
-                    GroupAddUserView(vm: GroupAddUserViewModel(group))
-                        .transition(.move(edge: .trailing))
+                    GroupAddTransactionView(vm: GroupAddTransactionViewModel(group, payingUser: vm.user))
+//                    GroupAddUserView(vm: GroupAddUserViewModel(group))
                 }
             )
         }

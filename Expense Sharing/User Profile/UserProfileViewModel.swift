@@ -15,7 +15,7 @@ class UserProfileViewModel: ObservableObject {
     
     let email: String
     
-    init(user: User) {
+    init(_ user: User) {
         self.email = user.email
         self.name = user.name
     }

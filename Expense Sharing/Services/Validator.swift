@@ -8,13 +8,14 @@
 import Foundation
 
 enum ValidationError: Error, LocalizedError {
-    case invalidUserEmail, invalidUserName, invalidGroupTitle
+    case invalidUserEmail, invalidUserName, invalidGroupTitle, invalidTransactionDescription
     
     public var errorDescription: String? {
         switch self {
         case .invalidUserEmail: return "Invalid email. Please, provide a valid email address."
         case .invalidUserName: return "Invalid name. Please, provide a name with at least 3 characters."
         case .invalidGroupTitle: return "Invalid title. Please, provide a title with at least 1 character."
+        case .invalidTransactionDescription: return "Invalid description. Please provide at least 1 character, but not more than 120."
         }
     }
 }
@@ -53,6 +54,18 @@ class Validator {
         }
 
         if trimmed.count > 0 {
+            return trimmed
+        }
+        return nil
+    }
+    
+    static func validateTransactionDescription(_ text: String?) -> String? {
+        guard let trimmed = text?.trimmingCharacters(in: .whitespacesAndNewlines) else {
+            return nil
+        }
+
+        
+        if Range(1...120).contains(trimmed.count) {
             return trimmed
         }
         return nil

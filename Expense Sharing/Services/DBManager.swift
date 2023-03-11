@@ -20,6 +20,17 @@ class DBManager {
         users.first(where: { $0.email == email })
     }
     
+    func getUsers(in group: Group, excludeEmails: [String] = []) -> [User] {
+        guard !group.users.isEmpty else { return [] }
+        
+        let foundMembers = users.filter { group.users.contains($0.email) }
+        if !excludeEmails.isEmpty {
+            return foundMembers.filter { !excludeEmails.contains($0.email) }
+        } else {
+            return foundMembers
+        }
+    }
+    
     func getUsers(excludeEmails: [String] = [], search: String? = nil) -> [User] {
         // Do not filter if search not provided
         guard let searchText = search?.lowercased(), !searchText.isEmpty else {
@@ -74,8 +85,8 @@ class DBManager {
         return foundByTitle
     }
     
-    func addNewGroup(title: String, userEmails: [String]) {
-        let group = Group(id: UUID().uuidString, title: title, users: userEmails, transactions: [])
+    func addNewGroup(title: String, userEmails: [String], currencyCode: String? = nil) {
+        let group = Group(id: UUID().uuidString, title: title, users: userEmails, transactions: [], currencyCode: currencyCode)
         groups.append(group)
     }
     
@@ -84,7 +95,8 @@ class DBManager {
         let updateGroup = Group(id: groups[index].id,
                                 title: title ?? groups[index].title,
                                 users: users ?? groups[index].users,
-                                transactions: transactions ?? groups[index].transactions)
+                                transactions: transactions ?? groups[index].transactions,
+                                currencyCode: groups[index].currencyCode)
         groups[index] = updateGroup
     }
     

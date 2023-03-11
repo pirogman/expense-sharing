@@ -72,7 +72,7 @@ struct UserAddGroupView: View {
                     .onSubmit {
                         hideKeyboard()
                     }
-                Text(" Should contain at least 1 character.")
+                Text("Should contain at least 1 character.")
                     .font(.caption)
                     .padding(.horizontal, 8)
                     .padding(.bottom, 4)

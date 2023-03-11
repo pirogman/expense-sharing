@@ -83,7 +83,7 @@ class GroupDetailViewModel: ObservableObject {
             }
             return Transaction(id: transaction.id, expenses: exportExpenses, description: transaction.description)
         }
-        let exportGroup = Group(id: self.group.id, title: self.title, users: self.users.map({ $0.email }), transactions: exportTransactions)
+        let exportGroup = Group(id: self.group.id, title: self.title, users: self.users.map({ $0.email }), transactions: exportTransactions, currencyCode: nil)
         let exportUsers = self.users.map { User(name: $0.name, email: $0.email) }
         let exportData = ExportData(users: exportUsers, groups: [exportGroup])
         
