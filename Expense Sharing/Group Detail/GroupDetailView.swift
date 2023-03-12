@@ -28,8 +28,8 @@ struct GroupDetailView: View {
     @State var selectedTransactionId: String?
     
     var body: some View {
-        VStack {
-            CustomNavigationBar(title: "Group", addBackButton: true) {
+        VStack(spacing: 0) {
+            CustomNavigationBar(title: vm.groupTitle, addBackButton: true) {
                 Button {
                     editedTitle = vm.groupTitle
                     showingEditTitleAlert = true
@@ -52,13 +52,17 @@ struct GroupDetailView: View {
                     Label("Share Group", systemImage: "square.and.arrow.up")
                 }
             }
+            .padding(.trailing, 16)
+            
             ScrollView(.vertical, showsIndicators: false) {
                 VStack {
                     chartSection
                     usersSection
                     transactionsSection
                 }
+                .padding(.vertical, 8)
             }
+            .maskScrollEdges(startPoint: .top, endPoint: .bottom)
         }
         .appBackgroundGradient()
         .navigationBarHidden(true)
@@ -99,6 +103,7 @@ struct GroupDetailView: View {
     private var chartSection: some View {
         VStack {
             HideOptionHeaderView(title: "Chart", hideContent: $hideChartSection)
+                .padding(.horizontal, 16)
 
             Circle()
                 .strokeBorder(.red, lineWidth: 40)
@@ -111,6 +116,7 @@ struct GroupDetailView: View {
     private var usersSection: some View {
         VStack {
             HideOptionHeaderView(title: "Users", hideContent: $hideUsersSection)
+                .padding(.horizontal, 16)
             
             let estimatedHeight: CGFloat? = vm.groupUsers.count < 6 ? nil : 300
             ScrollView(.vertical, showsIndicators: true) {
@@ -154,6 +160,7 @@ struct GroupDetailView: View {
     private var transactionsSection: some View {
         VStack {
             HideOptionHeaderView(title: "Transactions", hideContent: $hideTransactionsSection)
+                .padding(.horizontal, 16)
             
             let estimatedHeight: CGFloat? = vm.groupTransactions.count < 11 ? nil : 600
             ScrollView(.vertical, showsIndicators: true) {
@@ -170,23 +177,28 @@ struct GroupDetailView: View {
                                 }
                                 var expenses = vm.getTransactionExpenses(transaction)
                                 let paid = expenses.removeFirst()
-                                GroupDetailTransactionItemView(
-                                    isSelected: transaction.id == selectedTransactionId,
-                                    description: transaction.description,
-                                    paidExpense: paid,
-                                    otherExpenses: expenses,
-                                    currencyCode: vm.groupCurrencyCode
-                                )
-                                    .contentShape(Rectangle())
-                                    .onTapGesture {
-                                        withAnimation {
-                                            if selectedTransactionId == transaction.id {
-                                                selectedTransactionId = nil
-                                            } else {
-                                                selectedTransactionId = transaction.id
-                                            }
+                                SwipeToRemoveItemView() {
+                                    GroupDetailTransactionItemView(
+                                        isSelected: transaction.id == selectedTransactionId,
+                                        description: transaction.description,
+                                        paidExpense: paid,
+                                        otherExpenses: expenses,
+                                        currencyCode: vm.groupCurrencyCode
+                                    )
+                                } onSelect: {
+                                    withAnimation {
+                                        if selectedTransactionId == transaction.id {
+                                            selectedTransactionId = nil
+                                        } else {
+                                            selectedTransactionId = transaction.id
                                         }
                                     }
+                                } onDelete: {
+                                    withAnimation {
+                                        vm.removeTransaction(transaction)
+                                        vm.updateGroup()
+                                    }
+                                }
                             }
                         }
                     }

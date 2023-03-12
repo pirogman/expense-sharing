@@ -14,7 +14,6 @@
 		5D61314629B5DD4200B0366D /* TestData.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D61314529B5DD4200B0366D /* TestData.json */; };
 		5D61314829B6135500B0366D /* GroupDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D61314729B6135500B0366D /* GroupDetailView.swift */; };
 		5D61314A29B638AD00B0366D /* GroupDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D61314929B638AD00B0366D /* GroupDetailViewModel.swift */; };
-		5D61314C29B63A4300B0366D /* GroupDetailSections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D61314B29B63A4300B0366D /* GroupDetailSections.swift */; };
 		5DA7D04F29BB18A0004B197F /* ShareManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA7D04E29BB18A0004B197F /* ShareManager.swift */; };
 		5DA7D05129BB45A3004B197F /* UserAddGroupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA7D05029BB45A3004B197F /* UserAddGroupViewModel.swift */; };
 		5DA7D05329BB6D2F004B197F /* AppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA7D05229BB6D2F004B197F /* AppManager.swift */; };
@@ -38,6 +37,11 @@
 		5DF5B9B929BE03FC00109374 /* HideOptionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF5B9B829BE03FC00109374 /* HideOptionHeaderView.swift */; };
 		5DF5B9BB29BE045A00109374 /* GroupDetailUserItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF5B9BA29BE045A00109374 /* GroupDetailUserItemView.swift */; };
 		5DF5B9BD29BE049900109374 /* GroupDetailTransactionItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF5B9BC29BE049900109374 /* GroupDetailTransactionItemView.swift */; };
+		5DF5B9BF29BE43C400109374 /* SwipeToRemoveItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF5B9BE29BE43C400109374 /* SwipeToRemoveItemView.swift */; };
+		5DF5B9C129BE462900109374 /* SearchOptionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF5B9C029BE462900109374 /* SearchOptionHeaderView.swift */; };
+		5DF5B9C329BE473600109374 /* CapsuleDivider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF5B9C229BE473600109374 /* CapsuleDivider.swift */; };
+		5DF5B9C529BE475E00109374 /* AddOptionNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF5B9C429BE475E00109374 /* AddOptionNavigationBar.swift */; };
+		5DF5B9C729BE480500109374 /* CustomNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF5B9C629BE480500109374 /* CustomNavigationBar.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -49,7 +53,6 @@
 		5D61314529B5DD4200B0366D /* TestData.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = TestData.json; sourceTree = "<group>"; };
 		5D61314729B6135500B0366D /* GroupDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupDetailView.swift; sourceTree = "<group>"; };
 		5D61314929B638AD00B0366D /* GroupDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupDetailViewModel.swift; sourceTree = "<group>"; };
-		5D61314B29B63A4300B0366D /* GroupDetailSections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupDetailSections.swift; sourceTree = "<group>"; };
 		5DA7D04E29BB18A0004B197F /* ShareManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareManager.swift; sourceTree = "<group>"; };
 		5DA7D05029BB45A3004B197F /* UserAddGroupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAddGroupViewModel.swift; sourceTree = "<group>"; };
 		5DA7D05229BB6D2F004B197F /* AppManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppManager.swift; sourceTree = "<group>"; };
@@ -74,6 +77,11 @@
 		5DF5B9B829BE03FC00109374 /* HideOptionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HideOptionHeaderView.swift; sourceTree = "<group>"; };
 		5DF5B9BA29BE045A00109374 /* GroupDetailUserItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupDetailUserItemView.swift; sourceTree = "<group>"; };
 		5DF5B9BC29BE049900109374 /* GroupDetailTransactionItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupDetailTransactionItemView.swift; sourceTree = "<group>"; };
+		5DF5B9BE29BE43C400109374 /* SwipeToRemoveItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeToRemoveItemView.swift; sourceTree = "<group>"; };
+		5DF5B9C029BE462900109374 /* SearchOptionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchOptionHeaderView.swift; sourceTree = "<group>"; };
+		5DF5B9C229BE473600109374 /* CapsuleDivider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapsuleDivider.swift; sourceTree = "<group>"; };
+		5DF5B9C429BE475E00109374 /* AddOptionNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOptionNavigationBar.swift; sourceTree = "<group>"; };
+		5DF5B9C629BE480500109374 /* CustomNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationBar.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +122,7 @@
 				5DB764C829B77F5300C533F5 /* Group Detail */,
 				5DA7D05B29BB79AF004B197F /* Group Add User */,
 				5DA7D05E29BB7D70004B197F /* Group Add Transaction */,
+				5DF5B9C829BE481E00109374 /* Helper Views */,
 				5DEE800229B9E7EC00106F15 /* Services */,
 				5D61314529B5DD4200B0366D /* TestData.json */,
 				5D61313929B5D96900B0366D /* Assets.xcassets */,
@@ -163,10 +172,8 @@
 		5DB764C829B77F5300C533F5 /* Group Detail */ = {
 			isa = PBXGroup;
 			children = (
-				5D61314B29B63A4300B0366D /* GroupDetailSections.swift */,
 				5DF5B9BC29BE049900109374 /* GroupDetailTransactionItemView.swift */,
 				5DF5B9BA29BE045A00109374 /* GroupDetailUserItemView.swift */,
-				5DF5B9B829BE03FC00109374 /* HideOptionHeaderView.swift */,
 				5D61314729B6135500B0366D /* GroupDetailView.swift */,
 				5D61314929B638AD00B0366D /* GroupDetailViewModel.swift */,
 			);
@@ -204,6 +211,19 @@
 				5DB764C629B7797E00C533F5 /* Validator.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		5DF5B9C829BE481E00109374 /* Helper Views */ = {
+			isa = PBXGroup;
+			children = (
+				5DF5B9BE29BE43C400109374 /* SwipeToRemoveItemView.swift */,
+				5DF5B9C029BE462900109374 /* SearchOptionHeaderView.swift */,
+				5DF5B9B829BE03FC00109374 /* HideOptionHeaderView.swift */,
+				5DF5B9C229BE473600109374 /* CapsuleDivider.swift */,
+				5DF5B9C429BE475E00109374 /* AddOptionNavigationBar.swift */,
+				5DF5B9C629BE480500109374 /* CustomNavigationBar.swift */,
+			);
+			path = "Helper Views";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -292,18 +312,22 @@
 				5D61314429B5DA9200B0366D /* JSONManager.swift in Sources */,
 				5DBC226529B87D0B00DC67D4 /* UserProfileView.swift in Sources */,
 				5DB764C329B737C100C533F5 /* DBManager.swift in Sources */,
-				5D61314C29B63A4300B0366D /* GroupDetailSections.swift in Sources */,
 				5DA7D05129BB45A3004B197F /* UserAddGroupViewModel.swift in Sources */,
 				5D61313629B5D96700B0366D /* Expense_SharingApp.swift in Sources */,
 				5DBC226329B8753D00DC67D4 /* AuthViewModel.swift in Sources */,
 				5DA7D05D29BB7D5C004B197F /* GroupAddTransactionViewModel.swift in Sources */,
 				5DA7D05329BB6D2F004B197F /* AppManager.swift in Sources */,
+				5DF5B9C729BE480500109374 /* CustomNavigationBar.swift in Sources */,
 				5D61314829B6135500B0366D /* GroupDetailView.swift in Sources */,
+				5DF5B9C329BE473600109374 /* CapsuleDivider.swift in Sources */,
 				5DF5B9B929BE03FC00109374 /* HideOptionHeaderView.swift in Sources */,
+				5DF5B9C529BE475E00109374 /* AddOptionNavigationBar.swift in Sources */,
 				5DF5B9BB29BE045A00109374 /* GroupDetailUserItemView.swift in Sources */,
 				5DBC226129B874FE00DC67D4 /* AuthView.swift in Sources */,
 				5D61314A29B638AD00B0366D /* GroupDetailViewModel.swift in Sources */,
+				5DF5B9BF29BE43C400109374 /* SwipeToRemoveItemView.swift in Sources */,
 				5DA7D04F29BB18A0004B197F /* ShareManager.swift in Sources */,
+				5DF5B9C129BE462900109374 /* SearchOptionHeaderView.swift in Sources */,
 				5DF5B9BD29BE049900109374 /* GroupDetailTransactionItemView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -87,7 +87,7 @@ struct UserAddGroupView: View {
                             .padding(.horizontal, 16)
                     } else {
                         ForEach(groupMembers) { user in
-                            NewGroupMemberItemView(user: user)
+                            NewGroupMemberItemView(userName: user.name, userEmail: user.email)
                                 .contentShape(Rectangle())
                                 .onTapGesture {
                                     withAnimation {
@@ -124,7 +124,11 @@ struct UserAddGroupView: View {
                                         .frame(height: 1)
                                 }
                                 let isSelected = groupMembers.contains(where: { $0.id == user.id })
-                                SearchUserItemView(user: user, isSelected: isSelected)
+                                SearchUserItemView(
+                                    isSelected: isSelected,
+                                    userName: user.name,
+                                    userEmail: user.email
+                                )
                                     .contentShape(Rectangle())
                                     .onTapGesture {
                                         withAnimation {
@@ -153,179 +157,6 @@ struct UserAddGroupView: View {
             groupMembers.remove(at: index)
         } else {
             groupMembers.append(user)
-        }
-    }
-}
-
-struct CapsuleDivider: View {
-    var body: some View {
-        Capsule()
-            .fill()
-            .frame(height: 2)
-            .padding(.horizontal, 16)
-    }
-}
-
-struct AddOptionNavigationBar: View {
-    let title: String
-    let addSideTitles: Bool
-    let cancelAction: () -> Void
-    let confirmAction: () -> Void
-    
-    init(title: String, addSideTitles: Bool = true, cancelAction: @escaping () -> Void, confirmAction: @escaping () -> Void) {
-        self.title = title
-        self.addSideTitles = addSideTitles
-        self.cancelAction = cancelAction
-        self.confirmAction = confirmAction
-    }
-    
-    var body: some View {
-        HStack {
-            Button(action: cancelAction) {
-                HStack(spacing: 8) {
-                    Image(systemName: "xmark")
-                        .resizable().scaledToFit()
-                        .squareFrame(side: 16)
-                        .padding(.vertical, 4)
-                    if addSideTitles {
-                        Text("Cancel")
-                    }
-                }
-                .padding(.horizontal, 8)
-            }
-            Spacer()
-            Button(action: confirmAction) {
-                HStack(spacing: 8) {
-                    if addSideTitles {
-                        Text("Confirm")
-                    }
-                    Image(systemName: "checkmark")
-                        .resizable().scaledToFit()
-                        .squareFrame(side: 16)
-                        .padding(4)
-                }
-                .padding(.vertical, 4)
-                .padding(.horizontal, 8)
-            }
-        }
-        .overlay {
-            Text(title).bold()
-        }
-        .padding([.bottom, .horizontal], 8)
-    }
-}
-
-struct CustomNavigationBar<MenuContent: View>: View {
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-    
-    let title: String
-    let addBackButton: Bool
-    let backButtonTitle: String?
-    let addMenuButton: Bool
-    let menuContent: MenuContent
-    
-    init(title: String, addBackButton: Bool = true, backButtonTitle: String? = nil) where MenuContent == EmptyView {
-        self.init(title: title, addBackButton: addBackButton, backButtonTitle: backButtonTitle, addMenuButton: false) { EmptyView() }
-    }
-    
-    init(title: String, addBackButton: Bool = true, backButtonTitle: String? = nil, @ViewBuilder menuContentBuilder: () -> MenuContent) {
-        self.init(title: title, addBackButton: addBackButton, backButtonTitle: backButtonTitle, addMenuButton: true, menuContentBuilder: menuContentBuilder)
-    }
-    
-    private init(title: String, addBackButton: Bool, backButtonTitle: String?, addMenuButton: Bool, @ViewBuilder menuContentBuilder: () -> MenuContent) {
-        self.title = title
-        self.addBackButton = addBackButton
-        self.backButtonTitle = backButtonTitle
-        self.addMenuButton = addMenuButton
-        self.menuContent = menuContentBuilder()
-    }
-    
-    var body: some View {
-        HStack(alignment: .lastTextBaseline, spacing: 0) {
-            if addBackButton {
-                Button {
-                    presentationMode.wrappedValue.dismiss()
-                } label: {
-                    HStack(spacing: 0) {
-                        Image(systemName: "chevron.left")
-                            .resizable().scaledToFit()
-                            .squareFrame(side: 16)
-                            .padding(4)
-                        if let backTitle = backButtonTitle {
-                            Text(backTitle)
-                        }
-                    }
-                }
-                .padding(.vertical, 4)
-                .padding(.horizontal, 8)
-            }
-            Text(title).font(.largeTitle)
-            Spacer()
-            if addMenuButton {
-                Menu {
-                    menuContent
-                } label: {
-                    Image(systemName: "slider.horizontal.3")
-                        .resizable().scaledToFit()
-                        .squareFrame(side: 24)
-                }
-            }
-        }
-        .padding(.leading, addBackButton ? 0 : 32)
-        .padding(.trailing, addMenuButton  ? 32 : 8)
-    }
-}
-
-struct SearchOptionHeaderView: View {
-    let title: String
-    let searchPrompt: String
-    let searchHint: String?
-    
-    @Binding var showingSearch: Bool
-    @Binding var searchText: String
-    
-    init(title: String, searchPrompt: String = "Search...", searchHint: String? = nil, showingSearch: Binding<Bool>, searchText: Binding<String>) {
-        self.title = title
-        self.searchPrompt = searchPrompt
-        self.searchHint = searchHint
-        self._showingSearch = showingSearch
-        self._searchText = searchText
-    }
-    
-    var body: some View {
-        VStack(alignment: .leading) {
-            HStack {
-                Text(title).font(.title)
-                Spacer()
-                Button {
-                    withAnimation {
-                        showingSearch.toggle()
-                        searchText = ""
-                    }
-                } label: {
-                    Image(systemName: showingSearch ? "xmark" : "magnifyingglass")
-                        .resizable().scaledToFit()
-                        .squareFrame(side: showingSearch ? 12 : 18)
-                        .padding(showingSearch ? 6 : 3)
-                }
-            }
-            
-            if showingSearch {
-                TextField(searchPrompt, text: $searchText)
-                    .textContentType(.name)
-                    .stylishTextField()
-                    .onSubmit {
-                        hideKeyboard()
-                    }
-                    .padding(.bottom, searchHint == nil ? 4 : 0)
-                
-                if let hint = searchHint {
-                    Text(hint)
-                        .font(.caption)
-                        .padding(.horizontal, 8)
-                        .padding(.bottom, 4)
-                }
-            }
         }
     }
 }

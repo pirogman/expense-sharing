@@ -91,7 +91,11 @@ struct GroupAddUserView: View {
                                         .frame(height: 1)
                                 }
                                 let isSelected = newMembers.contains(where: { $0.id == user.id })
-                                SearchUserItemView(user: user, isSelected: isSelected)
+                                SearchUserItemView(
+                                    isSelected: isSelected,
+                                    userName: user.name,
+                                    userEmail: user.email
+                                )
                                     .contentShape(Rectangle())
                                     .onTapGesture {
                                         withAnimation {

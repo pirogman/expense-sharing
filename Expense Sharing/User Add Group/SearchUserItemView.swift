@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct SearchUserItemView: View {
-    let user: User
     let isSelected: Bool
+    let userName: String
+    let userEmail: String
     
     var body: some View {
         HStack {
@@ -18,9 +19,9 @@ struct SearchUserItemView: View {
                 .squareFrame(side: 20)
                 .padding(2)
             VStack(alignment: .leading, spacing: 6) {
-                Text(user.name)
+                Text(userName)
                     .font(.headline)
-                Text(user.email)
+                Text(userEmail)
                     .font(.subheadline)
             }
             Spacer()

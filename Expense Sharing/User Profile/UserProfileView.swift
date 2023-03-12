@@ -107,6 +107,7 @@ struct UserProfileView: View {
                     Label("Leave", systemImage: "arrow.left.square")
                 }
             }
+            .padding(.horizontal, 16)
             
             HStack {
                 VStack(alignment: .leading) {
@@ -142,11 +143,17 @@ struct UserProfileView: View {
                                         .fill(.white)
                                         .frame(height: 1)
                                 }
-                                UserGroupItemView(group) {
-                                    selectedGroup = group
-                                    navigateToSelectedGroup = true
+                                SwipeToRemoveItemView() {
+                                    UserGroupItemView(groupTitle: group.title, groupUsersCount: group.users.count)
+                                } onSelect: {
+                                    withAnimation {
+                                        selectedGroup = group
+                                        navigateToSelectedGroup = true
+                                    }
                                 } onDelete: {
-                                    vm.deleteGroup(group)
+                                    withAnimation {
+                                        vm.deleteGroup(group)
+                                    }
                                 }
                             }
                         }

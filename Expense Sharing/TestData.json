@@ -78,16 +78,13 @@
                     "id": "22",
                     "expenses": {
                         "alex@example.com": -40,
-                        "bob@example.com": -5,
                         "ann@example.com": 65
                     }
                 },
                 {
                     "id": "23",
                     "expenses": {
-                        "alex@example.com": -182,
-                        "bob@example.com": 237,
-                        "ann@example.com": -31
+                        "bob@example.com": 237.01,
                     }
                 },
                 {
@@ -140,14 +137,12 @@
                     "expenses": {
                         "john@example.com": 1000,
                         "sarah@example.com": -300,
-                        "alex@example.com": -400,
-                        "bob@example.com": -200
+                        "alex@example.com": -400
                     }
                 },
                 {
                     "id": "32",
                     "expenses": {
-                        "john@example.com": -350,
                         "sarah@example.com": -400,
                         "alex@example.com": -50,
                         "ann@example.com": 1000

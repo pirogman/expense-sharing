@@ -18,10 +18,11 @@ class GroupDetailViewModel: ObservableObject {
     @Published private(set) var userColors = [String: Color]()
     
     static private let colors: [Color] = [
-        .red, .orange, .yellow,
-        .purple, .pink, .indigo,
+        .red, .orange, .yellow, .purple, .indigo, .blue,
+//        .pink, // Too similar to .red
 //        .green, .cyan, .teal, // Bad on gradient background
-        .blue, .black, .gray, .white
+//        .gray, // Not very pleasant looking
+        .black, .white,
     ]
     private let groupColors = GroupDetailViewModel.colors.shuffled()
     

@@ -29,6 +29,5 @@ struct HideOptionHeaderView: View {
                     .animation(.linear, value: hideContent)
             }
         }
-        .padding(.horizontal, 16)
     }
 }
