@@ -32,16 +32,17 @@ struct UserProfileView: View {
         NavigationView {
             VStack {
                 // Navigation
-//                NavigationLink(isActive: $navigateToSelectedGroup) {
-//                    if let group = selectedGroup {
-//                        GroupDetailView(vm.getManagedGroup(from: group))
-//                    } else {
-//                        Text("No Such Group")
-//                            .onAppear {
-//                                navigateToSelectedGroup = false
-//                            }
-//                    }
-//                } label: { EmptyView() }
+                NavigationLink(isActive: $navigateToSelectedGroup) {
+                    if let group = selectedGroup {
+                        let vm = GroupDetailViewModel(vm.getManagedGroup(from: group))
+                        GroupDetailView(vm: vm)
+                    } else {
+                        Text("No Such Group")
+                            .onAppear {
+                                navigateToSelectedGroup = false
+                            }
+                    }
+                } label: { EmptyView() }
                 
                 profileSection
                 CapsuleDivider()
@@ -77,14 +78,6 @@ struct UserProfileView: View {
                 isPresented: $showingAddGroup,
                 onDismiss: { vm.updateUserGroups(search: searchText) },
                 content: { UserAddGroupView(vm: UserAddGroupViewModel(vm.user)) }
-            )
-            .fullScreenCover(
-                item: $selectedGroup,
-                onDismiss: { vm.updateUserGroups(search: searchText) },
-                content: { group in
-                    GroupAddTransactionView(vm: GroupAddTransactionViewModel(group, payingUser: vm.user))
-//                    GroupAddUserView(vm: GroupAddUserViewModel(group))
-                }
             )
         }
     }

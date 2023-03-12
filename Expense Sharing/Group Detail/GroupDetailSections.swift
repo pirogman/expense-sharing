@@ -34,41 +34,48 @@ struct GroupDetailChartView: View {
 
 struct GroupDetailUserView: View {
     let color: Color
-    let user: ManagedUser
-    let money: Double
+    let userName: String
+    let userEmail: String
+    let paidAmount: Double
+    let owedAmount: Double
+    let currencyCode: String?
     
     var body: some View {
         HStack {
             Circle()
-                .foregroundColor(.red)
+                .foregroundColor(color)
                 .squareFrame(side: 24)
-            Text(user.name)
-                .font(.headline)
-            Text(user.email)
-                .font(.subheadline)
-                .foregroundColor(.gray)
+            VStack(alignment: .leading, spacing: 6) {
+                Text(userName).font(.headline)
+                Text(userEmail).font(.subheadline)
+            }
             Spacer()
-            let moneyText = CurrencyManager.getText(for: money)
-            Text(moneyText)
+            VStack(alignment: .trailing, spacing: 6) {
+                let paid = CurrencyManager.getText(for: paidAmount, currencyCode: currencyCode)
+                Text(paid).font(.headline)
+                
+                let owed = CurrencyManager.getText(for: owedAmount, currencyCode: currencyCode)
+                Text(owed).font(.subheadline)
+            }
         }
         .lineLimit(1)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 6)
     }
 }
 
 // MARK: - Transactions Section
 
 struct UserExpenseView: View {
-    let expense: Expense
-    
-    init(_ expense: Expense) {
-        self.expense = expense
-    }
+    let userName: String
+    let amount: Double
+    let currencyCode: String?
     
     var body: some View {
         HStack {
-            Text(expense.user.name)
+            Text(userName)
             Spacer()
-            let moneyText = CurrencyManager.getText(for: expense.money)
+            let moneyText = CurrencyManager.getText(for: amount, currencyCode: currencyCode)
             Text(moneyText)
         }
         .lineLimit(1)
@@ -76,44 +83,34 @@ struct UserExpenseView: View {
 }
 
 struct GroupDetailTransactionView: View {
-    let transaction: ManagedTransaction
-    
-    @Binding var selectedTransactionId: String?
-    
-    init(_ transaction: ManagedTransaction, selectedId: Binding<String?> = .constant(nil)) {
-        self.transaction = transaction
-        self._selectedTransactionId = selectedId
-    }
+    let isSelected: Bool
+    let description: String?
+    let paidUserName: String
+    let paidAmount: Double
+    let currencyCode: String?
+    let expenses: [(String, String, Double)]
     
     var body: some View {
-        VStack {
-            // Always show paid amount
-            let paid = transaction.expenses.first!
-            UserExpenseView(paid)
+        VStack(alignment: .leading, spacing: 6) {
+            UserExpenseView(userName: paidUserName, amount: paidAmount, currencyCode: currencyCode)
                 .font(.headline)
+            Text(description?.hasText == true ? description! : "No description provided.")
+                .font(.caption)
             
-            // Show other users expenses if selected
-            if selectedTransactionId == transaction.id {
-                let other = Array(transaction.expenses.dropFirst())
-                ForEach(other, id: \.user.email) { expense in
-                    UserExpenseView(expense)
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-                }
-            }
-        }
-        .background(
-            // Get tap gesture on transparent background
-            Color.green.opacity(0.01)
-                .onTapGesture {
-                    withAnimation {
-                        if selectedTransactionId == transaction.id {
-                            selectedTransactionId = nil
-                        } else {
-                            selectedTransactionId = transaction.id
+            if isSelected {
+                VStack(spacing: 4) {
+                    ForEach(expenses, id: \.0) { expense in
+                        HStack {
+                            Circle().fill()
+                                .squareFrame(side: 8)
+                            UserExpenseView(userName: expense.1, amount: expense.2, currencyCode: currencyCode)
+                                .font(.subheadline)
                         }
                     }
                 }
-        )
+            }
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 6)
     }
 }
