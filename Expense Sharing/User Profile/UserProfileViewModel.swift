@@ -39,26 +39,6 @@ class UserProfileViewModel: ObservableObject {
         userGroups.removeAll(where: { $0.id == group.id })
     }
     
-    func getManagedGroup(from group: Group) -> ManagedGroup {
-        let users: [ManagedUser] = group.users.map { email in
-            if let user = DBManager.shared.getUser(by: email) {
-                return ManagedUser(name: user.name, email: user.email)
-            }
-            return ManagedUser(unknownUserEmail: email)
-        }
-        let transactions: [ManagedTransaction] = group.transactions.map { transaction in
-            let expenses: [Expense] = transaction.expenses.keys
-                .map { key in
-                    let user = users.first(where: { $0.email == key }) ?? ManagedUser(unknownUserEmail: key)
-                    let money = transaction.expenses[key]!
-                    return Expense(user, money)
-                }
-                .sorted(by: { abs($0.money) > abs($1.money) })
-            return ManagedTransaction(id: transaction.id, expenses: expenses, description: transaction.description)
-        }
-        return ManagedGroup(id: group.id, title: group.title, users: users, transactions: transactions)
-    }
-    
     // MARK: - Share
     
     private var tempFileName: String?

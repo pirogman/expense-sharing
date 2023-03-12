@@ -42,7 +42,7 @@ struct GroupAddTransactionView: View {
             hideKeyboard()
         }
         .onAppear {
-            amount = CurrencyManager.getText(for: 0, currencyCode: vm.group.currencyCode)
+            amount = CurrencyManager.getText(for: 0, currencyCode: vm.currencyCode)
         }
         .alert("Set Expense", isPresented: $showingSelectedUserAlert) {
             TextField("Amount", text: $selectedUserAmount)
@@ -70,7 +70,7 @@ struct GroupAddTransactionView: View {
             }
         } message: {
             let name = selectedUser?.name ?? "selected user"
-            let maxAmount = CurrencyManager.getText(for: vm.remainingExpenseAmount, currencyCode: vm.group.currencyCode)
+            let maxAmount = CurrencyManager.getText(for: vm.remainingExpenseAmount, currencyCode: vm.currencyCode)
             Text("Enter expense for \(name). Provide amount up to \(maxAmount) or change other users expenses first.")
         }
         .simpleAlert(isPresented: $showingAlert, title: alertTitle, message: alertMessage)
@@ -79,7 +79,7 @@ struct GroupAddTransactionView: View {
                 // Provide currency formatting on deselecting amount field
                 let money = CurrencyManager.getNumber(from: amount)
                 vm.paidAmount = money > 0 ? money : 0
-                amount = CurrencyManager.getText(for: vm.paidAmount, currencyCode: vm.group.currencyCode)
+                amount = CurrencyManager.getText(for: vm.paidAmount, currencyCode: vm.currencyCode)
             } else if newValue == .paidAmountField {
                 // Clear amount field when no or too small number
                 if vm.paidAmount <= 0.01 {
@@ -114,7 +114,7 @@ struct GroupAddTransactionView: View {
     
     private var amountSection: some View {
         VStack(alignment: .leading) {
-            Text(vm.group.title)
+            Text(vm.groupTitle)
                 .font(.title)
             
             TextField("Amount", text: $amount)
@@ -199,7 +199,7 @@ struct GroupAddTransactionView: View {
                                 }
                                 UserAmountItemView(user: user,
                                                    amount: vm.otherUsersExpenses[user.email]!,
-                                                   currencyCode: vm.group.currencyCode)
+                                                   currencyCode: vm.currencyCode)
                                     .contentShape(Rectangle())
                                     .onTapGesture {
                                         if vm.paidAmount < 0.01 {
@@ -214,7 +214,7 @@ struct GroupAddTransactionView: View {
                                         if money <= 0.01 {
                                             selectedUserAmount = ""
                                         } else {
-                                            selectedUserAmount = CurrencyManager.getText(for: money, currencyCode: vm.group.currencyCode)
+                                            selectedUserAmount = CurrencyManager.getText(for: money, currencyCode: vm.currencyCode)
                                         }
                                         showingSelectedUserAlert = true
                                     }

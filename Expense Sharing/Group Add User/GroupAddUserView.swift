@@ -61,7 +61,7 @@ struct GroupAddUserView: View {
     private var usersSection: some View {
         VStack(spacing: 0) {
             VStack(alignment: .leading) {
-                Text(vm.group.title)
+                Text(vm.groupTitle)
                     .font(.title)
                 TextField("Search...", text: $searchText)
                     .textContentType(.name)

@@ -28,19 +28,40 @@ class GroupAddTransactionViewModel: ObservableObject {
         return paidAmount - totalExpenses
     }
     
-    let group: Group
-    let payingUser: User
+    let groupId: String
+    let payingUserEmail: String
     let otherUsers: [User]
+    let transactions: [Transaction]
+    let currencyCode: String?
+    let groupTitle: String
     
-    init(_ group: Group, payingUser: User) {
-        self.group = group
-        self.payingUser = payingUser
+    init(groupId: String, payingUserEmail: String) {
+        self.groupId = groupId
+        self.payingUserEmail = payingUserEmail
         
-        let members = DBManager.shared.getUsers(in: group, excludeEmails: [payingUser.email])
+        let group = DBManager.shared.getGroup(byId: groupId)!
+        let members = DBManager.shared.getUsers(in: group, excludeEmails: [payingUserEmail])
         self.otherUsers = members
         self.otherUsersExpenses = members.reduce(into: [String: Double]()) { dict, user in
             dict[user.email] = 0.0
         }
+        self.transactions = group.transactions
+        self.currencyCode = group.currencyCode
+        self.groupTitle = group.title
+    }
+    
+    init(group: Group, payingUserEmail: String) {
+        self.groupId = group.id
+        self.payingUserEmail = payingUserEmail
+        
+        let members = DBManager.shared.getUsers(in: group, excludeEmails: [payingUserEmail])
+        self.otherUsers = members
+        self.otherUsersExpenses = members.reduce(into: [String: Double]()) { dict, user in
+            dict[user.email] = 0.0
+        }
+        self.transactions = group.transactions
+        self.currencyCode = group.currencyCode
+        self.groupTitle = group.title
     }
     
     func isValidAmount(_ number: Double) -> Bool {
@@ -48,7 +69,7 @@ class GroupAddTransactionViewModel: ObservableObject {
     }
     
     func splitEvenly() {
-        let split = paidAmount / Double(group.users.count)
+        let split = paidAmount / Double(otherUsers.count + 1)
         let validSplit = isValidAmount(split) ? split : 0.0
         for key in otherUsersExpenses.keys {
             otherUsersExpenses[key] = validSplit
@@ -81,7 +102,7 @@ class GroupAddTransactionViewModel: ObservableObject {
             return .failure(ValidationError.invalidTransactionDescription)
         }
         
-        var expenses = [payingUser.email: paidAmount]
+        var expenses = [payingUserEmail: paidAmount]
         for email in otherUsersExpenses.keys {
             guard let amount = otherUsersExpenses[email], amount > 0 else { continue }
             expenses[email] = -amount
@@ -90,9 +111,9 @@ class GroupAddTransactionViewModel: ObservableObject {
         let transaction = Transaction(id: UUID().uuidString,
                                       expenses: expenses,
                                       description: validDescription)
-        let transactions = group.transactions + [transaction]
+        let transactions = self.transactions + [transaction]
         
-        DBManager.shared.editGroup(byId: group.id, transactions: transactions)
+        DBManager.shared.editGroup(byId: groupId, transactions: transactions)
         return .success(())
     }
 }

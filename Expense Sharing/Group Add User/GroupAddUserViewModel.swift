@@ -10,19 +10,31 @@ import SwiftUI
 class GroupAddUserViewModel: ObservableObject {
     @Published private(set) var knownUsers = [User]()
     
-    let group: Group
+    let groupId: String
+    let groupTitle: String
+    let excludeUserEmails: [String]
     
-    init(_ group: Group) {
-        self.group = group
+    init(groupId: String) {
+        self.groupId = groupId
+        
+        let group = DBManager.shared.getGroup(byId: groupId)!
+        self.groupTitle = group.title
+        self.excludeUserEmails = group.users
+    }
+    
+    init(group: Group) {
+        self.groupId = group.id
+        self.groupTitle = group.title
+        self.excludeUserEmails = group.users
     }
     
     func updateKnownUsers(search: String? = nil) {
-        knownUsers = DBManager.shared.getUsers(excludeEmails: group.users, search: search)
+        knownUsers = DBManager.shared.getUsers(excludeEmails: excludeUserEmails, search: search)
     }
     
     func addUsers(users: [User]) -> Result<Int, Error> {
-        let emails = group.users + users.map({ $0.email })
-        DBManager.shared.editGroup(byId: group.id, users: emails)
+        let emails = excludeUserEmails + users.map({ $0.email })
+        DBManager.shared.editGroup(byId: groupId, users: emails)
         return .success(users.count)
     }
 }

@@ -7,91 +7,129 @@
 
 import SwiftUI
 
-/*
- Create group
- Edit group title
- Add/remove users
- Add/remove transactions
- Share group to other devices
- */
+/// Format: (user email, user name, paid/owed amount, color for user in this group)
+typealias ExpenseWithInfo = (String, String, Double, Color)
 
 class GroupDetailViewModel: ObservableObject {
-    @Published private(set) var title: String
-    @Published private(set) var users: [ManagedUser]
-    @Published private(set) var transactions: [ManagedTransaction]
-    @Published private(set) var totalExpenses: Double
+    @Published private(set) var groupTitle = ""
+    @Published private(set) var groupUsers = [User]()
+    @Published private(set) var groupTransactions = [Transaction]()
+    @Published private(set) var groupCurrencyCode: String?
+    @Published private(set) var userColors = [String: Color]()
     
-    private let group: ManagedGroup
+    static private let colors: [Color] = [
+        .red, .orange, .yellow,
+        .purple, .pink, .indigo,
+//        .green, .cyan, .teal, // Bad on gradient background
+        .blue, .black, .gray, .white
+    ]
+    private let groupColors = GroupDetailViewModel.colors.shuffled()
     
-    init(_ group: ManagedGroup) {
-        self.group = group
-        self.title = group.title
-        self.users = group.users
-        self.transactions = group.transactions
-        self.totalExpenses = group.transactions
-            .map { $0.expenses.first?.money ?? 0.0 }
-            .reduce(0, +)
+    let groupId: String
+    let userEmail: String
+    
+    init(groupId: String, forUserEmail userEmail: String) {
+        self.groupId = groupId
+        self.userEmail = userEmail
+        
+        updateGroup()
     }
     
-    func getTotalExpensesForUser(by userId: String) -> Double {
-        var total = 0.0
-        for transaction in transactions {
-            if let paid = transaction.expenses.first, paid.user.id == userId {
-                total += paid.money
+    init(group: Group, forUserEmail userEmail: String) {
+        self.groupId = group.id
+        self.userEmail = userEmail
+        
+        updateGroupValues(to: group)
+    }
+    
+    private func updateGroupValues(to group: Group) {
+        self.groupTitle = group.title
+        self.groupUsers = DBManager.shared.getUsers(in: group).sorted { a, b in
+            a.name > b.name
+        }
+        self.groupTransactions = group.transactions.sorted { a, b in
+            let aPaid = a.expenses.values.max() ?? 0.0
+            let bPaid = b.expenses.values.max() ?? 0.0
+            return aPaid > bPaid
+        }
+        self.groupCurrencyCode = group.currencyCode
+        
+        resetUserColors(for: group.users)
+    }
+    
+    private func resetUserColors(for emails: [String]) {
+        userColors.removeAll()
+        
+        let colorsCount = groupColors.count
+        let usersCount = emails.count
+        for userIndex in 0..<usersCount {
+            let colorIndex = userIndex % colorsCount
+            userColors[emails[userIndex]] = groupColors[colorIndex]
+        }
+    }
+    
+    func updateGroup() {
+        let group = DBManager.shared.getGroup(byId: groupId)!
+        updateGroupValues(to: group)
+    }
+    
+    func editTitle(_ title: String) -> Result<Void, Error> {
+        guard let validTitle = Validator.validateGroupTitle(title) else {
+            return .failure(ValidationError.invalidGroupTitle)
+        }
+        
+        DBManager.shared.editGroup(byId: groupId, title: validTitle)
+        self.groupTitle = validTitle
+        return .success(())
+    }
+    
+    func removeTransaction(_ transaction: Transaction) {
+        let updatedTransactions = groupTransactions.filter { $0.id != transaction.id }
+        DBManager.shared.editGroup(byId: groupId, transactions: updatedTransactions)
+        groupTransactions = updatedTransactions
+    }
+    
+    func calculateUserAmounts(for user: User) -> (Double, Double) {
+        var totalPaid = 0.0
+        var totalOwed = 0.0
+        for transaction in groupTransactions {
+            if let amount = transaction.expenses[user.email] {
+                if amount > 0 {
+                    totalPaid += amount
+                } else {
+                    totalOwed += amount
+                }
             }
         }
-        return total
+        return (totalPaid, totalOwed)
     }
     
-    func calculateTotalExpenses() {
-        totalExpenses = transactions
-            .map { $0.expenses.first?.money ?? 0.0 }
-            .reduce(0, +)
-    }
-    
-    func updateTitle(_ newTitle: String) {
-        guard !newTitle.isEmpty else {
-            // Can not set an empty title for the group
-            return
+    func getTransactionExpenses(_ transaction: Transaction) -> [ExpenseWithInfo] {
+        var result = [ExpenseWithInfo]()
+        for key in transaction.expenses.keys {
+            let name = groupUsers.first(where: { $0.email == key })?.name ?? key
+            if let amount = transaction.expenses[key], amount != 0 {
+                let color = userColors[key] ?? .white
+                result.append((String(key), name, amount, color))
+            }
         }
-        guard title != newTitle else {
-            // Title have not changed
-            return
-        }
-        title = newTitle
+        result.sort { abs($0.2) > abs($1.2) }
+        return result
     }
     
-    func deleteUsers(at indexSet: IndexSet) {
-        guard indexSet.count < users.count else {
-            // Can not delete all users from the group
-            return
-        }
-        users.remove(atOffsets: indexSet)
-    }
+    // MARK: - Share
     
-    func deleteTransactions(at indexSet: IndexSet) {
-        // Can remove all transactions from the group
-        transactions.remove(atOffsets: indexSet)
-        calculateTotalExpenses()
-    }
+    private var tempFileName: String?
     
     func getGroupShareActivities() -> [AnyObject] {
-        // Convert managed group to export data
-        let exportTransactions: [Transaction] = self.transactions.map { transaction in
-            let exportExpenses = transaction.expenses.reduce(into: [String: Double]()) { dict, expense in
-                dict[expense.user.email] = expense.money
-            }
-            return Transaction(id: transaction.id, expenses: exportExpenses, description: transaction.description)
-        }
-        let exportGroup = Group(id: self.group.id, title: self.title, users: self.users.map({ $0.email }), transactions: exportTransactions, currencyCode: nil)
-        let exportUsers = self.users.map { User(name: $0.name, email: $0.email) }
-        let exportData = ExportData(users: exportUsers, groups: [exportGroup])
-        
-        // Share as a single JSON file
-        var activities = [AnyObject]()
-        if let url = JSONManager.saveToFile(exportData, named: "export_data") {
-            activities.append(url as AnyObject)
-        }
-        return activities
+        let group = DBManager.shared.getGroup(byId: groupId)!
+        tempFileName = groupTitle.replacingOccurrences(of: " ", with: "_")
+        return ShareManager.exportGroup(group, includeUsers: true, fileName: tempFileName!)
+    }
+    
+    func clearSharedGroupFile() {
+        guard let name = tempFileName else { return }
+        tempFileName = nil
+        JSONManager.clearTempFile(named: name)
     }
 }
