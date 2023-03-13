@@ -25,6 +25,12 @@
 		5DB1BE7D29BF1CF9009996D4 /* TwoWayChartRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB1BE7C29BF1CF9009996D4 /* TwoWayChartRowView.swift */; };
 		5DB1BE7F29BF2DFB009996D4 /* OneWayChartRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB1BE7E29BF2DFB009996D4 /* OneWayChartRowView.swift */; };
 		5DB1BE8129BF6987009996D4 /* ExpenseCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB1BE8029BF6987009996D4 /* ExpenseCalculator.swift */; };
+		5DB1BE8429BF6D25009996D4 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 5DB1BE8329BF6D25009996D4 /* FirebaseDatabase */; };
+		5DB1BE8629BF6D25009996D4 /* FirebaseDatabaseSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 5DB1BE8529BF6D25009996D4 /* FirebaseDatabaseSwift */; };
+		5DB1BE8829BF6D25009996D4 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 5DB1BE8729BF6D25009996D4 /* FirebaseStorage */; };
+		5DB1BE8A29BF6D25009996D4 /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 5DB1BE8929BF6D25009996D4 /* FirebaseStorageCombine-Community */; };
+		5DB1BE8C29BF8873009996D4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5DB1BE8B29BF8873009996D4 /* GoogleService-Info.plist */; };
+		5DB1BE8E29BF9412009996D4 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB1BE8D29BF9412009996D4 /* Model.swift */; };
 		5DB764BF29B72FAA00C533F5 /* GroupAddTransactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB764BE29B72FAA00C533F5 /* GroupAddTransactionView.swift */; };
 		5DB764C129B730F100C533F5 /* GroupAddUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB764C029B730F100C533F5 /* GroupAddUserView.swift */; };
 		5DB764C329B737C100C533F5 /* DBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB764C229B737C100C533F5 /* DBManager.swift */; };
@@ -68,6 +74,8 @@
 		5DB1BE7C29BF1CF9009996D4 /* TwoWayChartRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoWayChartRowView.swift; sourceTree = "<group>"; };
 		5DB1BE7E29BF2DFB009996D4 /* OneWayChartRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneWayChartRowView.swift; sourceTree = "<group>"; };
 		5DB1BE8029BF6987009996D4 /* ExpenseCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseCalculator.swift; sourceTree = "<group>"; };
+		5DB1BE8B29BF8873009996D4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		5DB1BE8D29BF9412009996D4 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		5DB764BE29B72FAA00C533F5 /* GroupAddTransactionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupAddTransactionView.swift; sourceTree = "<group>"; };
 		5DB764C029B730F100C533F5 /* GroupAddUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupAddUserView.swift; sourceTree = "<group>"; };
 		5DB764C229B737C100C533F5 /* DBManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBManager.swift; sourceTree = "<group>"; };
@@ -97,6 +105,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5DB1BE8629BF6D25009996D4 /* FirebaseDatabaseSwift in Frameworks */,
+				5DB1BE8429BF6D25009996D4 /* FirebaseDatabase in Frameworks */,
+				5DB1BE8A29BF6D25009996D4 /* FirebaseStorageCombine-Community in Frameworks */,
+				5DB1BE8829BF6D25009996D4 /* FirebaseStorage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -123,6 +135,7 @@
 			isa = PBXGroup;
 			children = (
 				5DEE7FFD29B9BDAF00106F15 /* Expense-Sharing-Info.plist */,
+				5DB1BE8B29BF8873009996D4 /* GoogleService-Info.plist */,
 				5D61313529B5D96700B0366D /* Expense_SharingApp.swift */,
 				5DEE800129B9E7CF00106F15 /* Authentication */,
 				5DEE800029B9E61F00106F15 /* User Profile */,
@@ -132,6 +145,7 @@
 				5DA7D05E29BB7D70004B197F /* Group Add Transaction */,
 				5DF5B9C829BE481E00109374 /* Helper Views */,
 				5DEE800229B9E7EC00106F15 /* Services */,
+				5DB1BE8D29BF9412009996D4 /* Model.swift */,
 				5D61314529B5DD4200B0366D /* TestData.json */,
 				5D61313929B5D96900B0366D /* Assets.xcassets */,
 				5D61313B29B5D96900B0366D /* Preview Content */,
@@ -254,6 +268,12 @@
 			dependencies = (
 			);
 			name = "Expense Sharing";
+			packageProductDependencies = (
+				5DB1BE8329BF6D25009996D4 /* FirebaseDatabase */,
+				5DB1BE8529BF6D25009996D4 /* FirebaseDatabaseSwift */,
+				5DB1BE8729BF6D25009996D4 /* FirebaseStorage */,
+				5DB1BE8929BF6D25009996D4 /* FirebaseStorageCombine-Community */,
+			);
 			productName = "Expense Sharing";
 			productReference = 5D61313229B5D96700B0366D /* Expense Sharing.app */;
 			productType = "com.apple.product-type.application";
@@ -282,6 +302,9 @@
 				Base,
 			);
 			mainGroup = 5D61312929B5D96700B0366D;
+			packageReferences = (
+				5DB1BE8229BF6D25009996D4 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			productRefGroup = 5D61313329B5D96700B0366D /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -297,6 +320,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5D61313D29B5D96900B0366D /* Preview Assets.xcassets in Resources */,
+				5DB1BE8C29BF8873009996D4 /* GoogleService-Info.plist in Resources */,
 				5D61314629B5DD4200B0366D /* TestData.json in Resources */,
 				5D61313A29B5D96900B0366D /* Assets.xcassets in Resources */,
 			);
@@ -320,6 +344,7 @@
 				5DF5B9CA29BE5C0300109374 /* GroupReportView.swift in Sources */,
 				5DA7D06029BB94AB004B197F /* UserAmountItemView.swift in Sources */,
 				5DBC226729B87D3100DC67D4 /* UserProfileViewModel.swift in Sources */,
+				5DB1BE8E29BF9412009996D4 /* Model.swift in Sources */,
 				5DB764C729B7797E00C533F5 /* Validator.swift in Sources */,
 				5DD2E05629BC877100DDE687 /* CurrencyManager.swift in Sources */,
 				5D61314429B5DA9200B0366D /* JSONManager.swift in Sources */,
@@ -549,6 +574,40 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		5DB1BE8229BF6D25009996D4 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		5DB1BE8329BF6D25009996D4 /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5DB1BE8229BF6D25009996D4 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
+		};
+		5DB1BE8529BF6D25009996D4 /* FirebaseDatabaseSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5DB1BE8229BF6D25009996D4 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabaseSwift;
+		};
+		5DB1BE8729BF6D25009996D4 /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5DB1BE8229BF6D25009996D4 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
+		};
+		5DB1BE8929BF6D25009996D4 /* FirebaseStorageCombine-Community */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5DB1BE8229BF6D25009996D4 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = "FirebaseStorageCombine-Community";
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 5D61312A29B5D96700B0366D /* Project object */;
 }

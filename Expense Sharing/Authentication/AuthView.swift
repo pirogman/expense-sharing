@@ -12,6 +12,8 @@ struct AuthView: View {
     
     @StateObject var vm = AuthViewModel()
     
+    @State var isLoading = false
+    
     enum Field: Hashable {
         case nameField
         case emailField
@@ -38,14 +40,51 @@ struct AuthView: View {
                 .padding(.horizontal, 36)
             
             Spacer()
-            Button {
-                showingFilePicker = true
-            } label: {
-                Label("Import Data", systemImage: "square.and.arrow.down")
+            HStack {
+                Button {
+                    withAnimation {
+                        isLoading = true
+                        FRDManager.shared.syncToServer(users: DBManager.shared.users, groups: DBManager.shared.groups) { errors in
+                            isLoading = false
+                            if !errors.isEmpty {
+                                alertTitle = "Error"
+                                alertMessage = errors.first!.localizedDescription
+                                showingAlert = true
+                            } else {
+                                alertTitle = "Success"
+                                alertMessage = "Local data synched to server."
+                                showingAlert = true
+                            }
+                        }
+                    }
+                } label: {
+                    Label("Import Data", systemImage: "square.and.arrow.down")
+                }
+                Button {
+                    withAnimation {
+                        isLoading = true
+                        FRDManager.shared.syncFromServer { result in
+                            isLoading = false
+                            switch result {
+                            case .success:
+                                alertTitle = "Success"
+                                alertMessage = "You synched with the server."
+                                showingAlert = true
+                            case .failure(let error):
+                                alertTitle = "Error"
+                                alertMessage = error.localizedDescription
+                                showingAlert = true
+                            }
+                        }
+                    }
+                } label: {
+                    Label("Sync Data", systemImage: "arrow.triangle.2.circlepath")
+                }
             }
             .padding(.bottom)
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
+        .coverWithLoader(isLoading)
         .appBackgroundGradient()
         .onTapGesture {
             hideKeyboard()

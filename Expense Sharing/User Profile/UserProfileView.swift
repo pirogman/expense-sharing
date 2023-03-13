@@ -12,6 +12,8 @@ struct UserProfileView: View {
     
     @StateObject var vm: UserProfileViewModel
     
+    @State var isLoading = false
+    
     @State var navigateToSelectedGroup = false
     @State var selectedGroup: Group?
     
@@ -48,6 +50,7 @@ struct UserProfileView: View {
                 CapsuleDivider()
                 groupsSection
             }
+            .coverWithLoader(isLoading)
             .appBackgroundGradient()
             .navigationBarHidden(true)
             .onAppear {
@@ -120,6 +123,34 @@ struct UserProfileView: View {
                 Spacer()
             }
             .padding(.vertical)
+            .padding(.horizontal, 32)
+            
+            Button {
+                withAnimation {
+                    isLoading = true
+                    FRDManager.shared.syncFromServer { result in
+                        isLoading = false
+                        switch result {
+                        case .success:
+                            alertTitle = "Success"
+                            alertMessage = "You synched with the server."
+                            showingAlert = true
+                        case .failure(let error):
+                            alertTitle = "Error"
+                            alertMessage = error.localizedDescription
+                            showingAlert = true
+                        }
+                    }
+                }
+            } label: {
+                RoundedRectangle(cornerRadius: 8)
+                    .strokeBorder(.white, lineWidth: 1.5)
+                    .overlay(
+                        Text("SYNC WITH SERVER")
+                            .font(.headline)
+                    )
+            }
+            .frame(height: 40)
             .padding(.horizontal, 32)
         }
     }

@@ -6,9 +6,20 @@
 //
 
 import SwiftUI
+import FirebaseCore
+
+class AppDelegate: NSObject, UIApplicationDelegate {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        FirebaseApp.configure()
+        return true
+    }
+}
 
 @main
 struct Expense_SharingApp: App {
+    // register app delegate for Firebase setup
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+
     @StateObject var appManager = AppManager()
         
     init() {
@@ -34,6 +45,10 @@ struct Expense_SharingApp: App {
 }
 
 // MARK: -
+
+extension String: Identifiable {
+    public var id: String { self }
+}
 
 extension String {
     var hasText: Bool { !self.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
@@ -96,6 +111,19 @@ extension View {
 }
 
 extension View {
+    func coverWithLoader(_ cover: Bool) -> some View {
+        ZStack {
+            self
+            if cover {
+                Color.blue.opacity(0.15)
+                    .ignoresSafeArea()
+                    .overlay {
+                        ProgressView()
+                            .progressViewStyle(.circular)
+                    }
+            }
+        }
+    }
     func appBackgroundGradient() -> some View {
         self.preferredColorScheme(.light)
             .foregroundColor(.accentColor)
@@ -154,5 +182,70 @@ struct ActivityViewController: UIViewControllerRepresentable {
 
     func updateUIViewController(_ uiViewController: UIActivityViewController, context: UIViewControllerRepresentableContext<ActivityViewController>) {
         //
+    }
+}
+
+//extension Encodable {
+//    var toDictionary: [String: Any]? {
+//        guard let data =  try? JSONEncoder().encode(self) else { return nil }
+//        return try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any]
+//    }
+//}
+
+extension View {
+    func snapshot() -> UIImage? {
+        let controller = UIHostingController(rootView: self)
+        guard let view = controller.view else { return nil }
+        
+        controller.disableSafeArea()
+        controller.view.setNeedsLayout()
+        controller.view.layoutIfNeeded()
+
+        let targetSize = controller.view.intrinsicContentSize
+        view.bounds = CGRect(origin: .zero, size: targetSize)
+        view.backgroundColor = .blue
+        
+        var success = false
+        let renderer = UIGraphicsImageRenderer(size: targetSize)
+        let image = renderer.image { _ in
+            success = view.drawHierarchy(in: controller.view.bounds,
+                                         afterScreenUpdates: true)
+        }
+        
+        return success ? image : nil
+    }
+}
+
+// https://stackoverflow.com/questions/70156299/cannot-place-swiftui-view-outside-the-safearea-when-embedded-in-uihostingcontrol
+extension UIHostingController {
+    convenience public init(rootView: Content, ignoreSafeArea: Bool) {
+        self.init(rootView: rootView)
+        
+        if ignoreSafeArea {
+            disableSafeArea()
+        }
+    }
+    
+    func disableSafeArea() {
+        guard let viewClass = object_getClass(view) else { return }
+        
+        let viewSubclassName = String(cString: class_getName(viewClass)).appending("_IgnoreSafeArea")
+        if let viewSubclass = NSClassFromString(viewSubclassName) {
+            object_setClass(view, viewSubclass)
+        }
+        else {
+            guard let viewClassNameUtf8 = (viewSubclassName as NSString).utf8String else { return }
+            guard let viewSubclass = objc_allocateClassPair(viewClass, viewClassNameUtf8, 0) else { return }
+            
+            if let method = class_getInstanceMethod(UIView.self, #selector(getter: UIView.safeAreaInsets)) {
+                let safeAreaInsets: @convention(block) (AnyObject) -> UIEdgeInsets = { _ in
+                    return .zero
+                }
+                class_addMethod(viewSubclass, #selector(getter: UIView.safeAreaInsets), imp_implementationWithBlock(safeAreaInsets), method_getTypeEncoding(method))
+            }
+            
+            objc_registerClassPair(viewSubclass)
+            object_setClass(view, viewSubclass)
+        }
     }
 }
