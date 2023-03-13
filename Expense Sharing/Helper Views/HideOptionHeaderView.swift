@@ -2,8 +2,6 @@
 //  HideOptionHeaderView.swift
 //  Expense Sharing
 //
-//  Created by Alex Pirog on 12.03.2023.
-//
 
 import SwiftUI
 

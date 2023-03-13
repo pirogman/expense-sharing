@@ -2,8 +2,6 @@
 //  AuthViewModel.swift
 //  Expense Sharing
 //
-//  Created by Alex Pirog on 08.03.2023.
-//
 
 import SwiftUI
 import UniformTypeIdentifiers

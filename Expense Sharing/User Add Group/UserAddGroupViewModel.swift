@@ -2,8 +2,6 @@
 //  UserAddGroupViewModel.swift
 //  Expense Sharing
 //
-//  Created by Alex Pirog on 10.03.2023.
-//
 
 import SwiftUI
 

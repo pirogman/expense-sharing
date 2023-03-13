@@ -2,8 +2,6 @@
 //  UserAddGroupView.swift
 //  Expense Sharing
 //
-//  Created by Alex Pirog on 09.03.2023.
-//
 
 import SwiftUI
 

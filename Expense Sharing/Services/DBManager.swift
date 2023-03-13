@@ -2,8 +2,6 @@
 //  DBManager.swift
 //  Expense Sharing
 //
-//  Created by Alex Pirog on 07.03.2023.
-//
 
 import Foundation
 import FirebaseDatabase

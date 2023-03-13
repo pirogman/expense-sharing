@@ -2,8 +2,6 @@
 //  CurrencyManager.swift
 //  Expense Sharing
 //
-//  Created by Alex Pirog on 11.03.2023.
-//
 
 import SwiftUI
 

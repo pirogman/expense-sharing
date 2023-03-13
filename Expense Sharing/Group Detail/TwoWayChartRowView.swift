@@ -2,8 +2,6 @@
 //  TwoWayChartRowView.swift
 //  Expense Sharing
 //
-//  Created by Alex Pirog on 13.03.2023.
-//
 
 import SwiftUI
 
