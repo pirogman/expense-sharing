@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-/// Format: (user email, user name, paid/owed amount, color for user in this group)
+/// Format: user email, user name, paid/owed amount, color for user in this group
 typealias ExpenseWithInfo = (String, String, Double, Color)
 
 class GroupDetailViewModel: ObservableObject {
@@ -90,19 +90,36 @@ class GroupDetailViewModel: ObservableObject {
         groupTransactions = updatedTransactions
     }
     
-    func calculateUserAmounts(for user: User) -> (Double, Double) {
+    func getUserAmounts(for user: User) -> (Double, Double) {
         var totalPaid = 0.0
-        var totalOwed = 0.0
+        var totalShare = 0.0
         for transaction in groupTransactions {
+            let paidUserShare = transaction.expenses.values.reduce(0, +)
             if let amount = transaction.expenses[user.email] {
                 if amount > 0 {
                     totalPaid += amount
+                    totalShare += -paidUserShare
                 } else {
-                    totalOwed += amount
+                    totalShare += amount
                 }
             }
         }
-        return (totalPaid, totalOwed)
+        return (totalPaid, totalShare)
+    }
+    
+    func getUsersAmountsLimits() -> (Double, Double) {
+        var maxPaid = 0.0
+        var minShare = 0.0
+        for user in groupUsers {
+            let amounts = getUserAmounts(for: user)
+            if amounts.0 > maxPaid {
+                maxPaid = amounts.0
+            }
+            if amounts.1 < minShare {
+                minShare = amounts.1
+            }
+        }
+        return (maxPaid, minShare)
     }
     
     func getTransactionExpenses(_ transaction: Transaction) -> [ExpenseWithInfo] {

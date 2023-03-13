@@ -16,6 +16,7 @@ struct GroupDetailView: View {
     @State var showingAddUser = false
     @State var showingAddTransaction = false
     @State var showingGroupShare = false
+    @State var showingReport = false
     
     @State var showingAlert = false
     @State var alertTitle = ""
@@ -50,6 +51,11 @@ struct GroupDetailView: View {
                     showingGroupShare = true
                 } label: {
                     Label("Share Group", systemImage: "square.and.arrow.up")
+                }
+                Button {
+                    showingReport = true
+                } label: {
+                    Label("Generate Report", systemImage: "arrow.left.arrow.right.square")
                 }
             }
             .padding(.trailing, 16)
@@ -98,18 +104,63 @@ struct GroupDetailView: View {
                 GroupAddTransactionView(vm: vm)
             }
         )
+        .fullScreenCover(
+            isPresented: $showingReport,
+            content: {
+                GroupReportView(vm: vm)
+            }
+        )
     }
     
     private var chartSection: some View {
         VStack {
             HideOptionHeaderView(title: "Chart", hideContent: $hideChartSection)
                 .padding(.horizontal, 16)
-
-            Circle()
-                .strokeBorder(.red, lineWidth: 40)
-                .squareFrame(side: 160)
-                .padding()
-                .frame(height: hideChartSection ? 0 : 180)
+            
+            let estimatedHeight: CGFloat? = vm.groupUsers.count < 6 ? nil : 180
+            ScrollView(.vertical, showsIndicators: false) {
+                LazyVStack(spacing: 4) {
+                    let maxWidth = UIScreen.main.bounds.width / 2 - 32
+                    let limits = vm.getUsersAmountsLimits()
+                    HStack(spacing: 24) {
+                        Text("Share part")
+                            .frame(width: maxWidth, alignment: .trailing)
+                        Text("Paid amount")
+                            .frame(width: maxWidth, alignment: .leading)
+                    }
+                    .font(.caption)
+                    .padding(.bottom, 6)
+                    ForEach(vm.groupUsers) { user in
+                        let amounts = vm.getUserAmounts(for: user)
+                        let userShareWidth = maxWidth * (abs(amounts.1) / abs(limits.1))
+                        let userPaidWidth = maxWidth * (abs(amounts.0) / abs(limits.0))
+                        let barColor = vm.userColors[user.email] ?? .white
+                        let textColor: Color = barColor == .white ? .blue : .white
+                        let shareMoneyText = CurrencyManager.getText(for: amounts.1, currencyCode: vm.groupCurrencyCode)
+                        let paidMoneyText = CurrencyManager.getText(for: amounts.0, currencyCode: vm.groupCurrencyCode)
+                        TwoWayChartRowView(
+                            barHeight: 30,
+                            barColor: barColor,
+                            leftWidth: userShareWidth,
+                            rightWidth: userPaidWidth,
+                            textColor: textColor,
+                            leftText: shareMoneyText,
+                            rightText: paidMoneyText,
+                            widthForText: maxWidth / 2
+                        )
+                    }
+                }
+                .padding(.vertical, 4)
+                .overlay {
+                    Capsule()
+                        .fill()
+                        .frame(width: 2)
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 8)
+            }
+            .maskScrollEdges(startPoint: .top, endPoint: .bottom)
+            .frame(height: hideChartSection ? 0 : estimatedHeight)
         }
     }
     
@@ -131,13 +182,12 @@ struct GroupDetailView: View {
                                         .fill(.white)
                                         .frame(height: 1)
                                 }
-                                let amounts = vm.calculateUserAmounts(for: user)
+                                let amounts = vm.getUserAmounts(for: user)
                                 GroupDetailUserItemView(
                                     color: vm.userColors[user.email] ?? .white,
                                     userName: user.name,
                                     userEmail: user.email,
-                                    paidAmount: amounts.0,
-                                    owedAmount: amounts.1,
+                                    amount: amounts.0 - abs(amounts.1),
                                     currencyCode: vm.groupCurrencyCode
                                 )
                             }

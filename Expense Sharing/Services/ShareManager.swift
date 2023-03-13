@@ -27,4 +27,32 @@ class ShareManager {
         }
         return activities
     }
+    
+    static func getShareActivities(_ image: UIImage, fileName: String) -> [AnyObject] {
+        var activities = [AnyObject]()
+        if let url = saveToFile(image, named: fileName) {
+            activities.append(url as AnyObject)
+        }
+        return activities
+    }
+    
+    static func clearSharedFile(named: String) {
+        do {
+            let url = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("\(named)")
+            try FileManager.default.removeItem(at: url)
+        } catch let error {
+            print("Removing file error: \(error)")
+        }
+    }
+    
+    static private func saveToFile(_ image: UIImage, named: String) -> URL? {
+        guard let imageData = image.jpegData(compressionQuality: 0.5) else { return nil }
+        do {
+            let url = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("\(named).jpeg")
+            try imageData.write(to: url, options: .atomic)
+            return url
+        } catch let error {
+            return nil
+        }
+    }
 }

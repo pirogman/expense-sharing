@@ -11,8 +11,7 @@ struct GroupDetailUserItemView: View {
     let color: Color
     let userName: String
     let userEmail: String
-    let paidAmount: Double
-    let owedAmount: Double
+    let amount: Double
     let currencyCode: String?
     
     var body: some View {
@@ -26,11 +25,16 @@ struct GroupDetailUserItemView: View {
             }
             Spacer()
             VStack(alignment: .trailing, spacing: 6) {
-                let paid = CurrencyManager.getText(for: paidAmount, currencyCode: currencyCode)
-                Text(paid).font(.headline)
-                
-                let owed = CurrencyManager.getText(for: owedAmount, currencyCode: currencyCode)
-                Text(owed).font(.subheadline)
+                let moneyText = CurrencyManager.getText(for: amount, currencyCode: currencyCode)
+                if amount > 0 {
+                    Text(moneyText).font(.headline)
+                    Text("owed").font(.subheadline)
+                } else if amount < 0 {
+                    Text(moneyText).font(.headline)
+                    Text("owes").font(.subheadline)
+                } else {
+                    Text(moneyText).font(.headline)
+                }
             }
         }
         .lineLimit(1)
