@@ -24,6 +24,7 @@
 		5DA7D06029BB94AB004B197F /* UserAmountItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA7D05F29BB94AB004B197F /* UserAmountItemView.swift */; };
 		5DB1BE7D29BF1CF9009996D4 /* TwoWayChartRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB1BE7C29BF1CF9009996D4 /* TwoWayChartRowView.swift */; };
 		5DB1BE7F29BF2DFB009996D4 /* OneWayChartRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB1BE7E29BF2DFB009996D4 /* OneWayChartRowView.swift */; };
+		5DB1BE8129BF6987009996D4 /* ExpenseCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB1BE8029BF6987009996D4 /* ExpenseCalculator.swift */; };
 		5DB764BF29B72FAA00C533F5 /* GroupAddTransactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB764BE29B72FAA00C533F5 /* GroupAddTransactionView.swift */; };
 		5DB764C129B730F100C533F5 /* GroupAddUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB764C029B730F100C533F5 /* GroupAddUserView.swift */; };
 		5DB764C329B737C100C533F5 /* DBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB764C229B737C100C533F5 /* DBManager.swift */; };
@@ -66,6 +67,7 @@
 		5DA7D05F29BB94AB004B197F /* UserAmountItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAmountItemView.swift; sourceTree = "<group>"; };
 		5DB1BE7C29BF1CF9009996D4 /* TwoWayChartRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoWayChartRowView.swift; sourceTree = "<group>"; };
 		5DB1BE7E29BF2DFB009996D4 /* OneWayChartRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneWayChartRowView.swift; sourceTree = "<group>"; };
+		5DB1BE8029BF6987009996D4 /* ExpenseCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseCalculator.swift; sourceTree = "<group>"; };
 		5DB764BE29B72FAA00C533F5 /* GroupAddTransactionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupAddTransactionView.swift; sourceTree = "<group>"; };
 		5DB764C029B730F100C533F5 /* GroupAddUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupAddUserView.swift; sourceTree = "<group>"; };
 		5DB764C229B737C100C533F5 /* DBManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBManager.swift; sourceTree = "<group>"; };
@@ -217,6 +219,7 @@
 				5D61314329B5DA9200B0366D /* JSONManager.swift */,
 				5DA7D04E29BB18A0004B197F /* ShareManager.swift */,
 				5DD2E05529BC877100DDE687 /* CurrencyManager.swift */,
+				5DB1BE8029BF6987009996D4 /* ExpenseCalculator.swift */,
 				5DB764C629B7797E00C533F5 /* Validator.swift */,
 			);
 			path = Services;
@@ -326,6 +329,7 @@
 				5D61313629B5D96700B0366D /* Expense_SharingApp.swift in Sources */,
 				5DBC226329B8753D00DC67D4 /* AuthViewModel.swift in Sources */,
 				5DB1BE7D29BF1CF9009996D4 /* TwoWayChartRowView.swift in Sources */,
+				5DB1BE8129BF6987009996D4 /* ExpenseCalculator.swift in Sources */,
 				5DA7D05D29BB7D5C004B197F /* GroupAddTransactionViewModel.swift in Sources */,
 				5DA7D05329BB6D2F004B197F /* AppManager.swift in Sources */,
 				5DF5B9C729BE480500109374 /* CustomNavigationBar.swift in Sources */,
