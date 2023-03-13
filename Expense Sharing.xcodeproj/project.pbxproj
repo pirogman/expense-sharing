@@ -82,6 +82,7 @@
 		5DB1BE8F29BF9FFB009996D4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5DB1BE9129BFA032009996D4 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		5DB1BE9329BFAFA2009996D4 /* FRDManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FRDManager.swift; sourceTree = "<group>"; };
+		5DB1BE9529BFB2FA009996D4 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		5DB764BE29B72FAA00C533F5 /* GroupAddTransactionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupAddTransactionView.swift; sourceTree = "<group>"; };
 		5DB764C029B730F100C533F5 /* GroupAddUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupAddUserView.swift; sourceTree = "<group>"; };
 		5DB764C229B737C100C533F5 /* DBManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBManager.swift; sourceTree = "<group>"; };
@@ -124,6 +125,7 @@
 		5D61312929B5D96700B0366D = {
 			isa = PBXGroup;
 			children = (
+				5DB1BE9529BFB2FA009996D4 /* README.md */,
 				5D61313429B5D96700B0366D /* Expense Sharing */,
 				5D61313329B5D96700B0366D /* Products */,
 			);
