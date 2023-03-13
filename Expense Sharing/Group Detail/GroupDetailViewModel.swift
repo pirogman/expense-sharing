@@ -10,6 +10,9 @@ import SwiftUI
 /// Format: user email, user name, paid/owed amount, color for user in this group
 typealias ExpenseWithInfo = (String, String, Double, Color)
 
+/// Format: amount to transfer, user who paid, user who received
+typealias UserCashFlowAction = (Double, User, User)
+
 class GroupDetailViewModel: ObservableObject {
     @Published private(set) var groupTitle = ""
     @Published private(set) var groupUsers = [User]()
@@ -107,7 +110,7 @@ class GroupDetailViewModel: ObservableObject {
         return (totalPaid, totalShare)
     }
     
-    func getUsersAmountsLimits() -> (Double, Double) {
+    func getUsersAmountsLimits() -> (Double, Double, Double) {
         var maxPaid = 0.0
         var minShare = 0.0
         for user in groupUsers {
@@ -119,7 +122,11 @@ class GroupDetailViewModel: ObservableObject {
                 minShare = amounts.1
             }
         }
-        return (maxPaid, minShare)
+        return (maxPaid, minShare, max(maxPaid, abs(minShare)))
+    }
+    
+    func getTotalSpent() -> Double {
+        groupUsers.map { getUserAmounts(for: $0).0 }.reduce(0, +)
     }
     
     func getTransactionExpenses(_ transaction: Transaction) -> [ExpenseWithInfo] {
@@ -133,6 +140,15 @@ class GroupDetailViewModel: ObservableObject {
         }
         result.sort { abs($0.2) > abs($1.2) }
         return result
+    }
+    
+    func getCashFlowActions() -> [UserCashFlowAction] {
+        let money: [Double] = groupUsers.map { user in
+            let amounts = getUserAmounts(for: user)
+            return amounts.1 + amounts.0
+        }
+        let actions = ExpenseCalculator.calculateCashFlow(in: money)
+        return actions.map { ($0.0, groupUsers[$0.1], groupUsers[$0.2]) }
     }
     
     // MARK: - Share
@@ -149,5 +165,60 @@ class GroupDetailViewModel: ObservableObject {
         guard let name = tempFileName else { return }
         tempFileName = nil
         JSONManager.clearTempFile(named: name)
+    }
+}
+
+/// Format: amount to transfer, index of who paid, index of who received
+typealias CashFlowAction = (Double, Int, Int)
+
+class ExpenseCalculator {
+    static func calculateCashFlow(in array: [Double]) -> [CashFlowAction] {
+        guard !array.isEmpty else { return [] }
+        return calculateCashFlowRecursively(in: array, actions: []).1
+    }
+    
+    static private func calculateCashFlowRecursively(in array: [Double], actions: [CashFlowAction]) -> ([Double], [CashFlowAction]) {
+        var cashArray = array
+        var cashActions = actions
+        
+        // Get paying and receiving items
+        let maxDebitIndex = getMinValueIndex(in: array)
+        let maxCreditIndex = getMaxValueIndex(in: array)
+        let maxDebit = array[maxDebitIndex]
+        let maxCredit = array[maxCreditIndex]
+        
+        guard maxDebit < 0 && maxCredit > 0 else {
+            // Calculated to the end, return
+            return (cashArray, cashActions)
+        }
+        
+        // Transfer cash
+        let cash = min(abs(maxDebit), maxCredit)
+        cashArray[maxDebitIndex] += cash
+        cashArray[maxCreditIndex] -= cash
+        cashActions.append((cash, maxCreditIndex, maxDebitIndex))
+        
+        // Continue until finished
+        return calculateCashFlowRecursively(in: cashArray, actions: cashActions)
+    }
+    
+    static private func getMinValueIndex(in array: [Double]) -> Int {
+        var index = 0
+        for i in 0..<array.count {
+            if array[i] < array[index] {
+                index = i
+            }
+        }
+        return index
+    }
+    
+    static private func getMaxValueIndex(in array: [Double]) -> Int {
+        var index = 0
+        for i in 0..<array.count {
+            if array[i] > array[index] {
+                index = i
+            }
+        }
+        return index
     }
 }

@@ -46,7 +46,7 @@ class ShareManager {
     }
     
     static private func saveToFile(_ image: UIImage, named: String) -> URL? {
-        guard let imageData = image.jpegData(compressionQuality: 0.5) else { return nil }
+        guard let imageData = image.pngData() else { return nil }
         do {
             let url = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("\(named).jpeg")
             try imageData.write(to: url, options: .atomic)

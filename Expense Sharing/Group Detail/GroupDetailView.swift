@@ -146,12 +146,14 @@ struct GroupDetailView: View {
                             textColor: textColor,
                             leftText: shareMoneyText,
                             rightText: paidMoneyText,
-                            widthForText: maxWidth / 2
+                            putLeftTextOverBar: userShareWidth > maxWidth / 2,
+                            putRightTextOverBar: userPaidWidth > maxWidth / 2
                         )
+                            .font(.caption)
                     }
                 }
                 .padding(.vertical, 4)
-                .overlay {
+                .overlay(alignment: .center) {
                     Capsule()
                         .fill()
                         .frame(width: 2)

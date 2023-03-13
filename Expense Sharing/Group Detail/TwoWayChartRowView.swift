@@ -15,10 +15,8 @@ struct TwoWayChartRowView: View {
     let textColor: Color
     let leftText: String
     let rightText: String
-    let widthForText: CGFloat
-    
-    var putLeftTextOverBar: Bool { widthForText < leftWidth }
-    var putRightTextOverBar: Bool { widthForText < rightWidth }
+    let putLeftTextOverBar: Bool
+    let putRightTextOverBar: Bool
     
     var body: some View {
         HStack(spacing: 0) {
@@ -59,12 +57,5 @@ struct TwoWayChartRowView: View {
             }
         }
         .lineLimit(1)
-        .font(.caption)
-    }
-    
-    private func textView(for text: String) -> some View {
-        Text(text)
-            .foregroundColor(textColor)
-            .padding(.horizontal, 4)
     }
 }
