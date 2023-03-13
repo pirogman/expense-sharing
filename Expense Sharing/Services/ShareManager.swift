@@ -49,7 +49,7 @@ class ShareManager {
             let url = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("\(named).jpeg")
             try imageData.write(to: url, options: .atomic)
             return url
-        } catch let error {
+        } catch {
             return nil
         }
     }
