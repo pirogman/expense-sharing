@@ -40,46 +40,20 @@ struct AuthView: View {
                 .padding(.horizontal, 36)
             
             Spacer()
-            HStack {
+            HStack(spacing: 0) {
+                Spacer()
                 Button {
-                    withAnimation {
-                        isLoading = true
-                        FRDManager.shared.syncToServer(users: DBManager.shared.users, groups: DBManager.shared.groups) { errors in
-                            isLoading = false
-                            if !errors.isEmpty {
-                                alertTitle = "Error"
-                                alertMessage = errors.first!.localizedDescription
-                                showingAlert = true
-                            } else {
-                                alertTitle = "Success"
-                                alertMessage = "Local data synched to server."
-                                showingAlert = true
-                            }
-                        }
-                    }
+                    showingFilePicker = true
                 } label: {
                     Label("Import Data", systemImage: "square.and.arrow.down")
                 }
+                Spacer()
                 Button {
-                    withAnimation {
-                        isLoading = true
-                        FRDManager.shared.syncFromServer { result in
-                            isLoading = false
-                            switch result {
-                            case .success:
-                                alertTitle = "Success"
-                                alertMessage = "You synched with the server."
-                                showingAlert = true
-                            case .failure(let error):
-                                alertTitle = "Error"
-                                alertMessage = error.localizedDescription
-                                showingAlert = true
-                            }
-                        }
-                    }
+                    syncFromServer()
                 } label: {
                     Label("Sync Data", systemImage: "arrow.triangle.2.circlepath")
                 }
+                Spacer()
             }
             .padding(.bottom)
         }
@@ -90,10 +64,7 @@ struct AuthView: View {
             hideKeyboard()
         }
         .onAppear {
-#if DEBUG
-            userEmail = "alex@example.com"
-            DBManager.shared.loadTestData()
-#endif
+            vm.updateDBCounts()
         }
         .simpleAlert(isPresented: $showingAlert, title: alertTitle, message: alertMessage)
         .fileImporter(
@@ -109,6 +80,7 @@ struct AuthView: View {
                 alertTitle = "Error"
                 alertMessage = error.localizedDescription
             }
+            vm.updateDBCounts()
             showingAlert = true
         }
     }
@@ -117,8 +89,7 @@ struct AuthView: View {
         VStack {
             Text("Authenticate")
                 .font(.largeTitle)
-            let counts = vm.getDBCounts()
-            Text("\(counts.0) Users | \(counts.1) Groups")
+            Text("\(vm.usersCount) Users | \(vm.groupsCount) Groups")
                 .font(.caption)
             
             VStack {
@@ -142,6 +113,7 @@ struct AuthView: View {
                         .focused($focusedField, equals: .emailField)
                         .keyboardType(.emailAddress)
                         .textContentType(.emailAddress)
+                        .textInputAutocapitalization(.never)
                         .stylishTextField()
                         .onSubmit {
                             focusedField = nil
@@ -212,6 +184,26 @@ struct AuthView: View {
             alertTitle = "Error"
             alertMessage = error.localizedDescription
             showingAlert = true
+        }
+    }
+    
+    private func syncFromServer() {
+        withAnimation {
+            isLoading = true
+            FRDManager.shared.syncFromServer { result in
+                vm.updateDBCounts()
+                isLoading = false
+                switch result {
+                case .success:
+                    alertTitle = "Success"
+                    alertMessage = "You synched with the server."
+                    showingAlert = true
+                case .failure(let error):
+                    alertTitle = "Error"
+                    alertMessage = error.localizedDescription
+                    showingAlert = true
+                }
+            }
         }
     }
 }

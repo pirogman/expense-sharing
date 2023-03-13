@@ -20,8 +20,12 @@ enum AuthError: Error, LocalizedError {
 }
 
 class AuthViewModel: ObservableObject {
-    func getDBCounts() -> (Int, Int) {
-        return (DBManager.shared.users.count, DBManager.shared.groups.count)
+    @Published private(set) var usersCount = 0
+    @Published private(set) var groupsCount = 0
+    
+    func updateDBCounts() {
+        usersCount = DBManager.shared.users.count
+        groupsCount = DBManager.shared.groups.count
     }
     
     func registerUser(name: String, email: String) -> Result<User, Error> {
