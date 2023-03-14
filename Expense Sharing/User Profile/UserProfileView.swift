@@ -72,6 +72,7 @@ struct UserProfileView: View {
             }
             .sheet(isPresented: $showingUserShare) {
                 ActivityViewController(activityItems: vm.getUserShareActivities()) { _ in
+                    showingUserShare = false
                     vm.clearSharedUserFile()
                 }
             }

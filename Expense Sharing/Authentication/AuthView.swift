@@ -30,7 +30,7 @@ struct AuthView: View {
     
     var body: some View {
         VStack {
-            AnimatedLogoView(sizeLimit: 80)
+            AnimatedLogoView(sizeLimit: 80, isAnimating: true)
                 .padding(.top, appManager.isKeyboardUp ? 6 : 24)
                 .padding(.bottom, appManager.isKeyboardUp ? 6 : 12)
             
@@ -62,6 +62,7 @@ struct AuthView: View {
             hideKeyboard()
         }
         .onAppear {
+            self.userEmail = "alex@example.com"
             vm.updateDBCounts()
         }
         .simpleAlert(isPresented: $showingAlert, title: alertTitle, message: alertMessage)

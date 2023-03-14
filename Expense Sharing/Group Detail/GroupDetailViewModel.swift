@@ -91,9 +91,12 @@ class GroupDetailViewModel: ObservableObject {
         groupTransactions = updatedTransactions
     }
     
+    /// Tuple format:
+    /// - 0: total paid amount by given user (positive or zero)
+    /// - 1: total share amount by given user (negative or zero)
     func getUserAmounts(for user: User) -> (Double, Double) {
         var totalPaid = 0.0
-        var totalShare = 0.0
+        var totalShare = -0.0
         for transaction in groupTransactions {
             let paidUserShare = transaction.expenses.values.reduce(0, +)
             if let amount = transaction.expenses[user.email] {
@@ -110,7 +113,7 @@ class GroupDetailViewModel: ObservableObject {
     
     func getUsersAmountsLimits() -> (Double, Double, Double) {
         var maxPaid = 0.0
-        var minShare = 0.0
+        var minShare = -0.0
         for user in groupUsers {
             let amounts = getUserAmounts(for: user)
             if amounts.0 > maxPaid {
@@ -143,7 +146,7 @@ class GroupDetailViewModel: ObservableObject {
     func getCashFlowActions() -> [UserCashFlowAction] {
         let money: [Double] = groupUsers.map { user in
             let amounts = getUserAmounts(for: user)
-            return amounts.1 + amounts.0
+            return amounts.0 + amounts.1
         }
         let actions = ExpenseCalculator.calculateCashFlow(in: money)
         return actions.map { ($0.0, groupUsers[$0.1], groupUsers[$0.2]) }

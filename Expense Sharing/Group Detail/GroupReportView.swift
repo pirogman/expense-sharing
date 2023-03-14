@@ -37,6 +37,7 @@ struct GroupReportView: View {
         .appBackgroundGradient()
         .sheet(isPresented: $showingReportShare) {
             ActivityViewController(activityItems: getReportShareActivities()) { _ in
+                showingReportShare = false
                 clearReportSharedImage()
             }
         }
@@ -90,45 +91,29 @@ struct GroupReportView: View {
     
     private var reportView: some View {
         VStack(spacing: 12) {
-            reportInfoView
+            getReportInfoView(logoSize: 80, animating: true)
             getReportChartView(widthLimit: UIScreen.main.bounds.width - 32)
-            reportTransactionsView
+            getReportTransactionsView(addDate: false)
         }
     }
     
     private var reportViewForImage: some View {
         VStack(spacing: 12) {
-            reportInfoView.frame(width: 600, alignment: .center)
+            getReportInfoView(logoSize: 160, animating: false)
+                .frame(width: 600, alignment: .center)
             getReportChartView(widthLimit: 600 - 32)
-            reportTransactionsView.frame(width: 600, alignment: .center)
+            getReportTransactionsView(addDate: true)
+                .frame(width: 600, alignment: .center)
         }
         .padding(16)
         .appBackgroundGradient()
     }
     
-    private var reportInfoView: some View {
+    private func getReportInfoView(logoSize: CGFloat, animating: Bool) -> some View {
         VStack {
             // Logo
-            VStack(spacing: 6) {
-                HStack(spacing: 6) {
-                    Image("iconPlus")
-                        .resizable().scaledToFit()
-                        .squareFrame(side: 24)
-                    Image("iconDivide")
-                        .resizable().scaledToFit()
-                        .squareFrame(side: 24)
-                        .padding(6)
-                }
-                HStack(spacing: 6) {
-                    Image("iconEquals")
-                        .resizable().scaledToFit()
-                        .squareFrame(side: 24)
-                    Image("iconSmile")
-                        .resizable().scaledToFit()
-                        .squareFrame(side: 24)
-                        .padding(6)
-                }
-            }
+            AnimatedLogoView(sizeLimit: logoSize, isAnimating: animating)
+                .padding(.bottom, 8)
 
             // Group title
             Text(vm.groupTitle)
@@ -192,9 +177,10 @@ struct GroupReportView: View {
     }
     
     private func reportChartRowView(for user: User, limit: Double, maxWidth: CGFloat, maxHeight: CGFloat) -> some View {
-        let paidAmount = vm.getUserAmounts(for: user).0
-        let shareAmount = abs(vm.getUserAmounts(for: user).1)
-        let dueAmount = -(shareAmount - paidAmount)
+        let amounts = vm.getUserAmounts(for: user)
+        let paidAmount = amounts.0
+        let shareAmount = abs(amounts.1)
+        let dueAmount = (shareAmount - paidAmount)
         
         let paidWidth = min(maxWidth, maxWidth * (paidAmount / limit))
         let shareWidth = min(maxWidth, maxWidth * (shareAmount / limit))
@@ -238,7 +224,7 @@ struct GroupReportView: View {
         .font(.caption2)
     }
     
-    private var reportTransactionsView: some View {
+    private func getReportTransactionsView(addDate: Bool) -> some View {
         VStack {
             // Transactions to resolve group expenses
             VStack(alignment: .leading, spacing: 12) {
@@ -267,12 +253,15 @@ struct GroupReportView: View {
                     }
                 }
             }
+            .padding(.bottom, 16)
             
             // Date
-            let dateText = dateFormatter.string(from: Date())
-            Text(dateText)
-                .font(.caption)
-                .padding(.vertical, 16)
+            if addDate {
+                let dateText = dateFormatter.string(from: Date())
+                Text(dateText)
+                    .font(.caption)
+                    .padding(.bottom, 16)
+            }
         }
     }
     

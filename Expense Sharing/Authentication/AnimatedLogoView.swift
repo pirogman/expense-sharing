@@ -9,12 +9,14 @@ struct AnimatedLogoView: View {
     let sizeLimit: CGFloat
     let logoPartSize: CGFloat
     let logoPartPadding: CGFloat
+    let isAnimating: Bool
     
-    init(sizeLimit: CGFloat) {
+    init(sizeLimit: CGFloat, isAnimating: Bool) {
         self.sizeLimit = sizeLimit
         let step = sizeLimit / 16
         self.logoPartSize = step * 6
         self.logoPartPadding = step
+        self.isAnimating = isAnimating
     }
     
     var body: some View {
@@ -28,11 +30,13 @@ struct AnimatedLogoView: View {
         }
         .squareFrame(side: sizeLimit)
         .onAppear {
-            //print("animation logo appear")
+            guard isAnimating else { return }
+            
+            //print("start animating logo on appear")
             animateNextLogoPart()
         }
         .onDisappear {
-            //print("animation logo disappear")
+            //print("stop animating logo on disappear")
             timer?.invalidate()
         }
     }
@@ -69,7 +73,9 @@ struct AnimatedLogoView: View {
     }
     
     private func logoPartOffset(at index: Int) -> CGSize {
-        // In circular manner, clockwise [0, 1, 3, 2]
+        // In circular manner, clockwise:
+        // [0, 1]
+        // [3, 2]
         let leading = index == 0 || index == 3
         let top = index == 0 || index == 1
         
