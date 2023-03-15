@@ -41,6 +41,10 @@ struct GroupReportView: View {
                 clearReportSharedImage()
             }
         }
+        .onChange(of: reportImage) { newValue in
+            // Do not remove - without this listening to image updates
+            // sharing will show empty activities as like there is no image...
+        }
     }
     
     private var navigationBar: some View {
@@ -99,13 +103,14 @@ struct GroupReportView: View {
     
     private var reportViewForImage: some View {
         VStack(spacing: 12) {
-            getReportInfoView(logoSize: 160, animating: false)
-                .frame(width: 600, alignment: .center)
-            getReportChartView(widthLimit: 600 - 32)
+            let wideSize: CGFloat = 420
+            getReportInfoView(logoSize: 120, animating: false)
+                .frame(width: wideSize, alignment: .center)
+            getReportChartView(widthLimit: wideSize)
             getReportTransactionsView(addDate: true)
-                .frame(width: 600, alignment: .center)
+                .frame(width: wideSize, alignment: .center)
         }
-        .padding(16)
+        .padding(30)
         .appBackgroundGradient()
     }
     
@@ -136,18 +141,41 @@ struct GroupReportView: View {
                 
                 // Users
                 VStack(alignment: .trailing, spacing: 4) {
-                    Text("User").padding(.trailing, 12)
+                    Text("User")
                         .font(.caption)
                         .padding(.bottom, 6)
+                        .padding(.trailing, 12)
                     
                     ForEach(vm.groupUsers) { user in
-                        VStack(alignment: .trailing, spacing: 4) {
-                            Text(user.name).font(.headline)
-                            Text(user.email).font(.subheadline)
+                        // Show name and bar hints
+                        let subHeight = maxHeight / 3 - 2
+                        HStack(spacing: 0) {
+                            Spacer()
+                            Text(user.name)
+                                .font(.headline)
+                                .lineLimit(2)
+                                .multilineTextAlignment(.trailing)
+                                .padding(.trailing, 8)
+                            VStack(alignment: .trailing, spacing: 1) {
+                                Text("paid").frame(height: subHeight)
+                                Text("share").frame(height: subHeight)
+                                Text("due").frame(height: subHeight)
+                            }
+                            .lineLimit(1)
+                            .font(.caption2)
+                            .padding(.trailing, 4)
+                            .frame(height: maxHeight, alignment: .center)
                         }
-                        .lineLimit(1)
-                        .padding(.trailing, 6)
                         .frame(height: maxHeight)
+                        
+//                        // Show name and email
+//                        VStack(alignment: .trailing, spacing: 4) {
+//                            Text(user.name).font(.headline)
+//                            Text(user.email).font(.subheadline)
+//                        }
+//                        .lineLimit(1)
+//                        .padding(.trailing, 6)
+//                        .frame(height: maxHeight)
                     }
                 }
                 .padding(.vertical, 4)
@@ -160,9 +188,10 @@ struct GroupReportView: View {
                 
                 // Expenses
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Expenses").padding(.leading, 12)
+                    Text("Expenses")
                         .font(.caption)
                         .padding(.bottom, 6)
+                        .padding(.leading, 12)
                     
                     let limits = vm.getUsersAmountsLimits()
                     ForEach(vm.groupUsers) { user in
