@@ -42,6 +42,7 @@ extension View {
         self.textFieldStyle(.plain)
             .foregroundColor(.gradientDark)
             .accentColor(.gradientLight)
+            .tint(.gradientLight)
             .frame(height: 32)
             .padding(.vertical, 4)
             .padding(.horizontal, 8)
@@ -69,6 +70,8 @@ extension View {
 // MARK: - App Specific
 
 extension Color {
+    // Same as gradientDark on light scheme and gradientLight on dark scheme
+    static let gradientAdaptive = Color("gradientAdaptive")
     static let gradientLight = Color("gradientLight")
     static let gradientDark = Color("gradientDark")
 }
@@ -89,10 +92,7 @@ extension View {
     }
     
     func appBackgroundGradient() -> some View {
-        self.preferredColorScheme(.light)
-            .foregroundColor(.accentColor)
-            .tint(.accentColor)
-            .background(
+        self.background(
                 LinearGradient(gradient: Gradient(colors: [.gradientLight, .gradientDark]),
                                startPoint: .topLeading, endPoint: .bottomTrailing)
                     .ignoresSafeArea()
@@ -101,32 +101,33 @@ extension View {
     
     func simpleAlert(isPresented: Binding<Bool>, title: String, message: String) -> some View {
         self.alert(title, isPresented: isPresented) {
-                Button {
-                    // Do nothing
-                } label: {
-                    Text("OK")
-                }
-            } message: {
-                Text(message)
+            Button {
+                // Do nothing
+            } label: {
+                Text("OK")
             }
+        } message: {
+            Text(message)
+        }
     }
     
     func textFieldAlert(isPresented: Binding<Bool>, title: String, message: String, placeholder: String, input: Binding<String>, onConfirm: @escaping () -> Void) -> some View {
         self.alert(title, isPresented: isPresented) {
-                TextField(placeholder, text: input)
-                Button {
-                    onConfirm()
-                } label: {
-                    Text("Confirm")
-                }
-                Button {
-                    // Do not update
-                } label: {
-                    Text("Cancel")
-                }
-            } message: {
-                Text(message)
+            TextField(placeholder, text: input)
+                .foregroundColor(.gradientAdaptive)
+            Button {
+                onConfirm()
+            } label: {
+                Text("Confirm")
             }
+            Button {
+                // Do not update
+            } label: {
+                Text("Cancel")
+            }
+        } message: {
+            Text(message)
+        }
     }
 }
 

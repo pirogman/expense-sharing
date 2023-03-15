@@ -29,6 +29,11 @@ struct Expense_SharingApp: App {
             }
             .animation(.easeInOut, value: appManager.appState)
             .environmentObject(appManager)
+            // Set everything to white by default as we would have
+            // cyan-blue gradient as a background in all screens
+            .tint(.white)
+            .accentColor(.white)
+            .foregroundColor(.white)
         }
     }
 }

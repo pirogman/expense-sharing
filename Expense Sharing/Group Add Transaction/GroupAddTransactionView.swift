@@ -127,6 +127,7 @@ struct GroupAddTransactionView: View {
             TextEditor(text: $vm.description)
                 .foregroundColor(.gradientDark)
                 .accentColor(.gradientLight)
+                .tint(.gradientLight)
                 .frame(height: 60)
                 .padding(.horizontal, 4)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
