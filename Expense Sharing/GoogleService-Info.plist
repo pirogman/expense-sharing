@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>558703687762-49c930h41ghpplgqfgfj9755s9tar7j6.apps.googleusercontent.com</string>
+	<string>558703687762-diebih54sdmt1mcpo00h92m4dv7n0lvl.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.558703687762-49c930h41ghpplgqfgfj9755s9tar7j6</string>
+	<string>com.googleusercontent.apps.558703687762-diebih54sdmt1mcpo00h92m4dv7n0lvl</string>
 	<key>API_KEY</key>
 	<string>AIzaSyBLmEhjXtQY7kP5ZFO2Q499eIyvYl0F7n0</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.pirogman.Expense-Sharing</string>
+	<string>com.challenge.expense-sharing</string>
 	<key>PROJECT_ID</key>
 	<string>expense-sharing-9a704</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,7 +29,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:558703687762:ios:fa98177519015cf263478b</string>
+	<string>1:558703687762:ios:ee326e8f424fdeec63478b</string>
 	<key>DATABASE_URL</key>
 	<string>https://expense-sharing-9a704-default-rtdb.europe-west1.firebasedatabase.app</string>
 </dict>
