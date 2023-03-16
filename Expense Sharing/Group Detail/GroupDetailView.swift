@@ -127,8 +127,8 @@ struct GroupDetailView: View {
                     .padding(.bottom, 6)
                     ForEach(vm.groupUsers) { user in
                         let amounts = vm.getUserAmounts(for: user)
-                        let userShareWidth = maxWidth * (abs(amounts.1) / abs(limits.1))
-                        let userPaidWidth = maxWidth * (abs(amounts.0) / abs(limits.0))
+                        let userShareWidth = limits.2 > 0 ? min(maxWidth, maxWidth * (abs(amounts.1) / abs(limits.1))) : 0
+                        let userPaidWidth = limits.2 > 0 ? min(maxWidth, maxWidth * (abs(amounts.0) / abs(limits.0))) : 0
                         let barColor = vm.userColors[user.id] ?? .white
                         let textColor: Color = barColor == .white ? .blue : .white
                         let shareMoneyText = CurrencyManager.getText(for: amounts.1, currencyCode: vm.groupCurrencyCode)

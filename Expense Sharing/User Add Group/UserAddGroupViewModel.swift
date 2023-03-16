@@ -24,7 +24,7 @@ class UserAddGroupViewModel: ObservableObject {
         FIRManager.shared.searchUsers(search) { [weak self] result in
             switch result {
             case .success(let users):
-                self?.searchUsers = users
+                self?.searchUsers = users.filter { $0.id != self?.userId }
             case .failure(let error):
                 print("search users failed with error: \(error)")
                 self?.searchUsers = []

@@ -157,8 +157,8 @@ struct GroupReportView: View {
                                 .multilineTextAlignment(.trailing)
                                 .padding(.trailing, 8)
                             VStack(alignment: .trailing, spacing: 1) {
-                                Text("paid").frame(height: subHeight)
                                 Text("share").frame(height: subHeight)
+                                Text("paid").frame(height: subHeight)
                                 Text("due").frame(height: subHeight)
                             }
                             .lineLimit(1)
@@ -211,9 +211,9 @@ struct GroupReportView: View {
         let shareAmount = abs(amounts.1)
         let dueAmount = (shareAmount - paidAmount)
         
-        let paidWidth = min(maxWidth, maxWidth * (paidAmount / limit))
-        let shareWidth = min(maxWidth, maxWidth * (shareAmount / limit))
-        let dueWidth = min(maxWidth, maxWidth * (abs(dueAmount) / limit))
+        let paidWidth = limit > 0 ? min(maxWidth, maxWidth * (paidAmount / limit)) : 0
+        let shareWidth = limit > 0 ? min(maxWidth, maxWidth * (shareAmount / limit)) : 0
+        let dueWidth = limit > 0 ? min(maxWidth, maxWidth * (abs(dueAmount) / limit)) : 0
         
         let paidText = CurrencyManager.getText(for: paidAmount, currencyCode: vm.groupCurrencyCode)
         let shareText = CurrencyManager.getText(for: shareAmount, currencyCode: vm.groupCurrencyCode)
