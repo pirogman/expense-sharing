@@ -6,7 +6,6 @@
 import SwiftUI
 
 class ShareManager {
-    
     static func getShareActivities(_ exportData: ExportData, fileName: String) -> [AnyObject] {
         var activities = [AnyObject]()
         if let url = JSONManager.saveToFile(exportData, named: fileName) {
