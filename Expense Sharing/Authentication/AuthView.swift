@@ -71,7 +71,8 @@ struct AuthView: View {
             hideKeyboard()
         }
         .onAppear {
-            self.userEmail = "alex@example.com"
+            self.userEmail = "john@example.com"
+//            self.userEmail = "alex@example.com"
         }
         .simpleAlert(isPresented: $showingAlert, title: alertTitle, message: alertMessage)
         .fileImporter(

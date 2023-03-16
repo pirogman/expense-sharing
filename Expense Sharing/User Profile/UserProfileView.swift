@@ -25,7 +25,6 @@ struct UserProfileView: View {
     @State var alertMessage = ""
     
     @State var showingSearch = false
-    @State var searchText = ""
     
     var body: some View {
         NavigationView {
@@ -50,17 +49,11 @@ struct UserProfileView: View {
             .coverWithLoader(isLoading)
             .appBackgroundGradient()
             .navigationBarHidden(true)
-            .onAppear {
-                vm.updateUserGroups()
-            }
-            .onChange(of: searchText) { text in
-                withAnimation {
-                    vm.updateUserGroups(search: text)
-                }
-            }
             .textFieldAlert(isPresented: $showingEditNameAlert, title: "Edit Name", message: "User name should consist of at least 3 characters.", placeholder: "Name", input: $editedName) {
-                withAnimation {
-                    switch vm.editName(editedName) {
+                withAnimation { isLoading = true }
+                vm.editName(editedName) { result in
+                    withAnimation { isLoading = false }
+                    switch result {
                     case .success: break
                     case .failure(let error):
                         alertTitle = "Error"
@@ -71,7 +64,6 @@ struct UserProfileView: View {
             }
             .fullScreenCover(
                 isPresented: $showingAddGroup,
-                onDismiss: { vm.updateUserGroups(search: searchText) },
                 content: { Circle() } //UserAddGroupView(vm: UserAddGroupViewModel(vm.user)) }
             )
         }
@@ -116,19 +108,19 @@ struct UserProfileView: View {
     
     private var groupsSection: some View {
         VStack(spacing: 0) {
-            SearchOptionHeaderView(title: "Groups", showingSearch: $showingSearch, searchText: $searchText)
+            SearchOptionHeaderView(title: "Groups", showingSearch: $showingSearch, searchText: $vm.searchText)
                 .padding(.horizontal, 32)
             
             ScrollView(.vertical, showsIndicators: true) {
                 LazyVStack(spacing: 0) {
-                    if vm.userGroups.isEmpty {
-                        Text(searchText.hasText
+                    if vm.searchGroups.isEmpty {
+                        Text(vm.searchText.hasText
                              ? "No groups matching search."
                              : "No groups.")
                     } else {
-                        ForEach(vm.userGroups) { group in
+                        ForEach(vm.searchGroups) { group in
                             VStack(spacing: 0) {
-                                if vm.userGroups.first?.id != group.id {
+                                if vm.searchGroups.first?.id != group.id {
                                     Capsule()
                                         .fill(.white)
                                         .frame(height: 1)
@@ -142,7 +134,17 @@ struct UserProfileView: View {
                                     }
                                 } onDelete: {
                                     withAnimation {
-                                        vm.deleteGroup(group)
+                                        isLoading = true
+                                        vm.leaveGroup(group) { result in
+                                            isLoading = false
+                                            switch result {
+                                            case .success: break
+                                            case .failure(let error):
+                                                alertTitle = "Error"
+                                                alertMessage = error.localizedDescription
+                                                showingAlert = true
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -152,13 +154,14 @@ struct UserProfileView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 8))
                 .overlay {
                     RoundedRectangle(cornerRadius: 8)
-                        .strokeBorder(vm.userGroups.isEmpty ? .clear : .white)
+                        .strokeBorder(vm.searchGroups.isEmpty ? .clear : .white)
                 }
                 .padding(.horizontal, 16)
                 .padding(.top, 8)
                 .padding(.bottom, 16)
             }
             .maskScrollEdges(startPoint: .top, endPoint: .bottom)
+            .animation(.default, value: vm.searchGroups.count)
         }
     }
 }

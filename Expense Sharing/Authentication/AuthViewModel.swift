@@ -117,7 +117,7 @@ class AuthViewModel: ObservableObject {
             return
         }
         
-        hint = "Handling users, groups and transactions from provided file..."
+        hint = "Handling provided file..."
         
         var users = [FIRUser]()
         var groups = [FIRGroup]()
@@ -162,7 +162,7 @@ class AuthViewModel: ObservableObject {
             let newUser = FIRUser(
                 id: id,
                 name: user.name,
-                email: user.name,
+                email: user.email,
                 groups: userGroups.map { $0.id }
             )
             users.append(newUser)
@@ -178,19 +178,19 @@ class AuthViewModel: ObservableObject {
         FIRManager.shared.clearServerData { [weak self] clearResult in
             switch clearResult {
             case .success:
-                self?.hint = "Server data cleared.\nUploading users..."
+                self?.hint = "Uploading users..."
                 FIRManager.shared.updateServer(users: users) { [weak self] usersResult in
                     switch usersResult {
-                    case .success(let u):
-                        self?.hint = "Uploaded \(u) users.\nUploading groups..."
+                    case .success:
+                        self?.hint = "Uploading groups..."
                         FIRManager.shared.updateServer(groups: groups) { [weak self] groupsResult in
                             switch groupsResult {
-                            case .success(let g):
-                                self?.hint = "Uploaded \(u) users.\nUploaded \(g) groups.\nUploading transactions..."
+                            case .success:
+                                self?.hint = "Uploading transactions..."
                                 FIRManager.shared.updateServer(transactions: transactions) { [weak self] transactionsResult in
                                     switch transactionsResult {
-                                    case .success(let t):
-                                        self?.hint = "Uploaded \(u) users.\nUploaded \(g) groups.\nUploaded \(t) transactions."
+                                    case .success:
+                                        self?.hint = nil
                                         completion(.success(()))
                                     case .failure(let error):
                                         print("upload transactions error: \(error)")

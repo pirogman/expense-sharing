@@ -7,7 +7,7 @@ import Foundation
 import FirebaseDatabase
 import FirebaseDatabaseSwift
 
-
+typealias VoidResultBlock = (Result<Void, Error>) -> Void
 
 class FIRManager {
     static let shared = FIRManager()
@@ -25,10 +25,51 @@ class FIRManager {
     private let groupsRef: DatabaseReference!
     private let transactionsRef: DatabaseReference!
     
+    func leaveGroup(userId: String, groupId: String, completion: @escaping VoidResultBlock) {
+        editGroup(removeUserId: userId, groupId: groupId) { [unowned self] result in
+            switch result {
+            case .success:
+                editUser(removeGroupId: groupId, userId: userId, completion: completion)
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
     // MARK: - User
     
-    func setUser(_ user: FIRUser, completion: @escaping (Result<Void, Error>) -> Void) {
+    func setUser(_ user: FIRUser, completion: @escaping VoidResultBlock) {
         usersRef.child(user.id).setValue(user.toDictionary()) { error, _ in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            completion(.success(()))
+        }
+    }
+    
+    func editUser(name: String, userId: String, completion: @escaping VoidResultBlock) {
+        usersRef.child(userId).updateChildValues(["name": name]) { error, _ in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            completion(.success(()))
+        }
+    }
+    
+    func editUser(addGroupId: String, userId: String, completion: @escaping VoidResultBlock) {
+        usersRef.child(userId).child("groups").updateChildValues([addGroupId: true]) { error, _ in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            completion(.success(()))
+        }
+    }
+    
+    func editUser(removeGroupId: String, userId: String, completion: @escaping VoidResultBlock) {
+        usersRef.child(userId).child("groups").child(removeGroupId).removeValue() { error, _ in
             if let error = error {
                 completion(.failure(error))
                 return
@@ -49,13 +90,9 @@ class FIRManager {
     }
     
     func getUsersFor(groupId: String, completion: @escaping (Result<[FIRUser], Error>) -> Void) {
-        let query = usersRef.queryOrdered(byChild: "groups/\(groupId)").queryEqual(toValue : true)
-        query.getData { error, snapshot in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            guard let children = snapshot?.children.allObjects as? [DataSnapshot] else {
+        let query = usersRef.queryOrdered(byChild: "groups/\(groupId)").queryEqual(toValue: true)
+        query.observeSingleEvent(of: .value) { snapshot in
+            guard let children = snapshot.children.allObjects as? [DataSnapshot] else {
                 completion(.success([]))
                 return
             }
@@ -65,6 +102,66 @@ class FIRManager {
     }
     
     // MARK: - Group
+    
+    func setGroup(_ group: FIRGroup, completion: @escaping VoidResultBlock) {
+        groupsRef.child(group.id).setValue(group.toDictionary()) { error, _ in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            completion(.success(()))
+        }
+    }
+    
+    func editGroup(title: String, groupId: String, completion: @escaping VoidResultBlock) {
+        groupsRef.child(groupId).updateChildValues(["title": title]) { error, _ in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            completion(.success(()))
+        }
+    }
+    
+    func editGroup(addUserId: String, groupId: String, completion: @escaping VoidResultBlock) {
+        groupsRef.child(groupId).child("users").updateChildValues([addUserId: true]) { error, _ in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            completion(.success(()))
+        }
+    }
+    
+    func editGroup(removeUserId: String, groupId: String, completion: @escaping VoidResultBlock) {
+        groupsRef.child(groupId).child("users").child(removeUserId).removeValue() { error, _ in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            completion(.success(()))
+        }
+    }
+    
+    func editGroup(addTransactionId: String, groupId: String, completion: @escaping VoidResultBlock) {
+        groupsRef.child(groupId).child("transactions").updateChildValues([addTransactionId: true]) { error, _ in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            completion(.success(()))
+        }
+    }
+    
+    func editGroup(removeTransactionId: String, groupId: String, completion: @escaping VoidResultBlock) {
+        groupsRef.child(groupId).child("transactions").child(removeTransactionId).removeValue() { error, _ in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            completion(.success(()))
+        }
+    }
     
     func getGroup(id: String, completion: @escaping (Result<FIRGroup?, Error>) -> Void) {
         groupsRef.child(id).getData { error, snapshot in
@@ -78,13 +175,9 @@ class FIRManager {
     }
     
     func getGroupsFor(userId: String, completion: @escaping (Result<[FIRGroup], Error>) -> Void) {
-        let query = groupsRef.queryOrdered(byChild: "users/\(userId)").queryEqual(toValue : true)
-        query.getData { error, snapshot in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            guard let children = snapshot?.children.allObjects as? [DataSnapshot] else {
+        let query = groupsRef.queryOrdered(byChild: "users/\(userId)").queryEqual(toValue: true)
+        query.observeSingleEvent(of: .value) { snapshot in
+            guard let children = snapshot.children.allObjects as? [DataSnapshot] else {
                 completion(.success([]))
                 return
             }
@@ -94,6 +187,17 @@ class FIRManager {
     }
     
     // MARK: - Transaction
+    
+    func setTransaction(_ transaction: FIRTransaction, completion: @escaping VoidResultBlock) {
+        let ref = transactionsRef.child(transaction.groupId).child(transaction.id)
+        ref.setValue(transaction.toDictionary()) { error, _ in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            completion(.success(()))
+        }
+    }
     
     func getTransaction(id: String, groupId: String, completion: @escaping (Result<FIRTransaction?, Error>) -> Void) {
         transactionsRef.child(groupId).child(id).getData { error, snapshot in
@@ -271,7 +375,6 @@ extension FIRGroup {
     func toDictionary() -> [String : Any] {
         var dict: [String: Any] = [
             "title": title,
-            "users": users,
         ]
         if let currencyCode = currencyCode {
             dict["currencyCode"] = currencyCode
