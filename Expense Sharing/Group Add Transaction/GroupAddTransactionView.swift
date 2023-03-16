@@ -12,6 +12,8 @@ struct GroupAddTransactionView: View {
     
     @StateObject var vm: GroupAddTransactionViewModel
     
+    @State var isLoading = false
+    
     enum Field: Hashable {
         case paidAmountField
         case selectedAmountField
@@ -36,6 +38,7 @@ struct GroupAddTransactionView: View {
             usersSection
         }
         .appBackgroundGradient()
+        .coverWithLoader(isLoading, hint: vm.hint)
         .onTapGesture {
             hideKeyboard()
         }
@@ -98,13 +101,17 @@ struct GroupAddTransactionView: View {
                 presentationMode.wrappedValue.dismiss()
             },
             confirmAction: {
-                switch vm.addTransaction() {
-                case .success:
-                    presentationMode.wrappedValue.dismiss()
-                case .failure(let error):
-                    alertTitle = "Error"
-                    alertMessage = error.localizedDescription
-                    showingAlert = true
+                withAnimation { isLoading = true }
+                vm.addTransaction { result in
+                    withAnimation { isLoading = false }
+                    switch result {
+                    case .success:
+                        presentationMode.wrappedValue.dismiss()
+                    case .failure(let error):
+                        alertTitle = "Error"
+                        alertMessage = error.localizedDescription
+                        showingAlert = true
+                    }
                 }
             }
         )
@@ -198,7 +205,7 @@ struct GroupAddTransactionView: View {
                                 }
                                 UserAmountItemView(userName: user.name,
                                                    userEmail: user.email,
-                                                   amount: vm.otherUsersExpenses[user.email]!,
+                                                   amount: vm.otherUsersExpenses[user.id]!,
                                                    currencyCode: vm.currencyCode)
                                     .contentShape(Rectangle())
                                     .onTapGesture {
@@ -210,7 +217,7 @@ struct GroupAddTransactionView: View {
                                         }
                                         
                                         selectedUser = user
-                                        let money = vm.otherUsersExpenses[user.email]!
+                                        let money = vm.otherUsersExpenses[user.id]!
                                         if money <= 0.01 {
                                             selectedUserAmount = ""
                                         } else {
@@ -232,6 +239,7 @@ struct GroupAddTransactionView: View {
                 .padding(.bottom, 16)
             }
             .maskScrollEdges(startPoint: .top, endPoint: .bottom)
+            .animation(.default, value: vm.otherUsers.count)
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
     }

@@ -32,8 +32,8 @@ struct UserProfileView: View {
                 // Navigation
                 NavigationLink(isActive: $navigateToSelectedGroup) {
                     if let group = selectedGroup {
-                        let vm = GroupDetailViewModel(group: group, forUserEmail: vm.email)
-                        GroupDetailView(vm: vm)
+                        let viewModel = GroupDetailViewModel(groupId: group.id, forUserId: vm.userId)
+                        GroupDetailView(vm: viewModel)
                     } else {
                         Text("No Such Group")
                             .onAppear {

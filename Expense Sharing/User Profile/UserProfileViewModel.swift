@@ -21,13 +21,13 @@ class UserProfileViewModel: ObservableObject {
     
     let userId: String
     
+    private var userRef: DatabaseReference!
     private var observeUserHandler: UInt!
     
     init(_ userId: String) {
         self.userId = userId
         
-        let ref = Database.database().reference()
-        let userRef = ref.child("users").child(userId)
+        userRef = Database.database().reference().child("users").child(userId)
         observeUserHandler = userRef.observe(.value) { [weak self] snapshot in
             guard let user = FIRUser(snapshot: snapshot) else { return }
             self?.update(on: user)
@@ -35,12 +35,10 @@ class UserProfileViewModel: ObservableObject {
     }
     
     deinit {
-        let ref = Database.database().reference()
-        ref.removeObserver(withHandle: observeUserHandler)
+        userRef.removeObserver(withHandle: observeUserHandler)
     }
     
     private func update(on user: FIRUser) {
-        print("update on user")
         name = user.name
         email = user.email
         FIRManager.shared.getGroupsFor(userId: user.id) { [weak self] result in

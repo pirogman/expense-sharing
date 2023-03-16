@@ -64,6 +64,28 @@ class FIRManager {
         }
     }
     
+    func groupDeleteTransaction(_ transaction: FIRTransaction, completion: @escaping VoidResultBlock) {
+        removeTransaction(transaction) { [unowned self] result in
+            switch result {
+            case .success:
+                editGroup(removeTransactionId: transaction.id, groupId: transaction.groupId, completion: completion)
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func groupAddTransaction(_ transaction: FIRTransaction, completion: @escaping VoidResultBlock) {
+        setTransaction(transaction) { [unowned self] result in
+            switch result {
+            case .success:
+                editGroup(addTransactionId: transaction.id, groupId: transaction.groupId, completion: completion)
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
     // MARK: - User
     
     func setUser(_ user: FIRUser, completion: @escaping VoidResultBlock) {
@@ -264,6 +286,16 @@ class FIRManager {
             }
             let transactions = children.compactMap { FIRTransaction(groupId: groupId, snapshot: $0) }
             completion(.success(transactions))
+        }
+    }
+    
+    func removeTransaction(_ transaction: FIRTransaction, completion: @escaping VoidResultBlock) {
+        transactionsRef.child(transaction.groupId).child(transaction.id).removeValue() { error, _ in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            completion(.success(()))
         }
     }
     

@@ -10,6 +10,8 @@ struct GroupAddUserView: View {
     
     @StateObject var vm: GroupAddUserViewModel
     
+    @State var isLoading = false
+    
     @State var newMembers = [FIRUser]()
     @State var searchText = ""
     
@@ -23,11 +25,9 @@ struct GroupAddUserView: View {
             usersSection
         }
         .appBackgroundGradient()
+        .coverWithLoader(isLoading, hint: vm.hint)
         .onTapGesture {
             hideKeyboard()
-        }
-        .onAppear {
-            vm.updateKnownUsers()
         }
         .onChange(of: searchText) { text in
             withAnimation {
@@ -44,13 +44,17 @@ struct GroupAddUserView: View {
                 presentationMode.wrappedValue.dismiss()
             },
             confirmAction: {
-                switch vm.addUsers(users: newMembers) {
-                case .success:
-                    presentationMode.wrappedValue.dismiss()
-                case .failure(let error):
-                    alertTitle = "Error"
-                    alertMessage = error.localizedDescription
-                    showingAlert = true
+                withAnimation { isLoading = true }
+                vm.addUsers(newMembers) { result in
+                    withAnimation { isLoading = false }
+                    switch result {
+                    case .success:
+                        presentationMode.wrappedValue.dismiss()
+                    case .failure(let error):
+                        alertTitle = "Error"
+                        alertMessage = error.localizedDescription
+                        showingAlert = true
+                    }
                 }
             }
         )
@@ -76,14 +80,14 @@ struct GroupAddUserView: View {
             
             ScrollView(.vertical, showsIndicators: true) {
                 LazyVStack(spacing: 0) {
-                    if vm.knownUsers.isEmpty {
+                    if vm.searchUsers.isEmpty {
                         Text(searchText.hasText
                              ? "No users matching search."
-                             : "No users.")
+                             : "Please, start searching for users.")
                     } else {
-                        ForEach(vm.knownUsers) { user in
+                        ForEach(vm.searchUsers) { user in
                             VStack(spacing: 0) {
-                                if vm.knownUsers.first?.id != user.id {
+                                if vm.searchUsers.first?.id != user.id {
                                     Capsule()
                                         .fill(.white)
                                         .frame(height: 1)
@@ -107,13 +111,14 @@ struct GroupAddUserView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 8))
                 .overlay {
                     RoundedRectangle(cornerRadius: 8)
-                        .strokeBorder(vm.knownUsers.isEmpty ? .clear : .white)
+                        .strokeBorder(vm.searchUsers.isEmpty ? .clear : .white)
                 }
                 .padding(.horizontal, 16)
                 .padding(.top, 8)
                 .padding(.bottom, 16)
             }
             .maskScrollEdges(startPoint: .top, endPoint: .bottom)
+            .animation(.default, value: vm.searchUsers.count)
         }
     }
     

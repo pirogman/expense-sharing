@@ -8,6 +8,8 @@ import SwiftUI
 struct GroupDetailView: View {
     @StateObject var vm: GroupDetailViewModel
     
+    @State var isLoading = false
+    
     @State var showingEditTitleAlert = false
     @State var editedTitle = ""
     
@@ -69,10 +71,13 @@ struct GroupDetailView: View {
             .maskScrollEdges(startPoint: .top, endPoint: .bottom)
         }
         .appBackgroundGradient()
+        .coverWithLoader(isLoading, hint: vm.hint)
         .navigationBarHidden(true)
         .textFieldAlert(isPresented: $showingEditTitleAlert, title: "Edit Title", message: "Group title consist of at least 1 character.", placeholder: "Title", input: $editedTitle) {
-            withAnimation {
-                switch vm.editTitle(editedTitle) {
+            withAnimation { isLoading = true }
+            vm.editTitle(editedTitle) { result in
+                withAnimation { isLoading = false }
+                switch result {
                 case .success: break
                 case .failure(let error):
                     alertTitle = "Error"
@@ -83,25 +88,22 @@ struct GroupDetailView: View {
         }
         .fullScreenCover(
             isPresented: $showingAddUser,
-            onDismiss: { vm.updateGroup() },
             content: {
-                let vm = GroupAddUserViewModel(groupId: vm.groupId)
-                GroupAddUserView(vm: vm)
+                let viewModel = GroupAddUserViewModel(groupId: vm.groupId, groupTitle: vm.groupTitle, excludeIds: vm.groupUsers.map({ $0.id }))
+                GroupAddUserView(vm: viewModel)
             }
         )
         .fullScreenCover(
             isPresented: $showingAddTransaction,
-            onDismiss: { vm.updateGroup() },
             content: {
-                let vm = GroupAddTransactionViewModel(groupId: vm.groupId, payingUserEmail: vm.userEmail)
-                GroupAddTransactionView(vm: vm)
+                let others = vm.groupUsers.filter { $0.id != vm.userId }
+                let viewModel = GroupAddTransactionViewModel(groupId: vm.groupId, groupTitle: vm.groupTitle, currencyCode: vm.groupCurrencyCode, payingUserId: vm.userId, otherUsers: others)
+                GroupAddTransactionView(vm: viewModel)
             }
         )
         .fullScreenCover(
             isPresented: $showingReport,
-            content: {
-                GroupReportView(vm: vm)
-            }
+            content: { GroupReportView(vm: vm) }
         )
     }
     
@@ -127,7 +129,7 @@ struct GroupDetailView: View {
                         let amounts = vm.getUserAmounts(for: user)
                         let userShareWidth = maxWidth * (abs(amounts.1) / abs(limits.1))
                         let userPaidWidth = maxWidth * (abs(amounts.0) / abs(limits.0))
-                        let barColor = vm.userColors[user.email] ?? .white
+                        let barColor = vm.userColors[user.id] ?? .white
                         let textColor: Color = barColor == .white ? .blue : .white
                         let shareMoneyText = CurrencyManager.getText(for: amounts.1, currencyCode: vm.groupCurrencyCode)
                         let paidMoneyText = CurrencyManager.getText(for: amounts.0, currencyCode: vm.groupCurrencyCode)
@@ -156,6 +158,7 @@ struct GroupDetailView: View {
             }
             .maskScrollEdges(startPoint: .top, endPoint: .bottom)
             .frame(height: hideChartSection ? 0 : estimatedHeight)
+            .animation(.default, value: vm.groupUsers.count)
         }
     }
     
@@ -179,7 +182,7 @@ struct GroupDetailView: View {
                                 }
                                 let amounts = vm.getUserAmounts(for: user)
                                 GroupDetailUserItemView(
-                                    color: vm.userColors[user.email] ?? .white,
+                                    color: vm.userColors[user.id] ?? .white,
                                     userName: user.name,
                                     userEmail: user.email,
                                     amount: amounts.0 - abs(amounts.1),
@@ -199,6 +202,7 @@ struct GroupDetailView: View {
             }
             .maskScrollEdges(startPoint: .top, endPoint: .bottom)
             .frame(height: hideUsersSection ? 0 : estimatedHeight)
+            .animation(.default, value: vm.groupUsers.count)
         }
     }
     
@@ -239,9 +243,16 @@ struct GroupDetailView: View {
                                         }
                                     }
                                 } onDelete: {
-                                    withAnimation {
-                                        vm.removeTransaction(transaction)
-                                        vm.updateGroup()
+                                    withAnimation { isLoading = true }
+                                    vm.removeTransaction(transaction) { result in
+                                        withAnimation { isLoading = false }
+                                        switch result {
+                                        case .success: break
+                                        case .failure(let error):
+                                            alertTitle = "Error"
+                                            alertMessage = error.localizedDescription
+                                            showingAlert = true
+                                        }
                                     }
                                 }
                             }
@@ -258,6 +269,7 @@ struct GroupDetailView: View {
             }
             .maskScrollEdges(startPoint: .top, endPoint: .bottom)
             .frame(height: hideTransactionsSection ? 0 : estimatedHeight)
+            .animation(.default, value: vm.groupTransactions.count)
         }
     }
 }

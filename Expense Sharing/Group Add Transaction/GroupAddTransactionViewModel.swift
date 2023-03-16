@@ -17,6 +17,8 @@ enum TransactionError: Error, LocalizedError {
 }
 
 class GroupAddTransactionViewModel: ObservableObject {
+    @Published private(set) var hint: String?
+    
     @Published var paidAmount = 0.0
     @Published var otherUsersExpenses: [String: Double]
     @Published var description = ""
@@ -27,39 +29,20 @@ class GroupAddTransactionViewModel: ObservableObject {
     }
     
     let groupId: String
-    let payingUserEmail: String
-    let otherUsers: [FIRUser]
-    let transactions: [FIRTransaction]
-    let currencyCode: String?
     let groupTitle: String
+    let currencyCode: String?
+    let payingUserId: String
+    let otherUsers: [FIRUser]
     
-    init(groupId: String, payingUserEmail: String) {
+    init(groupId: String, groupTitle: String, currencyCode: String?, payingUserId: String, otherUsers: [FIRUser]) {
         self.groupId = groupId
-        self.payingUserEmail = payingUserEmail
-        
-        let group = DBManager.shared.getGroup(byId: groupId)!
-        let members = DBManager.shared.getUsers(in: group, excludeEmails: [payingUserEmail])
-        self.otherUsers = members
-        self.otherUsersExpenses = members.reduce(into: [String: Double]()) { dict, user in
-            dict[user.email] = 0.0
+        self.groupTitle = groupTitle
+        self.currencyCode = currencyCode
+        self.payingUserId = payingUserId
+        self.otherUsers = otherUsers
+        self.otherUsersExpenses = otherUsers.reduce(into: [String: Double]()) { dict, user in
+            dict[user.id] = 0.0
         }
-        self.transactions = []//group.transactions
-        self.currencyCode = group.currencyCode
-        self.groupTitle = group.title
-    }
-    
-    init(group: FIRGroup, payingUserEmail: String) {
-        self.groupId = group.id
-        self.payingUserEmail = payingUserEmail
-        
-        let members = DBManager.shared.getUsers(in: group, excludeEmails: [payingUserEmail])
-        self.otherUsers = members
-        self.otherUsersExpenses = members.reduce(into: [String: Double]()) { dict, user in
-            dict[user.email] = 0.0
-        }
-        self.transactions = []//group.transactions
-        self.currencyCode = group.currencyCode
-        self.groupTitle = group.title
     }
     
     func isValidAmount(_ number: Double) -> Bool {
@@ -88,30 +71,26 @@ class GroupAddTransactionViewModel: ObservableObject {
             return .failure(TransactionError.invalidExpenseAmount)
         }
         
-        otherUsersExpenses[user.email] = amount
+        otherUsersExpenses[user.id] = amount
         return .success(())
     }
     
-    func addTransaction() -> Result<Void, Error> {
+    func addTransaction(completion: @escaping VoidResultBlock) {
         guard isValidAmount(paidAmount) else {
-            return .failure(TransactionError.invalidAmount)
+            completion(.failure(TransactionError.invalidAmount))
+            return
         }
         guard let validDescription = Validator.validateTransactionDescription(description) else {
-            return .failure(ValidationError.invalidTransactionDescription)
+            completion(.failure(ValidationError.invalidTransactionDescription))
+            return
         }
-        
-        var expenses = [payingUserEmail: paidAmount]
-        for email in otherUsersExpenses.keys {
-            guard let amount = otherUsersExpenses[email], amount > 0 else { continue }
-            expenses[email] = -amount
+        var expenses = [payingUserId: paidAmount]
+        for key in otherUsersExpenses.keys {
+            guard let amount = otherUsersExpenses[key], amount > 0 else { continue }
+            expenses[key] = -amount
         }
-        
-//        let transaction = Transaction(id: UUID().uuidString,
-//                                      expenses: expenses,
-//                                      description: validDescription)
-//        let transactions = self.transactions + [transaction]
-//
-//        DBManager.shared.editGroup(byId: groupId, transactions: transactions)
-        return .success(())
+        let newTransaction = FIRTransaction(groupId: groupId, id: UUID().uuidString, expenses: expenses, description: validDescription, image: nil)
+        hint = "Adding transaction..."
+        FIRManager.shared.groupAddTransaction(newTransaction, completion: completion)
     }
 }

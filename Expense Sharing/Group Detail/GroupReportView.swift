@@ -219,7 +219,7 @@ struct GroupReportView: View {
         let shareText = CurrencyManager.getText(for: shareAmount, currencyCode: vm.groupCurrencyCode)
         let dueText = (dueAmount > 0 ? "+" : "") + CurrencyManager.getText(for: dueAmount, currencyCode: vm.groupCurrencyCode)
         
-        let barColor = vm.userColors[user.email] ?? .white
+        let barColor = vm.userColors[user.id] ?? .white
         let textColor: Color = barColor == .white ? .blue : .white
         let subHeight = maxHeight / 3 - 2
         
