@@ -49,6 +49,7 @@ struct GroupAddTransactionView: View {
             TextField("Amount", text: $selectedUserAmount)
                 .focused($focusedField, equals: .selectedAmountField)
                 .keyboardType(.decimalPad)
+                .foregroundColor(.gradientAdaptive)
             Button {
                 guard let user = selectedUser else { return }
                 let money = CurrencyManager.getNumber(from: selectedUserAmount)

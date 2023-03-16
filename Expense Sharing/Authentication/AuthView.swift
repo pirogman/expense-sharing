@@ -26,6 +26,7 @@ struct AuthView: View {
     @State var alertTitle = ""
     @State var alertMessage = ""
     
+    @State var showResetOptions = false
     @State var showingFilePicker = false
     
     var body: some View {
@@ -40,20 +41,7 @@ struct AuthView: View {
             Spacer()
             VStack(spacing: 8) {
                 Button {
-                    withAnimation { isLoading = true }
-                    
-                    vm.resetServerWithTestData { result in
-                        withAnimation { isLoading = false }
-                        switch result {
-                        case .success:
-                            alertTitle = "Success"
-                            alertMessage = "Server reset done."
-                        case .failure(let error):
-                            alertTitle = "Error"
-                            alertMessage = error.localizedDescription
-                        }
-                        showingAlert = true
-                    }
+                    showResetOptions = true
                 } label: {
                     Label("Reset Server", systemImage: "arrow.triangle.2.circlepath")
                 }
@@ -74,6 +62,37 @@ struct AuthView: View {
             self.userEmail = "alex@example.com"
         }
         .simpleAlert(isPresented: $showingAlert, title: alertTitle, message: alertMessage)
+        .alert("Server Reset", isPresented: $showResetOptions) {
+            Button {
+                showingFilePicker = true
+            } label: {
+                Text("Select File")
+            }
+            Button {
+                withAnimation { isLoading = true }
+                vm.resetServerWithTestData { result in
+                    withAnimation { isLoading = false }
+                    switch result {
+                    case .success:
+                        alertTitle = "Success"
+                        alertMessage = "Server reset done."
+                    case .failure(let error):
+                        alertTitle = "Error"
+                        alertMessage = error.localizedDescription
+                    }
+                    showingAlert = true
+                }
+            } label: {
+                Text("Use Test Data")
+            }
+            Button {
+                //
+            } label: {
+                Text("Cancel")
+            }
+        } message: {
+            Text("Select a valid JSON file to reset the server. Alternatively, use prepared test data.")
+        }
         .fileImporter(
             isPresented: $showingFilePicker,
             allowedContentTypes: vm.allowedContentTypes,
@@ -81,7 +100,19 @@ struct AuthView: View {
         ) { result in
             switch vm.handleSelectingFile(result) {
             case .success(let data):
-                break
+                withAnimation { isLoading = true }
+                vm.resetServer(with: data) { result in
+                    withAnimation { isLoading = false }
+                    switch result {
+                    case .success:
+                        alertTitle = "Success"
+                        alertMessage = "Server reset done."
+                    case .failure(let error):
+                        alertTitle = "Error"
+                        alertMessage = error.localizedDescription
+                    }
+                    showingAlert = true
+                }
             case .failure(let error):
                 alertTitle = "Error"
                 alertMessage = error.localizedDescription
