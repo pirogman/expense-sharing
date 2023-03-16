@@ -81,12 +81,6 @@ struct GroupDetailView: View {
                 }
             }
         }
-        .sheet(isPresented: $showingGroupShare) {
-            ActivityViewController(activityItems: vm.getGroupShareActivities()) { _ in
-                showingGroupShare = false
-                vm.clearSharedGroupFile()
-            }
-        }
         .fullScreenCover(
             isPresented: $showingAddUser,
             onDismiss: { vm.updateGroup() },

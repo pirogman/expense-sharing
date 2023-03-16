@@ -38,32 +38,40 @@ struct AuthView: View {
                 .padding(.horizontal, 36)
             
             Spacer()
-            HStack(spacing: 0) {
-                Spacer()
+            VStack(spacing: 8) {
                 Button {
-                    showingFilePicker = true
+                    withAnimation { isLoading = true }
+                    
+                    vm.resetServerWithTestData { result in
+                        withAnimation { isLoading = false }
+                        switch result {
+                        case .success:
+                            alertTitle = "Success"
+                            alertMessage = "Server reset done."
+                        case .failure(let error):
+                            alertTitle = "Error"
+                            alertMessage = error.localizedDescription
+                        }
+                        showingAlert = true
+                    }
                 } label: {
-                    Label("Import Data", systemImage: "square.and.arrow.down")
+                    Label("Reset Server", systemImage: "arrow.triangle.2.circlepath")
                 }
-                Spacer()
-                Button {
-                    syncFromServer()
-                } label: {
-                    Label("Sync Data", systemImage: "arrow.triangle.2.circlepath")
-                }
-                Spacer()
+                Text("Clears server database and sets it to data from selected file.")
+                    .font(.caption)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 36)
             }
             .padding(.bottom)
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
-        .coverWithLoader(isLoading)
+        .coverWithLoader(isLoading, hint: vm.hint)
         .appBackgroundGradient()
         .onTapGesture {
             hideKeyboard()
         }
         .onAppear {
             self.userEmail = "alex@example.com"
-            vm.updateDBCounts()
         }
         .simpleAlert(isPresented: $showingAlert, title: alertTitle, message: alertMessage)
         .fileImporter(
@@ -72,15 +80,13 @@ struct AuthView: View {
             allowsMultipleSelection: vm.allowsMultipleSelection
         ) { result in
             switch vm.handleSelectingFile(result) {
-            case .success((let usersCount, let groupsCount)):
-                alertTitle = "Success"
-                alertMessage = "Successfully imported \(usersCount) users and \(groupsCount) groups from the given file."
+            case .success(let data):
+                break
             case .failure(let error):
                 alertTitle = "Error"
                 alertMessage = error.localizedDescription
+                showingAlert = true
             }
-            vm.updateDBCounts()
-            showingAlert = true
         }
     }
     
@@ -88,8 +94,6 @@ struct AuthView: View {
         VStack {
             Text("Authenticate")
                 .font(.largeTitle)
-            Text("\(vm.usersCount) Users | \(vm.groupsCount) Groups")
-                .font(.caption)
             
             VStack {
                 if showRegister {
@@ -171,9 +175,16 @@ struct AuthView: View {
     private func onAuthAction() {
         focusedField = nil
         
-        let result = showRegister
-        ? vm.registerUser(name: userName, email: userEmail)
-        : vm.loginUser(email: userEmail)
+        withAnimation { isLoading = true }
+        if showRegister {
+            vm.registerUser(name: userName, email: userEmail, completion: authHandler)
+        } else {
+            vm.loginUser(email: userEmail, completion: authHandler)
+        }
+    }
+    
+    private func authHandler(_ result: Result<String, Error>) -> Void {
+        withAnimation { isLoading = false }
         
         switch result {
         case .success(let user):
@@ -183,26 +194,6 @@ struct AuthView: View {
             alertTitle = "Error"
             alertMessage = error.localizedDescription
             showingAlert = true
-        }
-    }
-    
-    private func syncFromServer() {
-        withAnimation {
-            isLoading = true
-            FRDManager.shared.syncFromServer { result in
-                vm.updateDBCounts()
-                isLoading = false
-                switch result {
-                case .success:
-                    alertTitle = "Success"
-                    alertMessage = "You synched with the server."
-                    showingAlert = true
-                case .failure(let error):
-                    alertTitle = "Error"
-                    alertMessage = error.localizedDescription
-                    showingAlert = true
-                }
-            }
         }
     }
 }

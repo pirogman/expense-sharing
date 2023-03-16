@@ -20,7 +20,7 @@ struct GroupAddTransactionView: View {
     @FocusState private var focusedField: Field?
     @State private var amount = ""
     
-    @State var selectedUser: User?
+    @State var selectedUser: FIRUser?
     @State var selectedUserAmount = ""
     @State var showingSelectedUserAlert = false
     
@@ -196,7 +196,8 @@ struct GroupAddTransactionView: View {
                                         .fill(.white)
                                         .frame(height: 1)
                                 }
-                                UserAmountItemView(user: user,
+                                UserAmountItemView(userName: user.name,
+                                                   userEmail: user.email,
                                                    amount: vm.otherUsersExpenses[user.email]!,
                                                    currencyCode: vm.currencyCode)
                                     .contentShape(Rectangle())

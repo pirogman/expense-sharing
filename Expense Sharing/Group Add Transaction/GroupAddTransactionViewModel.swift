@@ -28,8 +28,8 @@ class GroupAddTransactionViewModel: ObservableObject {
     
     let groupId: String
     let payingUserEmail: String
-    let otherUsers: [User]
-    let transactions: [Transaction]
+    let otherUsers: [FIRUser]
+    let transactions: [FIRTransaction]
     let currencyCode: String?
     let groupTitle: String
     
@@ -43,12 +43,12 @@ class GroupAddTransactionViewModel: ObservableObject {
         self.otherUsersExpenses = members.reduce(into: [String: Double]()) { dict, user in
             dict[user.email] = 0.0
         }
-        self.transactions = group.transactions
+        self.transactions = []//group.transactions
         self.currencyCode = group.currencyCode
         self.groupTitle = group.title
     }
     
-    init(group: Group, payingUserEmail: String) {
+    init(group: FIRGroup, payingUserEmail: String) {
         self.groupId = group.id
         self.payingUserEmail = payingUserEmail
         
@@ -57,7 +57,7 @@ class GroupAddTransactionViewModel: ObservableObject {
         self.otherUsersExpenses = members.reduce(into: [String: Double]()) { dict, user in
             dict[user.email] = 0.0
         }
-        self.transactions = group.transactions
+        self.transactions = []//group.transactions
         self.currencyCode = group.currencyCode
         self.groupTitle = group.title
     }
@@ -80,7 +80,7 @@ class GroupAddTransactionViewModel: ObservableObject {
         }
     }
     
-    func setExpense(_ amount: Double, on user: User) -> Result<Void, Error> {
+    func setExpense(_ amount: Double, on user: FIRUser) -> Result<Void, Error> {
         guard isValidAmount(amount) else {
             return .failure(TransactionError.invalidAmount)
         }
@@ -106,12 +106,12 @@ class GroupAddTransactionViewModel: ObservableObject {
             expenses[email] = -amount
         }
         
-        let transaction = Transaction(id: UUID().uuidString,
-                                      expenses: expenses,
-                                      description: validDescription)
-        let transactions = self.transactions + [transaction]
-        
-        DBManager.shared.editGroup(byId: groupId, transactions: transactions)
+//        let transaction = Transaction(id: UUID().uuidString,
+//                                      expenses: expenses,
+//                                      description: validDescription)
+//        let transactions = self.transactions + [transaction]
+//
+//        DBManager.shared.editGroup(byId: groupId, transactions: transactions)
         return .success(())
     }
 }

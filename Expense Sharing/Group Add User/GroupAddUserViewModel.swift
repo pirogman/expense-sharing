@@ -6,7 +6,7 @@
 import SwiftUI
 
 class GroupAddUserViewModel: ObservableObject {
-    @Published private(set) var knownUsers = [User]()
+    @Published private(set) var knownUsers = [FIRUser]()
     
     let groupId: String
     let groupTitle: String
@@ -20,7 +20,7 @@ class GroupAddUserViewModel: ObservableObject {
         self.excludeUserEmails = group.users
     }
     
-    init(group: Group) {
+    init(group: FIRGroup) {
         self.groupId = group.id
         self.groupTitle = group.title
         self.excludeUserEmails = group.users
@@ -30,7 +30,7 @@ class GroupAddUserViewModel: ObservableObject {
         knownUsers = DBManager.shared.getUsers(excludeEmails: excludeUserEmails, search: search)
     }
     
-    func addUsers(users: [User]) -> Result<Int, Error> {
+    func addUsers(users: [FIRUser]) -> Result<Int, Error> {
         let emails = excludeUserEmails + users.map({ $0.email })
         DBManager.shared.editGroup(byId: groupId, users: emails)
         return .success(users.count)

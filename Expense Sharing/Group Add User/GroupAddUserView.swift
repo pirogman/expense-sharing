@@ -10,7 +10,7 @@ struct GroupAddUserView: View {
     
     @StateObject var vm: GroupAddUserViewModel
     
-    @State var newMembers = [User]()
+    @State var newMembers = [FIRUser]()
     @State var searchText = ""
     
     @State var showingAlert = false
@@ -117,7 +117,7 @@ struct GroupAddUserView: View {
         }
     }
     
-    private func toggleSelect(on user: User) {
+    private func toggleSelect(on user: FIRUser) {
         if let index = newMembers.firstIndex(where: { $0.id == user.id }) {
             newMembers.remove(at: index)
         } else {

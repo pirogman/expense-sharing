@@ -32,7 +32,7 @@
 		5DB1BE8E29BF9412009996D4 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB1BE8D29BF9412009996D4 /* Model.swift */; };
 		5DB1BE9029BF9FFB009996D4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB1BE8F29BF9FFB009996D4 /* AppDelegate.swift */; };
 		5DB1BE9229BFA032009996D4 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB1BE9129BFA032009996D4 /* Extensions.swift */; };
-		5DB1BE9429BFAFA2009996D4 /* FRDManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB1BE9329BFAFA2009996D4 /* FRDManager.swift */; };
+		5DB1BE9429BFAFA2009996D4 /* FIRManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB1BE9329BFAFA2009996D4 /* FIRManager.swift */; };
 		5DB764BF29B72FAA00C533F5 /* GroupAddTransactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB764BE29B72FAA00C533F5 /* GroupAddTransactionView.swift */; };
 		5DB764C129B730F100C533F5 /* GroupAddUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB764C029B730F100C533F5 /* GroupAddUserView.swift */; };
 		5DB764C329B737C100C533F5 /* DBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB764C229B737C100C533F5 /* DBManager.swift */; };
@@ -80,7 +80,7 @@
 		5DB1BE8D29BF9412009996D4 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		5DB1BE8F29BF9FFB009996D4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5DB1BE9129BFA032009996D4 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
-		5DB1BE9329BFAFA2009996D4 /* FRDManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FRDManager.swift; sourceTree = "<group>"; };
+		5DB1BE9329BFAFA2009996D4 /* FIRManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FIRManager.swift; sourceTree = "<group>"; };
 		5DB1BE9529BFB2FA009996D4 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		5DB764BE29B72FAA00C533F5 /* GroupAddTransactionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupAddTransactionView.swift; sourceTree = "<group>"; };
 		5DB764C029B730F100C533F5 /* GroupAddUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupAddUserView.swift; sourceTree = "<group>"; };
@@ -239,7 +239,7 @@
 			isa = PBXGroup;
 			children = (
 				5DA7D05229BB6D2F004B197F /* AppManager.swift */,
-				5DB1BE9329BFAFA2009996D4 /* FRDManager.swift */,
+				5DB1BE9329BFAFA2009996D4 /* FIRManager.swift */,
 				5DB764C229B737C100C533F5 /* DBManager.swift */,
 				5D61314329B5DA9200B0366D /* JSONManager.swift */,
 				5DA7D04E29BB18A0004B197F /* ShareManager.swift */,
@@ -370,7 +370,7 @@
 				5DA7D05D29BB7D5C004B197F /* GroupAddTransactionViewModel.swift in Sources */,
 				5DA7D05329BB6D2F004B197F /* AppManager.swift in Sources */,
 				5DF5B9C729BE480500109374 /* CustomNavigationBar.swift in Sources */,
-				5DB1BE9429BFAFA2009996D4 /* FRDManager.swift in Sources */,
+				5DB1BE9429BFAFA2009996D4 /* FIRManager.swift in Sources */,
 				5D61314829B6135500B0366D /* GroupDetailView.swift in Sources */,
 				5DF5B9C329BE473600109374 /* CapsuleDivider.swift in Sources */,
 				5DB1BE7F29BF2DFB009996D4 /* OneWayChartRowView.swift in Sources */,

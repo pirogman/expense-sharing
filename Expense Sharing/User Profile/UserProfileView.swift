@@ -13,13 +13,12 @@ struct UserProfileView: View {
     @State var isLoading = false
     
     @State var navigateToSelectedGroup = false
-    @State var selectedGroup: Group?
+    @State var selectedGroup: FIRGroup?
     
     @State var showingEditNameAlert = false
     @State var editedName = ""
     
     @State var showingAddGroup = false
-    @State var showingUserShare = false
     
     @State var showingAlert = false
     @State var alertTitle = ""
@@ -70,16 +69,10 @@ struct UserProfileView: View {
                     }
                 }
             }
-            .sheet(isPresented: $showingUserShare) {
-                ActivityViewController(activityItems: vm.getUserShareActivities()) { _ in
-                    showingUserShare = false
-                    vm.clearSharedUserFile()
-                }
-            }
             .fullScreenCover(
                 isPresented: $showingAddGroup,
                 onDismiss: { vm.updateUserGroups(search: searchText) },
-                content: { UserAddGroupView(vm: UserAddGroupViewModel(vm.user)) }
+                content: { Circle() } //UserAddGroupView(vm: UserAddGroupViewModel(vm.user)) }
             )
         }
     }
@@ -88,7 +81,7 @@ struct UserProfileView: View {
         VStack(spacing: 0) {
             CustomNavigationBar(title: "Profile", addBackButton: false) {
                 Button {
-                    editedName = vm.user.name
+                    editedName = vm.name
                     showingEditNameAlert = true
                 } label: {
                     Label("Edit Name", systemImage: "square.and.pencil")
@@ -97,11 +90,6 @@ struct UserProfileView: View {
                     showingAddGroup = true
                 } label: {
                     Label("Add Group", systemImage: "plus.square")
-                }
-                Button {
-                    showingUserShare = true
-                } label: {
-                    Label("Share User", systemImage: "square.and.arrow.up")
                 }
                 Button {
                     appManager.appState = .unauthorised
@@ -113,9 +101,9 @@ struct UserProfileView: View {
             
             HStack {
                 VStack(alignment: .leading) {
-                    Text(vm.user.name)
+                    Text(vm.name)
                         .font(.headline)
-                    Text(vm.user.email)
+                    Text(vm.email)
                         .font(.subheadline)
                 }
                 .lineLimit(1)

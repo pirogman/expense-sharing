@@ -9,12 +9,12 @@ import SwiftUI
 typealias ExpenseWithInfo = (String, String, Double, Color)
 
 /// Format: amount to transfer, user who paid, user who received
-typealias UserCashFlowAction = (Double, User, User)
+typealias UserCashFlowAction = (Double, FIRUser, FIRUser)
 
 class GroupDetailViewModel: ObservableObject {
     @Published private(set) var groupTitle = ""
-    @Published private(set) var groupUsers = [User]()
-    @Published private(set) var groupTransactions = [Transaction]()
+    @Published private(set) var groupUsers = [FIRUser]()
+    @Published private(set) var groupTransactions = [FIRTransaction]()
     @Published private(set) var groupCurrencyCode: String?
     @Published private(set) var userColors = [String: Color]()
     
@@ -37,26 +37,26 @@ class GroupDetailViewModel: ObservableObject {
         updateGroup()
     }
     
-    init(group: Group, forUserEmail userEmail: String) {
+    init(group: FIRGroup, forUserEmail userEmail: String) {
         self.groupId = group.id
         self.userEmail = userEmail
         
         updateGroupValues(to: group)
     }
     
-    private func updateGroupValues(to group: Group) {
-        self.groupTitle = group.title
-        self.groupUsers = DBManager.shared.getUsers(in: group).sorted { a, b in
-            a.name > b.name
-        }
-        self.groupTransactions = group.transactions.sorted { a, b in
-            let aPaid = a.expenses.values.max() ?? 0.0
-            let bPaid = b.expenses.values.max() ?? 0.0
-            return aPaid > bPaid
-        }
-        self.groupCurrencyCode = group.currencyCode
-        
-        resetUserColors(for: group.users)
+    private func updateGroupValues(to group: FIRGroup) {
+//        self.groupTitle = group.title
+//        self.groupUsers = DBManager.shared.getUsers(in: group).sorted { a, b in
+//            a.name > b.name
+//        }
+//        self.groupTransactions = group.transactions.sorted { a, b in
+//            let aPaid = a.expenses.values.max() ?? 0.0
+//            let bPaid = b.expenses.values.max() ?? 0.0
+//            return aPaid > bPaid
+//        }
+//        self.groupCurrencyCode = group.currencyCode
+//
+//        resetUserColors(for: group.users)
     }
     
     private func resetUserColors(for emails: [String]) {
@@ -85,16 +85,16 @@ class GroupDetailViewModel: ObservableObject {
         return .success(())
     }
     
-    func removeTransaction(_ transaction: Transaction) {
+    func removeTransaction(_ transaction: FIRTransaction) {
         let updatedTransactions = groupTransactions.filter { $0.id != transaction.id }
         DBManager.shared.editGroup(byId: groupId, transactions: updatedTransactions)
         groupTransactions = updatedTransactions
     }
     
     /// Tuple format:
-    /// - 0: total paid amount by given user (positive or zero)
-    /// - 1: total share amount by given user (negative or zero)
-    func getUserAmounts(for user: User) -> (Double, Double) {
+    /// - 0: total paid amount by given user (positive)
+    /// - 1: total share amount by given user (negative)
+    func getUserAmounts(for user: FIRUser) -> (Double, Double) {
         var totalPaid = 0.0
         var totalShare = -0.0
         for transaction in groupTransactions {
@@ -111,6 +111,10 @@ class GroupDetailViewModel: ObservableObject {
         return (totalPaid, totalShare)
     }
     
+    /// Tuple format:
+    /// - 0: maximum paid amount by any user (positive)
+    /// - 1: maximum share amount by any user (negative)
+    /// - 2: maximum value from paid and share amounts (positive)
     func getUsersAmountsLimits() -> (Double, Double, Double) {
         var maxPaid = 0.0
         var minShare = -0.0
@@ -130,7 +134,7 @@ class GroupDetailViewModel: ObservableObject {
         groupUsers.map { getUserAmounts(for: $0).0 }.reduce(0, +)
     }
     
-    func getTransactionExpenses(_ transaction: Transaction) -> [ExpenseWithInfo] {
+    func getTransactionExpenses(_ transaction: FIRTransaction) -> [ExpenseWithInfo] {
         var result = [ExpenseWithInfo]()
         for key in transaction.expenses.keys {
             let name = groupUsers.first(where: { $0.email == key })?.name ?? key
@@ -150,21 +154,5 @@ class GroupDetailViewModel: ObservableObject {
         }
         let actions = ExpenseCalculator.calculateCashFlow(in: money)
         return actions.map { ($0.0, groupUsers[$0.1], groupUsers[$0.2]) }
-    }
-    
-    // MARK: - Share
-    
-    private var tempFileName: String?
-    
-    func getGroupShareActivities() -> [AnyObject] {
-        let group = DBManager.shared.getGroup(byId: groupId)!
-        tempFileName = groupTitle.replacingOccurrences(of: " ", with: "_")
-        return ShareManager.exportGroup(group, includeUsers: true, fileName: tempFileName!)
-    }
-    
-    func clearSharedGroupFile() {
-        guard let name = tempFileName else { return }
-        tempFileName = nil
-        JSONManager.clearTempFile(named: name)
     }
 }

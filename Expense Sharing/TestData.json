@@ -23,7 +23,7 @@
     ],
     "groups": [
         {
-            "id": "1",
+            "id": "g1",
             "title": "Trip to Paris",
             "users": [
                 "john@example.com",
@@ -32,7 +32,7 @@
             ],
             "transactions": [
                 {
-                    "id": "11",
+                    "id": "g1t1",
                     "expenses": {
                         "john@example.com": 8000,
                         "sarah@example.com": -2000,
@@ -40,7 +40,7 @@
                     }
                 },
                 {
-                    "id": "12",
+                    "id": "g1t2",
                     "expenses": {
                         "john@example.com": -1500,
                         "sarah@example.com": 3000,
@@ -48,7 +48,7 @@
                     }
                 },
                 {
-                    "id": "13",
+                    "id": "g1t3",
                     "expenses": {
                         "john@example.com": -2500,
                         "sarah@example.com": -2500,
@@ -58,7 +58,7 @@
             ]
         },
         {
-            "id": "2",
+            "id": "g2",
             "title": "Trip to London",
             "users": [
                 "alex@example.com",
@@ -67,7 +67,7 @@
             ],
             "transactions": [
                 {
-                    "id": "21",
+                    "id": "g2t1",
                     "expenses": {
                         "alex@example.com": -35,
                         "bob@example.com": 135,
@@ -75,20 +75,20 @@
                     }
                 },
                 {
-                    "id": "22",
+                    "id": "g2t2",
                     "expenses": {
                         "alex@example.com": -40,
                         "ann@example.com": 65
                     }
                 },
                 {
-                    "id": "23",
+                    "id": "g2t3",
                     "expenses": {
                         "bob@example.com": 237.01,
                     }
                 },
                 {
-                    "id": "24",
+                    "id": "g2t4",
                     "expenses": {
                         "alex@example.com": -3.5,
                         "bob@example.com": 17,
@@ -96,7 +96,7 @@
                     }
                 },
                 {
-                    "id": "25",
+                    "id": "g2t5",
                     "expenses": {
                         "alex@example.com": 26,
                         "bob@example.com": -16,
@@ -104,7 +104,7 @@
                     }
                 },
                 {
-                    "id": "26",
+                    "id": "g2t6",
                     "expenses": {
                         "alex@example.com": -23.89,
                         "bob@example.com": 84.12,
@@ -112,7 +112,7 @@
                     }
                 },
                 {
-                    "id": "27",
+                    "id": "g2t7",
                     "expenses": {
                         "alex@example.com": 99.99,
                         "bob@example.com": -19.19,
@@ -122,7 +122,7 @@
             ]
         },
         {
-            "id": "3",
+            "id": "g3",
             "title": "Trip to Barcelona",
             "users": [
                 "john@example.com",
@@ -133,7 +133,7 @@
             ],
             "transactions": [
                 {
-                    "id": "31",
+                    "id": "g3t1",
                     "expenses": {
                         "john@example.com": 1000,
                         "sarah@example.com": -300,
@@ -141,7 +141,7 @@
                     }
                 },
                 {
-                    "id": "32",
+                    "id": "g3t2",
                     "expenses": {
                         "sarah@example.com": -400,
                         "alex@example.com": -50,

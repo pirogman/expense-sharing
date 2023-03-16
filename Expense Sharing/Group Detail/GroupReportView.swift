@@ -205,7 +205,7 @@ struct GroupReportView: View {
         }
     }
     
-    private func reportChartRowView(for user: User, limit: Double, maxWidth: CGFloat, maxHeight: CGFloat) -> some View {
+    private func reportChartRowView(for user: FIRUser, limit: Double, maxWidth: CGFloat, maxHeight: CGFloat) -> some View {
         let amounts = vm.getUserAmounts(for: user)
         let paidAmount = amounts.0
         let shareAmount = abs(amounts.1)

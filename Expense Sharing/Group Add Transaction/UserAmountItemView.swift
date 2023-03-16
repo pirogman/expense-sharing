@@ -6,16 +6,17 @@
 import SwiftUI
 
 struct UserAmountItemView: View {
-    let user: User
+    let userName: String
+    let userEmail: String
     let amount: Double
     let currencyCode: String?
     
     var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 6) {
-                Text(user.name)
+                Text(userName)
                     .font(.headline)
-                Text(user.email)
+                Text(userEmail)
                     .font(.subheadline)
             }
             Spacer()

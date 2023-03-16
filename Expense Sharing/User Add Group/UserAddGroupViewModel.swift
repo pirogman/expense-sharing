@@ -6,11 +6,11 @@
 import SwiftUI
 
 class UserAddGroupViewModel: ObservableObject {
-    @Published private(set) var knownUsers = [User]()
+    @Published private(set) var knownUsers = [FIRUser]()
     
-    let user: User
+    let user: FIRUser
     
-    init(_ user: User) {
+    init(_ user: FIRUser) {
         self.user = user
     }
     
@@ -18,13 +18,12 @@ class UserAddGroupViewModel: ObservableObject {
         knownUsers = DBManager.shared.getUsers(excludeEmails: [user.email], search: search)
     }
     
-    func createGroup(title: String, users: [User]) -> Result<String, Error> {
+    func createGroup(title: String, users: [FIRUser]) -> Result<String, Error> {
         guard let validTitle = Validator.validateGroupTitle(title) else {
             return .failure(ValidationError.invalidGroupTitle)
         }
         
         let emails = [user.email] + users.map({ $0.email })
-        DBManager.shared.addNewGroup(title: validTitle, userEmails: emails)
         return .success(validTitle)
     }
 }

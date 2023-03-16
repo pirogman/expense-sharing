@@ -77,15 +77,26 @@ extension Color {
 }
 
 extension View {
-    func coverWithLoader(_ cover: Bool) -> some View {
+    func coverWithLoader(_ cover: Bool, hint: String? = nil) -> some View {
         ZStack {
             self
             if cover {
                 Color.black.opacity(0.45)
                     .ignoresSafeArea()
                     .overlay {
-                        ProgressView()
-                            .progressViewStyle(.circular)
+                        VStack(spacing: 16) {
+                            ProgressView()
+                                .progressViewStyle(.circular)
+                                .scaleEffect(1.5)
+                            if let hint = hint {
+                                Text(hint)
+                                    .font(.caption)
+                                    .foregroundColor(.white)
+                                    .multilineTextAlignment(.center)
+                                    .padding(.horizontal, 32)
+                            }
+                        }
+                        .padding(.bottom, 32)
                     }
             }
         }

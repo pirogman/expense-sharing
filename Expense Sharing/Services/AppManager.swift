@@ -8,7 +8,7 @@ import Combine
 
 enum AppState {
     case unauthorised
-    case authorised(User)
+    case authorised(String) // user id
 }
 
 extension AppState: Equatable {
@@ -16,8 +16,8 @@ extension AppState: Equatable {
         switch (lhs, rhs) {
         case (.unauthorised, .unauthorised):
             return true
-        case (let .authorised(user1), let .authorised(user2)):
-            return user1.id == user2.id
+        case (let .authorised(id1), let .authorised(id2)):
+            return id1 == id2
         default:
             return false
         }
