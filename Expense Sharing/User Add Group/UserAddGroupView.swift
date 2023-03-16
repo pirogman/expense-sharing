@@ -10,6 +10,8 @@ struct UserAddGroupView: View {
     
     @StateObject var vm: UserAddGroupViewModel
     
+    @State var isLoading = false
+    
     @State var groupTitle = ""
     @State var groupMembers = [FIRUser]()
     
@@ -28,11 +30,9 @@ struct UserAddGroupView: View {
             addUsersSection
         }
         .appBackgroundGradient()
+        .coverWithLoader(isLoading, hint: vm.hint)
         .onTapGesture {
             hideKeyboard()
-        }
-        .onAppear {
-            vm.updateKnownUsers()
         }
         .onChange(of: searchText) { text in
             withAnimation {
@@ -48,13 +48,17 @@ struct UserAddGroupView: View {
                 presentationMode.wrappedValue.dismiss()
             },
             confirmAction: {
-                switch vm.createGroup(title: groupTitle, users: groupMembers) {
-                case .success:
-                    presentationMode.wrappedValue.dismiss()
-                case .failure(let error):
-                    alertTitle = "Error"
-                    alertMessage = error.localizedDescription
-                    showingAlert = true
+                withAnimation { isLoading = true }
+                vm.createGroup(title: groupTitle, users: groupMembers) { result in
+                    withAnimation { isLoading = false }
+                    switch result {
+                    case .success:
+                        presentationMode.wrappedValue.dismiss()
+                    case .failure(let error):
+                        alertTitle = "Error"
+                        alertMessage = error.localizedDescription
+                        showingAlert = true
+                    }
                 }
             }
         )
@@ -104,19 +108,19 @@ struct UserAddGroupView: View {
     
     private var addUsersSection: some View {
         VStack(spacing: 0) {
-            SearchOptionHeaderView(title: "Add Users", searchHint: " Find registered users by name or email.", showingSearch: $showingSearch, searchText: $searchText)
+            SearchOptionHeaderView(title: "Add Users", searchHint: "Find registered users by their name. Please note, the search is case sensitive.", showingSearch: .constant(true), searchText: $searchText)
                 .padding(.horizontal, 32)
             
             ScrollView(.vertical, showsIndicators: true) {
                 LazyVStack(spacing: 0) {
-                    if vm.knownUsers.isEmpty {
+                    if vm.searchUsers.isEmpty {
                         Text(searchText.hasText
                              ? "No users matching search."
-                             : "No users.")
+                             : "Please, start searching for users.")
                     } else {
-                        ForEach(vm.knownUsers) { user in
+                        ForEach(vm.searchUsers) { user in
                             VStack(spacing: 0) {
-                                if vm.knownUsers.first?.id != user.id {
+                                if vm.searchUsers.first?.id != user.id {
                                     Capsule()
                                         .fill(.white)
                                         .frame(height: 1)
@@ -140,13 +144,14 @@ struct UserAddGroupView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 8))
                 .overlay {
                     RoundedRectangle(cornerRadius: 8)
-                        .strokeBorder(vm.knownUsers.isEmpty ? .clear : .white)
+                        .strokeBorder(vm.searchUsers.isEmpty ? .clear : .white)
                 }
                 .padding(.horizontal, 16)
                 .padding(.top, 8)
                 .padding(.bottom, 16)
             }
             .maskScrollEdges(startPoint: .top, endPoint: .bottom)
+            .animation(.default, value: vm.searchUsers.count)
         }
     }
     

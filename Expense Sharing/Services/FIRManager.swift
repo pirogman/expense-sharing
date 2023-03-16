@@ -25,6 +25,34 @@ class FIRManager {
     private let groupsRef: DatabaseReference!
     private let transactionsRef: DatabaseReference!
     
+    // MARK: - Combined
+    
+    func createGroup(_ group: FIRGroup, completion: @escaping VoidResultBlock) {
+        setGroup(group) { [unowned self] result in
+            switch result {
+            case .success:
+                inviteUsersTo(groupId: group.id, userIds: group.users, completion: completion)
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func inviteUsersTo(groupId: String, userIds: [String], completion: @escaping VoidResultBlock) {
+        var combined = [String: Any]()
+        for id in userIds {
+            let path = "\(id)/groups/\(groupId)"
+            combined[path] = true
+        }
+        usersRef.updateChildValues(combined) { error, _ in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            completion(.success(()))
+        }
+    }
+    
     func leaveGroup(userId: String, groupId: String, completion: @escaping VoidResultBlock) {
         editGroup(removeUserId: userId, groupId: groupId) { [unowned self] result in
             switch result {
@@ -91,6 +119,20 @@ class FIRManager {
     
     func getUsersFor(groupId: String, completion: @escaping (Result<[FIRUser], Error>) -> Void) {
         let query = usersRef.queryOrdered(byChild: "groups/\(groupId)").queryEqual(toValue: true)
+        query.observeSingleEvent(of: .value) { snapshot in
+            guard let children = snapshot.children.allObjects as? [DataSnapshot] else {
+                completion(.success([]))
+                return
+            }
+            let users = children.compactMap { FIRUser(snapshot: $0) }
+            completion(.success(users))
+        }
+    }
+    
+    func searchUsers(_ search: String, completion: @escaping (Result<[FIRUser], Error>) -> Void) {
+        let query = usersRef.queryOrdered(byChild: "name")
+            .queryStarting(atValue: search)
+            .queryEnding(atValue: search + "\u{f8ff}")
         query.observeSingleEvent(of: .value) { snapshot in
             guard let children = snapshot.children.allObjects as? [DataSnapshot] else {
                 completion(.success([]))

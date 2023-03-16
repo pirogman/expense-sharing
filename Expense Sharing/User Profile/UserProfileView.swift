@@ -46,8 +46,8 @@ struct UserProfileView: View {
                 CapsuleDivider()
                 groupsSection
             }
-            .coverWithLoader(isLoading)
             .appBackgroundGradient()
+            .coverWithLoader(isLoading, hint: vm.hint)
             .navigationBarHidden(true)
             .textFieldAlert(isPresented: $showingEditNameAlert, title: "Edit Name", message: "User name should consist of at least 3 characters.", placeholder: "Name", input: $editedName) {
                 withAnimation { isLoading = true }
@@ -64,7 +64,7 @@ struct UserProfileView: View {
             }
             .fullScreenCover(
                 isPresented: $showingAddGroup,
-                content: { Circle() } //UserAddGroupView(vm: UserAddGroupViewModel(vm.user)) }
+                content: { UserAddGroupView(vm: UserAddGroupViewModel(vm.userId)) }
             )
         }
     }

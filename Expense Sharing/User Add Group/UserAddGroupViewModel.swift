@@ -6,24 +6,40 @@
 import SwiftUI
 
 class UserAddGroupViewModel: ObservableObject {
-    @Published private(set) var knownUsers = [FIRUser]()
+    @Published private(set) var hint: String?
     
-    let user: FIRUser
+    @Published private(set) var searchUsers = [FIRUser]()
     
-    init(_ user: FIRUser) {
-        self.user = user
+    let userId: String
+    
+    init(_ userId: String) {
+        self.userId = userId
     }
     
     func updateKnownUsers(search: String? = nil) {
-        knownUsers = DBManager.shared.getUsers(excludeEmails: [user.email], search: search)
+        guard let search = search?.trimmingCharacters(in: .whitespacesAndNewlines), !search.isEmpty else {
+            searchUsers = []
+            return
+        }
+        FIRManager.shared.searchUsers(search) { [weak self] result in
+            switch result {
+            case .success(let users):
+                self?.searchUsers = users
+            case .failure(let error):
+                print("search users failed with error: \(error)")
+                self?.searchUsers = []
+            }
+        }
     }
     
-    func createGroup(title: String, users: [FIRUser]) -> Result<String, Error> {
+    func createGroup(title: String, users: [FIRUser], completion: @escaping VoidResultBlock) {
         guard let validTitle = Validator.validateGroupTitle(title) else {
-            return .failure(ValidationError.invalidGroupTitle)
+            completion(.failure(ValidationError.invalidGroupTitle))
+            return
         }
-        
-        let emails = [user.email] + users.map({ $0.email })
-        return .success(validTitle)
+        let meWithOthers = [userId] + users.map { $0.id }
+        let newGroup = FIRGroup(id: UUID().uuidString, title: validTitle, users: meWithOthers, transactions: [], currencyCode: nil)
+        hint = "Creating group..."
+        FIRManager.shared.createGroup(newGroup, completion: completion)
     }
 }

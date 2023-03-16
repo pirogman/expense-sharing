@@ -65,8 +65,8 @@ struct AuthView: View {
             .padding(.bottom)
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
-        .coverWithLoader(isLoading, hint: vm.hint)
         .appBackgroundGradient()
+        .coverWithLoader(isLoading, hint: vm.hint)
         .onTapGesture {
             hideKeyboard()
         }
