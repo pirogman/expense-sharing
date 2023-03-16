@@ -209,7 +209,7 @@ struct GroupReportView: View {
         let amounts = vm.getUserAmounts(for: user)
         let paidAmount = amounts.0
         let shareAmount = abs(amounts.1)
-        let dueAmount = (shareAmount - paidAmount)
+        let dueAmount = (paidAmount - shareAmount)//(shareAmount - paidAmount)
         
         let paidWidth = limit > 0 ? min(maxWidth, maxWidth * (paidAmount / limit)) : 0
         let shareWidth = limit > 0 ? min(maxWidth, maxWidth * (shareAmount / limit)) : 0

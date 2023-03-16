@@ -165,7 +165,7 @@ class GroupDetailViewModel: ObservableObject {
     func getCashFlowActions() -> [UserCashFlowAction] {
         let money: [Double] = groupUsers.map { user in
             let amounts = getUserAmounts(for: user)
-            return amounts.0 + amounts.1
+            return -(amounts.0 - abs(amounts.1))
         }
         let actions = ExpenseCalculator.calculateCashFlow(in: money)
         return actions.map { ($0.0, groupUsers[$0.1], groupUsers[$0.2]) }
