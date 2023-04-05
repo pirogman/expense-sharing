@@ -2,7 +2,7 @@
 
 🥈 **Second place** in iOS Development Challenge from Readdle.
 
-![dev challange](images/dev_challange.png)
+![dev challange](https://raw.githubusercontent.com/pirogman/expense-sharing/safe-storage/images/dev_challange.png)
 
 ## Task Description
 
