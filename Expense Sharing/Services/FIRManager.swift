@@ -12,8 +12,12 @@ typealias VoidResultBlock = (Result<Void, Error>) -> Void
 class FIRManager {
     static let shared = FIRManager()
     private init() {
+        // Important! Do not enable persistence as it will result in
+        // problems after server reset is done. It will cause wrong
+        // query results from outdated cache data.
+        
         // Enable persistence to work offline
-        Database.database().isPersistenceEnabled = true
+        // Database.database().isPersistenceEnabled = true
         
         let ref = Database.database().reference()
         usersRef = ref.child("users")
