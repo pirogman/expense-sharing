@@ -65,6 +65,11 @@
 		5D61314529B5DD4200B0366D /* TestData.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = TestData.json; sourceTree = "<group>"; };
 		5D61314729B6135500B0366D /* GroupDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupDetailView.swift; sourceTree = "<group>"; };
 		5D61314929B638AD00B0366D /* GroupDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupDetailViewModel.swift; sourceTree = "<group>"; };
+		5D71110829DD5909003D6892 /* dev_challenge.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dev_challenge.png; sourceTree = "<group>"; };
+		5D71110929DD75B2003D6892 /* sc_group.PNG */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sc_group.PNG; sourceTree = "<group>"; };
+		5D71110A29DD75B2003D6892 /* sc_profile.PNG */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sc_profile.PNG; sourceTree = "<group>"; };
+		5D71110B29DD75B3003D6892 /* sc_report.PNG */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sc_report.PNG; sourceTree = "<group>"; };
+		5D71110C29DD75B3003D6892 /* sc_login.PNG */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sc_login.PNG; sourceTree = "<group>"; };
 		5DA7D04E29BB18A0004B197F /* ShareManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareManager.swift; sourceTree = "<group>"; };
 		5DA7D05029BB45A3004B197F /* UserAddGroupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAddGroupViewModel.swift; sourceTree = "<group>"; };
 		5DA7D05229BB6D2F004B197F /* AppManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppManager.swift; sourceTree = "<group>"; };
@@ -124,6 +129,7 @@
 			isa = PBXGroup;
 			children = (
 				5DB1BE9529BFB2FA009996D4 /* README.md */,
+				5D71110D29DD75D9003D6892 /* images */,
 				5D61313429B5D96700B0366D /* Expense Sharing */,
 				5D61313329B5D96700B0366D /* Products */,
 			);
@@ -167,6 +173,18 @@
 				5D61313C29B5D96900B0366D /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		5D71110D29DD75D9003D6892 /* images */ = {
+			isa = PBXGroup;
+			children = (
+				5D71110829DD5909003D6892 /* dev_challenge.png */,
+				5D71110929DD75B2003D6892 /* sc_group.PNG */,
+				5D71110C29DD75B3003D6892 /* sc_login.PNG */,
+				5D71110A29DD75B2003D6892 /* sc_profile.PNG */,
+				5D71110B29DD75B3003D6892 /* sc_report.PNG */,
+			);
+			path = images;
 			sourceTree = "<group>";
 		};
 		5DA7D05829BB6F42004B197F /* User Add Group */ = {
