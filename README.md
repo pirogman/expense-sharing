@@ -1,8 +1,8 @@
 # Expense Sharing
 
-🥈 **Second place** in iOS Development Challenge from Readdle.
+🥈 **Second place** in iOS Development Challenge from Readdle on 22.03.2023
 
-![dev challange](https://raw.githubusercontent.com/pirogman/expense-sharing/images/dev_challange.png)
+![dev_challenge](https://user-images.githubusercontent.com/11997085/230068824-7e0ef9ac-816d-42b0-92c5-c945c09dd824.png)
 
 ## Task Description
 
@@ -20,7 +20,7 @@ Additionally, at the end of group expenses, the application should be able to ge
 
 ## Screenshots
 
-<img src="images/sc_login.png" width=200> <img src="images/sc_profile.png" width=200> <img src="images/sc_group.png" width=200> <img src="images/sc_report.png" width=200>
+<img src="https://user-images.githubusercontent.com/11997085/230068943-1c13915f-ca08-453f-abac-1c9054e4ffe3.PNG" width=200> <img src="https://user-images.githubusercontent.com/11997085/230068947-644a415b-e7e5-4999-9cc0-cd4c81476ae2.PNG" width=200> <img src="https://user-images.githubusercontent.com/11997085/230068935-dd9a62a3-0411-4943-a2e7-2198b74905a1.PNG" width=200> <img src="https://user-images.githubusercontent.com/11997085/230068952-751b82b0-9946-4731-8044-bbe7ff44841a.PNG" width=200>
 
 ## Important
 
